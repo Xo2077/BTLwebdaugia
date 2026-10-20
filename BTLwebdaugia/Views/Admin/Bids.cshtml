@@ -1,0 +1,59 @@
+﻿
+@{
+    ViewData["Title"] = "Admin Bids";
+    Layout = "_AdminLayout";
+}
+
+<h1>Bids management</h1>
+
+<p class="muted">
+    Administration wireframe preview.
+    Only approved core workflows will be implemented in MVC.
+</p>
+
+<div class="table-shell">
+
+    <div class="table-toolbar">
+
+        <input class="field"
+               placeholder="Search bids" />
+
+        <span>Filter by status ▾</span>
+
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ITEM</th>
+                <th>OWNER</th>
+                <th>CATEGORY / VALUE</th>
+                <th>STATUS</th>
+                <th>ACTION</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>Sample bids 01</td>
+                <td>Sample user</td>
+                <td>—</td>
+                <td>Demo</td>
+                <td>View</td>
+            </tr>
+
+            <tr>
+                <td>Sample bids 02</td>
+                <td>Sample user</td>
+                <td>—</td>
+                <td>Demo</td>
+                <td>View</td>
+            </tr>
+
+        </tbody>
+    </table>
+
+    <p id="action-feedback" class="notice"></p>
+
+</div>

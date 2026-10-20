@@ -1,0 +1,125 @@
+﻿
+@{
+    ViewData["Title"] = "My Bidding";
+    Layout = "_Layout";
+}
+
+<div class="container">
+
+    <main class="container">
+        <div class="crumb">Home / My account / My Bidding</div>
+        <div class="account">
+            <aside class="sidebar">
+                <div class="identity">
+                    <div class="avatar">◯</div><strong>User Name</strong>
+                    <p class="muted small">Member since October 2026</p>
+                </div>
+                <nav class="sidebar-nav">
+                        <a asp-controller="Account"
+                           asp-action="Profile">My Profile</a>
+
+                        <a asp-controller="Wallet"
+                           asp-action="Index">My Wallet</a>
+
+                        <a asp-controller="Selling"
+                           asp-action="Index">My Selling</a>
+
+                        <a asp-controller="Bidding"
+                           asp-action="Index">
+                            My Bidding
+                        </a>
+
+                        <a asp-controller="Orders"
+                           asp-action="Index">
+                            My Orders
+                        </a>
+
+                        <a asp-controller="Account"
+                           asp-action="LogOut">
+                            Log out
+                        </a>
+                </nav>
+                <div class="panel help-box"><strong>Need help?</strong>
+                    <p class="small muted">Contact our team for account or auction support.</p><a href="#">Contact
+                        us</a>
+                </div>
+            </aside>
+            <section class="account-body">
+                <div class="page-title">
+                    <h1>My Bidding</h1>
+                    <p>Follow your bids, stay ahead and keep track of your wins.</p>
+                </div>
+                <div class="metrics">
+                    <div class="metric">
+                        <div class="muted small">Active auctions</div><strong>3</strong><small>2 ending today</small>
+                    </div>
+                    <div class="metric">
+                        <div class="muted small">Currently leading</div><strong>2</strong><small>Keep an eye on your
+                            bids</small>
+                    </div>
+                    <div class="metric">
+                        <div class="muted small">Outbid</div><strong>1</strong><small>Bid again to take the lead</small>
+                    </div>
+                    <div class="metric">
+                        <div class="muted small">Auctions won</div><strong>5</strong><small>1 awaiting payment</small>
+                    </div>
+                </div>
+                <div class="table-shell">
+                    <h3>Your auctions</h3>
+                    <div class="tabs"><button
+                            class="active">All</button><button>Leading</button><button>Outbid</button><button>Won</button><button>Ended</button>
+                    </div>
+                    <div class="table-toolbar"><input class="field" placeholder="Search items or auction ID"><span>Sort
+                            by: Ending soonest ▾</span></div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ITEM</th>
+                                <th>CURRENT / FINAL</th>
+                                <th>YOUR BID</th>
+                                <th>TIME</th>
+                                <th>STATUS</th>
+                                <th>ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Leica M6 rangefinder</td>
+                                <td>$1,250</td>
+                                <td>$1,250</td>
+                                <td>2h 14m left</td>
+                                <td><span class="tag">Leading</span></td>
+                                <td><a href="auction.html">View auction</a></td>
+                            </tr>
+                            <tr>
+                                <td>Omega classic wristwatch</td>
+                                <td>$850</td>
+                                <td>$800</td>
+                                <td>4h left</td>
+                                <td><span class="tag">Outbid</span></td>
+                                <td><a href="auction.html">Bid again</a></td>
+                            </tr>
+                            <tr>
+                                <td>Vintage walnut turntable</td>
+                                <td>$450</td>
+                                <td>$450</td>
+                                <td>Ended</td>
+                                <td><span class="tag">Won</span></td>
+                                <td>
+                                    <a asp-controller="Orders"
+                                       asp-action="Index">
+                                        Pay with wallet
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="callout"><strong>Won an auction?</strong>
+                    <p>Use your virtual wallet to pay; if balance is insufficient, top up in My Wallet and retry.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+</div>

@@ -1,0 +1,136 @@
+﻿
+@{
+    ViewData["Title"] = "Category & Search";
+    Layout = "_Layout";
+}
+    <main class="container">
+        <div class="crumb">Home / Category</div>
+        <div class="page-title">
+            <h1>Explore auctions</h1>
+            <p>Discover live listings and browse by category.</p>
+        </div>
+        <div class="filter-layout">
+            <aside class="panel filters">
+                <h3>Filters</h3>
+                <div class="form-group"><label>Search product</label><input class="field"
+                        placeholder="Search auctions..." /></div>
+                <div class="form-group"><label>Categories</label><select class="field" id="category-select">
+                        <option value="">All categories</option>
+                        <option value="Luxury &amp; Jewelry">Luxury &amp; Jewelry</option>
+                        <option value="Motors &amp; Vehicles">Motors &amp; Vehicles</option>
+                        <option value="Fine Art">Fine Art</option>
+                        <option value="Premium Electronics">Premium Electronics</option>
+                        <option value="Designer Fashion">Designer Fashion</option>
+                        <option value="Collectibles">Collectibles</option>
+                        <option value="Real Estate">Real Estate</option>
+                        <option value="Home &amp; Sports">Home &amp; Sports</option>
+                    </select></div>
+                <div class="form-group"><label>Auction status</label><select class="field">
+                        <option>All</option>
+                        <option>Live</option>
+                        <option>Upcoming</option>
+                        <option>Ended</option>
+                    </select></div><button class="btn btn-solid btn-wide" data-demo-action="Apply filters">Apply
+                    filters</button>
+                <p class="notice" id="action-feedback"></p>
+            </aside>
+            <section>
+                <div class="table-toolbar">
+                    <h2>Live &amp; upcoming listings</h2><span>Sort by: Ending soonest ▾</span>
+                </div>
+                <div class="grid grid-3">
+                    <article class="product-card" data-category="Luxury &amp; Jewelry">
+                        <div aria-label="PRODUCT IMAGE" class="image-box" role="img">PRODUCT IMAGE</div>
+                        <h3>Vintage camera</h3>
+                        <p><span class="tag">Live Auction</span></p>
+                        <p class="muted">Current Bid</p>
+                        <p class="bid-price">$125.00</p>
+                        <p class="small">Ends in: <strong class="countdown" data-seconds="70000"></strong></p>
+                        <div class="card-bottom"><span class="muted small">BidHub auction</span>
+                            <a class="btn btn-small"
+                               asp-controller="Auction"
+                               asp-action="Details">
+                                Bid now
+                            </a>
+                        </div>
+                    </article>
+                    <article class="product-card" data-category="Motors &amp; Vehicles">
+                        <div aria-label="PRODUCT IMAGE" class="image-box" role="img">PRODUCT IMAGE</div>
+                        <h3>Classic wristwatch</h3>
+                        <p><span class="tag">Live Auction</span></p>
+                        <p class="muted">Current Bid</p>
+                        <p class="bid-price">$210.00</p>
+                        <p class="small">Ends in: <strong class="countdown" data-seconds="140000"></strong></p>
+                        <div class="card-bottom"><span class="muted small">BidHub auction</span>
+                            <a class="btn btn-small"
+                               asp-controller="Auction"
+                               asp-action="Details">
+                                Bid now
+                            </a>
+                        </div>
+                    </article>
+                    <article class="product-card" data-category="Fine Art">
+                        <div aria-label="PRODUCT IMAGE" class="image-box" role="img">PRODUCT IMAGE</div>
+                        <h3>Walnut turntable</h3>
+                        <p><span class="tag">Live Auction</span></p>
+                        <p class="muted">Current Bid</p>
+                        <p class="bid-price">$295.00</p>
+                        <p class="small">Ends in: <strong class="countdown" data-seconds="210000"></strong></p>
+                        <div class="card-bottom"><span class="muted small">BidHub auction</span>
+                            <a class="btn btn-small"
+                               asp-controller="Auction"
+                               asp-action="Details">
+                                Bid now
+                            </a>
+                        </div>
+                    </article>
+                    <article class="product-card" data-category="Premium Electronics">
+                        <div aria-label="PRODUCT IMAGE" class="image-box" role="img">PRODUCT IMAGE</div>
+                        <h3>Collectible vinyl</h3>
+                        <p><span class="tag">Live Auction</span></p>
+                        <p class="muted">Current Bid</p>
+                        <p class="bid-price">$380.00</p>
+                        <p class="small">Ends in: <strong class="countdown" data-seconds="280000"></strong></p>
+                        <div class="card-bottom"><span class="muted small">BidHub auction</span>
+                            <a class="btn btn-small"
+                               asp-controller="Auction"
+                               asp-action="Details">
+                                Bid now
+                            </a>
+                        </div>
+                    </article>
+                    <article class="product-card" data-category="Designer Fashion">
+                        <div aria-label="PRODUCT IMAGE" class="image-box" role="img">PRODUCT IMAGE</div>
+                        <h3>Leather handbag</h3>
+                        <p><span class="tag">Live Auction</span></p>
+                        <p class="muted">Current Bid</p>
+                        <p class="bid-price">$465.00</p>
+                        <p class="small">Ends in: <strong class="countdown" data-seconds="350000"></strong></p>
+                        <div class="card-bottom"><span class="muted small">BidHub auction</span>
+                            <a class="btn btn-small"
+                               asp-controller="Auction"
+                               asp-action="Details">
+                                Bid now
+                            </a>
+                        </div>
+                    </article>
+                    <article class="product-card" data-category="Collectibles">
+                        <div aria-label="PRODUCT IMAGE" class="image-box" role="img">PRODUCT IMAGE</div>
+                        <h3>Classic headphones</h3>
+                        <p><span class="tag">Live Auction</span></p>
+                        <p class="muted">Current Bid</p>
+                        <p class="bid-price">$550.00</p>
+                        <p class="small">Ends in: <strong class="countdown" data-seconds="420000"></strong></p>
+                        <div class="card-bottom"><span class="muted small">BidHub auction</span>
+                            <a class="btn btn-small"
+                               asp-controller="Auction"
+                               asp-action="Details">
+                                Bid now
+                            </a>
+                        </div>
+                    </article>
+                </div>
+                <div class="pager"><button class="active">1</button><button>2</button><button>3</button></div>
+            </section>
+        </div>
+    </main>

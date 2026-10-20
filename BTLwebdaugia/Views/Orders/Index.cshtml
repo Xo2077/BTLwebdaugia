@@ -1,0 +1,123 @@
+﻿
+@{
+    ViewData["Title"] = "My Orders";
+    Layout = "_Layout";
+}
+
+
+<div class="container">
+
+    <main class="container">
+        <div class="crumb">Home / My account / My Orders</div>
+        <div class="account">
+            <aside class="sidebar">
+                <div class="identity">
+                    <div class="avatar">◯</div><strong>User Name</strong>
+                    <p class="muted small">Member since October 2026</p>
+                </div>
+                <nav class="sidebar-nav">
+                        <a asp-controller="Account"
+                           asp-action="Profile">My Profile</a>
+
+                        <a asp-controller="Wallet"
+                           asp-action="Index">My Wallet</a>
+                        
+                        <a asp-controller="Selling"
+                           asp-action="Index">My Selling</a>
+                        
+                        <a asp-controller="Bidding"
+                           asp-action="Index">My Bidding</a>
+
+                        <a class="active"
+                           asp-controller="Orders"
+                           asp-action="Index">
+                            My Orders
+                        </a>
+
+                        <a asp-controller="Account"
+                           asp-action="LogOut">
+                            Log out
+                        </a>
+                </nav>
+                <div class="panel help-box"><strong>Need help?</strong>
+                    <p class="small muted">Contact our team for account or auction support.</p><a href="#">Contact
+                        us</a>
+                </div>
+            </aside>
+            <section class="account-body">
+                <div class="page-title">
+                    <h1>My Orders</h1>
+                    <p>Manage purchases, virtual payments and delivery confirmation.</p>
+                </div>
+                <div class="metrics">
+                    <div class="metric">
+                        <div class="muted small">Total orders</div><strong>5</strong><small>Demo orders</small>
+                    </div>
+                    <div class="metric">
+                        <div class="muted small">Awaiting payment</div><strong>1</strong><small>No mandatory payment
+                            deadline</small>
+                    </div>
+                    <div class="metric">
+                        <div class="muted small">Paid</div><strong>1</strong><small>Awaiting seller shipment</small>
+                    </div>
+                    <div class="metric">
+                        <div class="muted small">Completed</div><strong>2</strong><small>Received by buyer</small>
+                    </div>
+                </div>
+                <div class="table-shell">
+                    <h3>Your orders</h3>
+                    <div class="tabs"><button class="active">All</button><button>Awaiting
+                            payment</button><button>Paid</button><button>Shipping</button><button>Completed</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ORDER / ITEM</th>
+                                <th>TOTAL</th>
+                                <th>DATE</th>
+                                <th>STATUS</th>
+                                <th>ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#BH-1042 · Vintage turntable</td>
+                                <td>$450</td>
+                                <td>18 Oct 2026</td>
+                                <td>Awaiting payment</td>
+                                <td><button class="btn btn-small" data-pay>Pay with wallet</button></td>
+                            </tr>
+                            <tr>
+                                <td>#BH-1040 · Headphones</td>
+                                <td>$180</td>
+                                <td>17 Oct 2026</td>
+                                <td>Paid</td>
+                                <td>Waiting for seller</td>
+                            </tr>
+                            <tr>
+                                <td>#BH-1039 · Camera</td>
+                                <td>$310</td>
+                                <td>16 Oct 2026</td>
+                                <td>Shipping</td>
+                                <td><button class="btn btn-small" data-demo-action="Confirm received">Confirm
+                                        received</button></td>
+                            </tr>
+                            <tr>
+                                <td>#BH-1032 · Watch</td>
+                                <td>$225</td>
+                                <td>12 Oct 2026</td>
+                                <td>Completed</td>
+                                <td>View order</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p id="payment-feedback" class="notice"></p>
+                    <p id="action-feedback" class="notice"></p>
+                </div>
+                <div class="callout">Payment and shipping are simulated. No real financial transfer or delivery occurs
+                    in the HTML template.</div>
+            </section>
+        </div>
+    </main>
+
+</div>

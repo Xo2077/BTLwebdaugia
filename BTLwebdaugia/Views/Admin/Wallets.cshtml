@@ -1,0 +1,58 @@
+﻿@{
+    ViewData["Title"] = "Admin Wallets";
+    Layout = "_AdminLayout";
+}
+
+<h1>Wallets management</h1>
+
+<p class="muted">
+    Administration wireframe preview.
+    Only approved core workflows will be implemented in MVC.
+</p>
+
+<div class="table-shell">
+
+    <div class="table-toolbar">
+
+        <input class="field"
+               placeholder="Search wallets" />
+
+        <span>Filter by status ▾</span>
+
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ITEM</th>
+                <th>OWNER</th>
+                <th>CATEGORY / VALUE</th>
+                <th>STATUS</th>
+                <th>ACTION</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>Sample wallets 01</td>
+                <td>Sample user</td>
+                <td>—</td>
+                <td>Demo</td>
+                <td>View</td>
+            </tr>
+
+            <tr>
+                <td>Sample wallets 02</td>
+                <td>Sample user</td>
+                <td>—</td>
+                <td>Demo</td>
+                <td>View</td>
+            </tr>
+
+        </tbody>
+    </table>
+
+    <p id="action-feedback" class="notice"></p>
+
+</div>

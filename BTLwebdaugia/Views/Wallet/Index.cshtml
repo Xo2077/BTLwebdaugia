@@ -1,0 +1,124 @@
+﻿
+@{
+    ViewData["Title"] = "My Wallet";
+    Layout = "_Layout";
+}
+
+
+<div class="container">
+
+    <main class="container">
+        <div class="crumb">Home / My account / My Wallet</div>
+        <div class="account">
+            <aside class="sidebar">
+                <div class="identity">
+                    <div class="avatar">◯</div><strong>User Name</strong>
+                    <p class="muted small">Member since October 2026</p>
+                </div>
+                <nav class="sidebar-nav">
+                        <a asp-controller="Account"
+                           asp-action="Profile">
+                            My Profile
+                        </a>
+                        <a class="active"
+                           asp-controller="Wallet"
+                           asp-action="Index">
+                            My Wallet
+                        </a>
+                        <a class="active"
+                           asp-controller="Selling"
+                           asp-action="Index">
+                            My Selling
+                        </a>
+
+
+                        <a asp-controller="Bidding"
+                           asp-action="Index">
+                            My Bidding
+                        </a>
+
+
+                        <a asp-controller="Orders"
+                           asp-action="Index">
+                            My Orders
+                        </a>
+
+                        <a asp-controller="Account"
+                           asp-action="LogOut">
+                            Log out
+                        </a>
+
+                </nav>
+                <div class="panel help-box"><strong>Need help?</strong>
+                    <p class="small muted">Contact our team for account or auction support.</p><a href="#">Contact
+                        us</a>
+                </div>
+            </aside>
+            <section class="account-body">
+                <div class="page-title">
+                    <h1>My Wallet</h1>
+                    <p>Manage your virtual USD wallet and review demo transactions.</p>
+                </div>
+                <div class="grid wallet-tiles">
+                    <div class="metric">
+                        <div class="muted">Available balance</div><strong id="wallet-balance"
+                            data-balance="2000">$2,000.00</strong><small>Virtual USD for paying winning auctions</small>
+                    </div>
+                    <div class="metric">
+                        <div class="muted">Demo top-up</div><strong>Virtual funds</strong><small>No real banking or held
+                            deposits</small>
+                    </div>
+                </div>
+                <div class="panel" style="margin:24px 0">
+                    <h3>Top up virtual wallet</h3>
+                    <div class="form-row">
+                        <div class="form-group"><label for="topup-amount">Enter amount (USD)</label><input class="field"
+                                type="number" id="topup-amount" min="0.01" step="0.01" placeholder="e.g. 500"></div>
+                        <div class="form-group" style="align-self:end"><button class="btn btn-solid" type="button"
+                                data-topup>Top up wallet</button></div>
+                    </div>
+                    <p class="notice" id="wallet-feedback">Demo only: entered amount is added to displayed sample
+                        balance.</p>
+                </div>
+                <div class="table-shell">
+                    <h3>Recent transactions</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>TYPE / DESCRIPTION</th>
+                                <th>AMOUNT</th>
+                                <th>DATE</th>
+                                <th>STATUS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Demo top-up</td>
+                                <td>$500</td>
+                                <td>19 Oct 2026</td>
+                                <td>Completed</td>
+                            </tr>
+                            <tr>
+                                <td>Winning auction payment</td>
+                                <td>−$450</td>
+                                <td>18 Oct 2026</td>
+                                <td>Completed</td>
+                            </tr>
+                            <tr>
+                                <td>Sale payment received</td>
+                                <td>+$320</td>
+                                <td>17 Oct 2026</td>
+                                <td>Completed</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="callout"><strong>About the demo wallet</strong>
+                    <p>Bidding never holds or deducts balance. When a winner pays, their wallet is debited and the
+                        seller wallet is credited.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+</div>

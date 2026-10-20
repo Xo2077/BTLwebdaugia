@@ -1,0 +1,76 @@
+﻿
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "_AdminLayout";
+}
+
+<h1>Dashboard</h1>
+
+<p class="muted">
+    Overview of BidHub demo operations
+</p>
+
+<div class="metrics">
+
+    <div class="metric">
+        <div class="muted small">Users</div>
+        <strong>0</strong>
+        <small>Registered accounts</small>
+    </div>
+
+    <div class="metric">
+        <div class="muted small">Products</div>
+        <strong>—</strong>
+        <small>From SQL Server</small>
+    </div>
+
+    <div class="metric">
+        <div class="muted small">Live auctions</div>
+        <strong>—</strong>
+        <small>Approved sessions</small>
+    </div>
+
+    <div class="metric">
+        <div class="muted small">Orders</div>
+        <strong>—</strong>
+        <small>Virtual payments</small>
+    </div>
+
+</div>
+
+<div class="grid" style="grid-template-columns:2fr 1fr">
+
+    <div class="panel">
+        <h3>Auction activity</h3>
+
+        <div class="image-box" style="height:260px">
+            ACTIVITY CHART
+        </div>
+    </div>
+
+    <div class="panel">
+        <h3>Quick actions</h3>
+
+        <p>
+            <a class="btn btn-wide"
+               href="/Admin/Products">
+                Review pending listings
+            </a>
+        </p>
+
+        <p>
+            <a class="btn btn-wide"
+               href="/Admin/Auctions">
+                View auctions
+            </a>
+        </p>
+
+        <p>
+            <a class="btn btn-wide"
+               href="/Admin/Orders">
+                Review orders
+            </a>
+        </p>
+    </div>
+
+</div>

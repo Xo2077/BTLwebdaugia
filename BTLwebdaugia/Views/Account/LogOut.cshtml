@@ -1,0 +1,64 @@
+﻿
+@{
+    ViewData["Title"] = "Log out";
+    Layout = "_Layout";
+}
+
+<div class="container">
+
+    <main class="container">
+        <div class="crumb">Home / My account / Log out</div>
+        <div class="account">
+            <aside class="sidebar">
+                <div class="identity">
+                    <div class="avatar">◯</div><strong>User Name</strong>
+                    <p class="muted small">Member since October 2026</p>
+                </div>
+                <nav class="sidebar-nav">
+                    <a asp-controller="Account"
+                       asp-action="Profile">My Profile</a>
+                    
+                    <a asp-controller="Wallet"
+                       asp-action="Index">My Wallet</a>     
+                        
+                    <a asp-controller="Selling"
+                       asp-action="Index">My Selling</a>
+                    
+                    <a asp-controller="Bidding"
+                       asp-action="Index">My Bidding</a>    
+                        
+                    <a asp-controller="Orders"
+                       asp-action="Index">My Orders</a>
+
+                    <a class="active"
+                       asp-controller="Account"
+                       asp-action="LogOut">
+                       Log out
+                    </a>
+                </nav>
+                <div class="panel help-box"><strong>Need help?</strong>
+                    <p class="small muted">Contact our team for account or auction support.</p><a href="#">Contact
+                        us</a>
+                </div>
+            </aside>
+            <section class="account-body">
+                <div class="page-title">
+                    <h1>Log out</h1>
+                    <p>Review your account before signing out of BidHub.</p>
+                </div>
+                <div class="panel">
+                    <h3>Log out of your account?</h3>
+                    <p>Logging out does not cancel your bids or orders.</p>
+
+                    <a class="btn btn-solid"
+                       asp-controller="Account"
+                       asp-action="SignIn">
+                        Back to Sign in
+                    </a>
+
+                </div>
+            </section>
+        </div>
+    </main>
+
+</div>

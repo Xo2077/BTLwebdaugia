@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewData["Title"] = "Auction Detail";
+    Layout = "_Layout";
+}
+
+
+<div class="container">
+    <main class="container">
+        <div class="crumb">Home / Live Auction / Product</div>
+        <div class="page-title">
+            <span class="tag">Live Auction</span>
+            <h1>Vintage camera</h1>
+            <p>by Vintage Focus</p>
+        </div>
+        <div class="auction-detail">
+            <div>
+                <div class="image-box gallery-main">PRODUCT IMAGE</div>
+                <div class="thumbs">
+                    <div class="image-box" role="img" aria-label="IMAGE">IMAGE</div>
+                    <div class="image-box" role="img" aria-label="IMAGE">IMAGE</div>
+                    <div class="image-box" role="img" aria-label="IMAGE">IMAGE</div>
+                </div>
+                <div class="panel bid-history">
+                    <h3>Latest bids</h3>
+                    <ol>
+                        <li><span>User Bidder 01</span><strong>$200</strong></li>
+                        <li><span>User Bidder 02</span><strong>$190</strong></li>
+                        <li><span>User Bidder 03</span><strong>$180</strong></li>
+                    </ol>
+                </div>
+            </div>
+            <div class="panel bid-panel">
+                <p class="muted">Current Bid</p>
+                <div class="price">$200</div>
+                <p>Ends in: <strong class="countdown" data-seconds="156000">01d : 19h : 20m : 00s</strong></p>
+                <hr>
+                <p>Minimum bid increment: <strong>$5</strong></p>
+                <p>Minimum next bid: <strong>$205</strong></p><button class="btn btn-wide" type="button"
+                                                                  onclick="document.querySelector('#bid-value').value=205">
+                Quick bid $205
+            </button>
+            <div class="form-group">
+                <label for="bid-value">Enter your bid (whole USD)</label><input class="field"
+                                                                                id="bid-value" type="number" min="205" step="1" value="205">
+            </div><button class="btn btn-solid btn-wide" data-bid-submit type="button">
+            Place Bid
+            </button>
+                <p class="notice" id="bid-feedback">
+                    You must sign in before placing a real bid. The seller cannot bid on
+                    their own item.
+                </p>
+            </div>
+        </div>
+            <section class="desc-section panel">
+                <h2>Item Description</h2>
+                <p>Product description placeholder from Figma. Backend data will replace this sample text.</p>
+                <h3>Item Details</h3>
+                <p>Condition · Category · Shipping & Delivery</p>
+            </section>
+    </main>
+
+</div>

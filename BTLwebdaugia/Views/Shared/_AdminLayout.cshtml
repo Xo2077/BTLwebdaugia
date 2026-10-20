@@ -1,0 +1,170 @@
+﻿
+@{
+    var currentAction =
+        ViewContext.RouteData.Values["action"]?.ToString();
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="BidHub Admin Dashboard" />
+
+    <title>@ViewData["Title"] | BidHub Admin</title>
+
+    <link rel="stylesheet"
+          href="~/css/style.css"
+          asp-append-version="true" />
+</head>
+<body>
+
+    <div class="demo-note">
+        BidHub • HTML/CSS template based on approved Figma wireframes • Sample data only
+    </div>
+
+    <header class="site-header">
+        <div class="container nav-inner">
+
+            <a class="brand" href="/">
+                <span class="brand-mark">⚒</span>
+                <span>BidHub</span>
+            </a>
+
+            <button class="nav-toggle"
+                    type="button"
+                    aria-label="Toggle navigation">
+                ☰
+            </button>
+
+            <nav class="nav-links">
+
+
+                <a asp-controller="Home" asp-action="Index">Home</a>
+
+
+                <a href="/Home/Category">Category</a>
+                <a href="#">About Us</a>
+                <a href="#">Contact</a>
+            </nav>
+
+            <div class="nav-actions">
+                <a href="/Wallet">♡</a>
+
+                <a asp-controller="Account"
+                   asp-action="Profile">
+                    My account
+                </a>
+
+
+                <a asp-controller="Account"
+                   asp-action="SignIn">
+                    Sign in
+                </a>
+
+            </div>
+
+        </div>
+    </header>
+
+    <main class="admin-layout">
+
+        <aside class="admin-sidebar">
+
+
+            <a class="@(currentAction == "Index" ? "active" : "")"
+               asp-controller="Admin"
+               asp-action="Index">
+                Dashboard
+            </a>
+
+            <a class="@(currentAction == "Users" ? "active" : "")"
+               asp-controller="Admin"
+               asp-action="Users">
+                Users
+            </a>
+
+            <a class="@(currentAction == "Categories" ? "active" : "")"
+               asp-controller="Admin"
+               asp-action="Categories">
+                Categories
+            </a>
+
+
+            <a class="@(currentAction == "Products" ? "active" : "")"
+               asp-controller="Admin"
+               asp-action="Products">
+                Products
+            </a>
+
+            <a class="@(currentAction == "Auctions" ? "active" : "")"
+               asp-controller="Admin"
+               asp-action="Auctions">
+                Auctions
+            </a>
+
+            <a class="@(currentAction == "Bids" ? "active" : "")"
+               asp-controller="Admin"
+               asp-action="Bids">
+                Bids
+            </a>
+
+            <a class="@(currentAction == "Orders" ? "active" : "")"
+               asp-controller="Admin"
+               asp-action="Orders">
+                Orders
+            </a>
+
+            <a class="@(currentAction == "Wallets" ? "active" : "")"
+               asp-controller="Admin"
+               asp-action="Wallets">
+                Wallets
+            </a>
+        </aside>
+
+        <div class="admin-content">
+            @RenderBody()
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+
+            <div class="footer-top">
+                <a class="brand" href="/">
+                    <span class="brand-mark">⚒</span>
+                    BidHub
+                </a>
+
+                <div class="footer-links">
+                    <a href="#">About Us</a>
+                    <a href="#">Terms</a>
+                    <a href="#">Policy</a>
+                    <a href="#">Contact</a>
+                </div>
+            </div>
+
+            <div class="socials">
+                <span>f</span>
+                <span>◎</span>
+                <span>▶</span>
+            </div>
+
+            <div class="footer-bottom">
+                © 2026 Bidhub. All rights reserved.
+            </div>
+
+        </div>
+    </footer>
+
+    <script src="~/js/app.js"
+            asp-append-version="true"></script>
+
+    <script src="~/js/enhancements.js"
+            asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

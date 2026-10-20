@@ -1,0 +1,90 @@
+﻿
+@{
+    ViewData["Title"] = "My Profile";
+    Layout = "_Layout";
+}
+
+
+<div class="container">
+    <main class="container">
+        <div class="crumb">Home / My account / My Profile</div>
+        <div class="account">
+            <aside class="sidebar">
+                <div class="identity">
+                    <div class="avatar">◯</div><strong>User Name</strong>
+                    <p class="muted small">Member since October 2026</p>
+                </div>
+                <nav class="sidebar-nav">
+
+                    <a asp-controller="Account"
+                       asp-action="Profile">
+                        My Profile
+                    </a>
+
+                    <a asp-controller="Wallet"
+                       asp-action="Index">
+                        My Wallet
+                    </a>
+
+                    <a asp-controller="Selling"
+                       asp-action="Index">
+                        My Selling
+                    </a>
+
+
+                    <a asp-controller="Bidding"
+                       asp-action="Index">
+                        My Bidding
+                    </a>
+
+
+                    <a asp-controller="Orders"
+                       asp-action="Index">
+                        My Orders
+                    </a>
+
+
+                    <a asp-controller="Account"
+                       asp-action="LogOut">
+                        Log out
+                    </a>
+
+                </nav>
+                <div class="panel help-box"><strong>Need help?</strong>
+                    <p class="small muted">Contact our team for account or auction support.</p><a href="#">Contact
+                        us</a>
+                </div>
+            </aside>
+            <section class="account-body">
+                <div class="page-title">
+                    <h1>My Profile</h1>
+                    <p>Manage your personal information and account security.</p>
+                </div>
+                <div class="panel">
+                    <h3>Personal information</h3>
+                    <div class="avatar">◯</div>
+                    <p class="muted small">JPG or PNG. Maximum file size 2 MB.</p>
+                    <div class="form-row">
+                        <div class="form-group"><label>First name</label><input class="field" value="Alex"></div>
+                        <div class="form-group"><label>Last name</label><input class="field" value="Morgan"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Display name</label><input class="field" value="User Name"></div>
+                        <div class="form-group"><label>Email address</label><input class="field" type="email"
+                                value="alex@example.com"></div>
+                    </div>
+                    <div class="form-group"><label>Phone number</label><input class="field" value="+1 202 555 0148">
+                    </div>
+                    <div class="form-group"><label>Address</label><input class="field" value="123 Main Street"></div>
+                    <button class="btn btn-solid" data-demo-action="Save profile">Save changes</button>
+                    <p id="action-feedback" class="notice"></p>
+                </div>
+                <div class="panel" style="margin-top:24px">
+                    <h3>Account & security</h3>
+                    <p>Password <span class="muted">· Change password</span></p>
+                    <p>Email verification <span class="tag">Optional</span></p>
+                </div>
+            </section>
+        </div>
+    </main>
+</div>

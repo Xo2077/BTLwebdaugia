@@ -1,0 +1,145 @@
+﻿
+@{
+    ViewData["Title"] = "My Selling";
+    Layout = "_Layout";
+}
+
+<div class="container">
+
+    <main class="container">
+        <div class="crumb">Home / My account / My Selling</div>
+        <div class="account">
+            <aside class="sidebar">
+                <div class="identity">
+                    <div class="avatar">◯</div><strong>User Name</strong>
+                    <p class="muted small">Member since October 2026</p>
+                </div>
+                <nav class="sidebar-nav"><a class="" href="profile.html">My Profile</a><a class="" href="wallet.html">My
+                        Wallet</a><a class="active" href="selling.html">My Selling</a>
+
+                        <a asp-controller="Bidding"
+                           asp-action="Index">
+                            My Bidding
+                        </a>
+
+                        <a asp-controller="Orders"
+                           asp-action="Index">
+                            My Orders
+                        </a>
+
+                        <a asp-controller="Account"
+                           asp-action="LogOut">
+                            Log out
+                        </a>
+                </nav>
+                <div class="panel help-box"><strong>Need help?</strong>
+                    <p class="small muted">Contact our team for account or auction support.</p><a href="#">Contact
+                        us</a>
+                </div>
+            </aside>
+            <section class="account-body">
+                <div class="page-title">
+                    <h1>My Selling</h1>
+                    <p>Manage your listings and keep every auction on track.</p>
+                </div>
+                <div class="metrics">
+                    <div class="metric">
+                        <div class="muted small">Live auctions</div><strong>2</strong><small>1 ending today</small>
+                    </div>
+                    <div class="metric">
+                        <div class="muted small">Total active bids</div><strong>31</strong><small>Across your live
+                            auctions</small>
+                    </div>
+                    <div class="metric">
+                        <div class="muted small">Sales overview</div><strong>$620</strong><small>Demo
+                            transactions</small>
+                    </div>
+                    <div class="metric">
+                        <div class="muted small">Pending review</div><strong>1</strong><small>Admin approval
+                            required</small>
+                    </div>
+                </div>
+                <div class="table-shell">
+                    <div class="table-toolbar">
+                        <h3>Your listings</h3>
+
+                        <a class="btn"
+                           asp-controller="Selling"
+                           asp-action="Create">
+                            Create listing
+                        </a>
+
+                    </div>
+                    <div class="tabs"><button
+                            class="active">All</button><button>Live</button><button>Pending</button><button>Rejected</button><button>Sold</button><button>Unsold</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ITEM</th>
+                                <th>PRICE / BID</th>
+                                <th>BIDS</th>
+                                <th>TIME</th>
+                                <th>STATUS</th>
+                                <th>ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Nikon F3 film camera</td>
+                                <td>$460</td>
+                                <td>18</td>
+                                <td>2h left</td>
+                                <td>Live</td>
+                                <td><a href="auction.html">View auction</a></td>
+                            </tr>
+                            <tr>
+                                <td>Brass desk lamp</td>
+                                <td>$185</td>
+                                <td>13</td>
+                                <td>1d left</td>
+                                <td>Live</td>
+                                <td><a href="auction.html">View auction</a></td>
+                            </tr>
+                            <tr>
+                                <td>Ceramic vase</td>
+                                <td>$80</td>
+                                <td>—</td>
+                                <td>Starts later</td>
+                                <td>Pending</td>
+                                <td><a href="create-listing.html">View listing</a></td>
+                            </tr>
+                            <tr>
+                                <td>Nikkor lens</td>
+                                <td>$150</td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td>Rejected</td>
+                                <td><a href="create-listing.html">Edit / resubmit</a></td>
+                            </tr>
+                            <tr>
+                                <td>Walnut speakers</td>
+                                <td>$620</td>
+                                <td>24</td>
+                                <td>Ended</td>
+                                <td>Sold</td>
+                                <td><a href="orders.html">Confirm shipping</a></td>
+                            </tr>
+                            <tr>
+                                <td>Art print</td>
+                                <td>$70</td>
+                                <td>0</td>
+                                <td>Ended</td>
+                                <td>Unsold</td>
+                                <td><a href="create-listing.html">Create new auction</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="callout">After approval, a seller cannot edit or delete the approved product. Rejected
+                    listings can be edited and resubmitted.</div>
+            </section>
+        </div>
+    </main>
+
+</div>

@@ -1,0 +1,64 @@
+﻿
+@{
+    ViewData["Title"] = "Homepage";
+    Layout = "_Layout";
+}
+
+
+    <main>
+        <div class="container">
+            <div class="hero">
+                <div>
+                    <h1>Discover unique items and win your next auction</h1>
+                    <p class="muted">Explore BidHub auctions and find products from independent sellers.</p><a
+                        class="btn btn-solid" href="category.html">Explore Auctions</a>
+                </div>
+                <div aria-label="HERO IMAGE PLACEHOLDER" class="image-box" role="img">HERO IMAGE PLACEHOLDER</div>
+            </div>
+            <div class="logos">
+                <div aria-label="PARTNER LOGO" class="image-box logo-placeholder" role="img">PARTNER LOGO</div>
+                <div aria-label="PARTNER LOGO" class="image-box logo-placeholder" role="img">PARTNER LOGO</div>
+                <div aria-label="PARTNER LOGO" class="image-box logo-placeholder" role="img">PARTNER LOGO</div>
+                <div aria-label="PARTNER LOGO" class="image-box logo-placeholder" role="img">PARTNER LOGO</div>
+                <div aria-label="PARTNER LOGO" class="image-box logo-placeholder" role="img">PARTNER LOGO</div>
+            </div>
+            <section class="section">
+                <h2>Category</h2>
+                <div class="category-grid"><button class="category-button" data-category-filter="Luxury &amp; Jewelry"
+                        type="button">Luxury &amp; Jewelry</button><button class="category-button"
+                        data-category-filter="Motors &amp; Vehicles" type="button">Motors &amp; Vehicles</button><button
+                        class="category-button" data-category-filter="Fine Art" type="button">Fine Art</button><button
+                        class="category-button" data-category-filter="Premium Electronics" type="button">Premium
+                        Electronics</button><button class="category-button" data-category-filter="Designer Fashion"
+                        type="button">Designer Fashion</button><button class="category-button"
+                        data-category-filter="Collectibles" type="button">Collectibles</button><button
+                        class="category-button" data-category-filter="Real Estate" type="button">Real
+                        Estate</button><button class="category-button" data-category-filter="Home &amp; Sports"
+                        type="button">Home &amp; Sports</button></div>
+            </section>
+            <section class="auction-section" data-auction-section="live">
+                <div class="section-heading">
+                    <h2>Live Auction</h2>
+                </div>
+                <div class="auction-list" data-list="live"></div>
+                <div class="section-footer"><button class="btn" data-view-all="live">View All</button></div>
+                <div class="pager hide" data-pager="live"></div>
+            </section>
+            <section class="auction-section" data-auction-section="upcoming">
+                <div class="section-heading">
+                    <h2>Upcoming Auction</h2>
+                </div>
+                <div class="auction-list upcoming-list" data-list="upcoming"></div>
+                <div class="section-footer"><button class="btn" data-view-all="upcoming">View All</button></div>
+                <div class="pager hide" data-pager="upcoming"></div>
+            </section>
+            <section class="auction-section" data-auction-section="ended">
+                <div class="section-heading">
+                    <h2>End Auction</h2>
+                </div>
+                <div class="auction-list" data-list="ended"></div>
+                <div class="section-footer"><button class="btn" data-view-all="ended">View All</button></div>
+                <div class="pager hide" data-pager="ended"></div>
+            </section>
+        </div>
+    </main>

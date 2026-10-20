@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="BidHub auction platform" />
+
+    <title>@ViewData["Title"] | BidHub</title>
+
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="demo-note">
+        BidHub • HTML/CSS template based on approved Figma wireframes • Sample data only
+    </div>
+
+    <header class="site-header">
+        <div class="container nav-inner">
+
+            <a class="brand" href="/">
+                <span class="brand-mark">⚒</span>
+                <span>BidHub</span>
+            </a>
+
+            <button class="nav-toggle" type="button" aria-label="Toggle navigation">
+                ☰
+            </button>
+
+            <nav class="nav-links">
+
+                <a asp-controller="Home" asp-action="Index">Home</a>
+
+
+                <a asp-controller="Home" asp-action="Category">Category</a>
+
+                <a href="#">About Us</a>
+                <a href="#">Contact</a>
+            </nav>
+
+
+            <div class="nav-actions">
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-controller="Admin"
+                           asp-action="Index">
+                            Admin
+                        </a>
+                    }
+
+                    <a asp-controller="Wallet"
+                       asp-action="Index">♡</a>
+
+                    <a asp-controller="Account"
+                       asp-action="Profile">
+                        My account
+                    </a>
+
+                    <form asp-controller="Account"
+                          asp-action="LogOut"
+                          method="post"
+                          class="logout-form">
+
+                        @Html.AntiForgeryToken()
+
+                        <button type="submit"
+                                class="logout-button">
+                            Sign out
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <a asp-controller="Account"
+                       asp-action="SignIn">
+                        Sign in
+                    </a>
+                }
+
+            </div>
+
+
+        </div>
+    </header>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+
+            <div class="footer-top">
+
+                <a class="brand"
+                   asp-controller="Home"
+                   asp-action="Index">
+                    <span class="brand-mark">⚒</span>
+                    <span>BidHub</span>
+                </a>
+
+
+                <div class="footer-links">
+                    <a href="#">About Us</a>
+                    <a href="#">Terms</a>
+                    <a href="#">Policy</a>
+                    <a href="#">Contact</a>
+                </div>
+            </div>
+
+            <div class="socials">
+                <span>f</span>
+                <span>◎</span>
+                <span>▶</span>
+            </div>
+
+            <div class="footer-bottom">
+                © 2026 Bidhub. All rights reserved.
+            </div>
+
+        </div>
+    </footer>
+
+    <script src="~/js/app.js" asp-append-version="true"></script>
+    <script src="~/js/enhancements.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
