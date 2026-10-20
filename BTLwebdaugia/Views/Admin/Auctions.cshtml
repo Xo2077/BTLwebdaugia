@@ -4,15 +4,42 @@
 @{
     ViewData["Title"] = "Admin Auctions";
     Layout = "_AdminLayout";
+
     var now = DateTime.UtcNow;
+
+    int pendingCount = Model.Count(a =>
+        a.ApprovalStatus == "Pending");
 }
 
 <h1>Auctions management</h1>
-<p class="muted">Auction sessions from SQL Server</p>
+
+<p class="muted">
+    Manage auction sessions and review pending auctions
+    from SQL Server.
+</p>
+
+@if (TempData["AdminSuccess"] != null)
+{
+    <p class="notice">
+        @TempData["AdminSuccess"]
+    </p>
+}
+
+@if (TempData["AdminError"] != null)
+{
+    <p class="notice text-danger">
+        @TempData["AdminError"]
+    </p>
+}
 
 <div class="table-shell">
+
     <div class="table-toolbar">
         <h3>Auctions: @Model.Count</h3>
+
+        <span class="muted">
+            Pending review: @pendingCount
+        </span>
     </div>
 
     <table>
@@ -23,42 +50,177 @@
                 <th>STARTING PRICE</th>
                 <th>END TIME</th>
                 <th>STATUS</th>
+                <th>ACTION</th>
             </tr>
         </thead>
+
         <tbody>
-            @foreach (var auction in Model)
-            {
-                string status = auction.ApprovalStatus;
-
-                if (status == "Approved")
-                {
-                    status = auction.Result ??
-                        (auction.StartAt > now ? "Upcoming" :
-                         auction.CurrentEndAt <= now ? "Ended" :
-                         "Live");
-                }
-
-                <tr>
-                    <td>
-                        #@auction.AuctionId
-                        <strong>@auction.Product.Name</strong>
-                    </td>
-                    <td>@auction.Product.Seller.Username</td>
-                    <td>$@auction.StartingPrice.ToString("N0")</td>
-                    <td>
-                        @auction.CurrentEndAt.ToString("dd/MM/yyyy HH:mm")
-                        UTC
-                    </td>
-                    <td><span class="tag">@status</span></td>
-                </tr>
-            }
 
             @if (!Model.Any())
             {
                 <tr>
-                    <td colspan="5">No auctions found.</td>
+                    <td colspan="6">
+                        No auctions found.
+                    </td>
                 </tr>
             }
+            else
+            {
+                @foreach (var auction in Model)
+                {
+                    string status = auction.ApprovalStatus;
+
+                    if (status == "Approved")
+                    {
+                        status = auction.Result ??
+                            (auction.StartAt > now
+                                ? "Upcoming"
+                                : auction.CurrentEndAt <= now
+                                    ? "Ended"
+                                    : "Live");
+                    }
+
+                    bool canApprove =
+                        auction.ApprovalStatus == "Pending" &&
+                        auction.Product.ApprovalStatus == "Approved" &&
+                        !auction.Product.IsDeleted &&
+                        auction.Result == null;
+
+                    <tr>
+                        <td>
+                            <strong>
+                                #@auction.AuctionId
+                            </strong>
+
+                            <div>
+                                @auction.Product.Name
+                            </div>
+                        </td>
+
+                        <td>
+                            @auction.Product.Seller.Username
+                        </td>
+
+                        <td>
+                            $@auction.StartingPrice.ToString("N0")
+                        </td>
+
+                        <td>
+                            @auction.CurrentEndAt.ToString("dd/MM/yyyy HH:mm")
+                            UTC
+                        </td>
+
+                        <td>
+                            <span class="tag">
+                                @status
+                            </span>
+
+                            @if (auction.ApprovalStatus == "Rejected" &&
+                                 !string.IsNullOrWhiteSpace(
+                                     auction.RejectionReason))
+                            {
+                                <p class="muted small">
+                                    Reason: @auction.RejectionReason
+                                </p>
+                            }
+                        </td>
+
+                        <td>
+
+                            @if (auction.ApprovalStatus == "Pending")
+                            {
+                                <div style="display:flex;
+                                            flex-direction:column;
+                                            gap:8px;
+                                            min-width:170px;">
+
+                                    @if (canApprove)
+                                    {
+                                        <form asp-controller="Admin"
+                                              asp-action="ApproveAuction"
+                                              method="post">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden"
+                                                   name="auctionId"
+                                                   value="@auction.AuctionId" />
+
+                                            <button class="btn btn-small"
+                                                    type="submit">
+                                                Approve
+                                            </button>
+
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <span class="muted small">
+                                            Product approval required
+                                        </span>
+                                    }
+
+                                    <form asp-controller="Admin"
+                                          asp-action="RejectAuction"
+                                          method="post">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <input type="hidden"
+                                               name="auctionId"
+                                               value="@auction.AuctionId" />
+
+                                        <textarea class="field"
+                                                  name="reason"
+                                                  rows="2"
+                                                  maxlength="1000"
+                                                  placeholder="Reason for rejection"
+                                                  required></textarea>
+
+                                        <button class="btn btn-small"
+                                                type="submit">
+                                            Reject
+                                        </button>
+
+                                    </form>
+
+                                </div>
+                            }
+                            else
+                            {
+                                <span class="muted small">
+                                    Reviewed
+                                </span>
+                            }
+
+                        </td>
+
+                    </tr>
+                }
+            }
+
         </tbody>
     </table>
+
+</div>
+
+<div class="panel" style="margin-top:24px;">
+
+    <h3>Auction approval policy</h3>
+
+    <p class="muted small">
+        Products must be approved before their
+        auctions can be approved.
+    </p>
+
+    <p class="muted small">
+        Pending auctions can be approved or rejected
+        by an Admin. A rejection reason is required.
+    </p>
+
+    <p class="muted small">
+        Approved auctions become publicly visible
+        when their scheduled start time is reached.
+    </p>
+
 </div>

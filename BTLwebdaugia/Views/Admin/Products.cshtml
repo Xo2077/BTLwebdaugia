@@ -9,6 +9,23 @@
         !p.IsDeleted && p.ApprovalStatus == "Pending");
 }
 
+
+@if (TempData["AdminSuccess"] != null)
+{
+    <p class="notice">
+        @TempData["AdminSuccess"]
+    </p>
+}
+
+@if (TempData["AdminError"] != null)
+{
+    <p class="notice text-danger">
+        @TempData["AdminError"]
+    </p>
+}
+
+
+
 <h1>Products management</h1>
 
 <p class="muted">
@@ -60,9 +77,55 @@
                                 @product.RejectionReason
                             </span>
                         }
+
                         else if (product.ApprovalStatus == "Pending"
                                  && !product.IsDeleted)
                         {
+                            <div style="display:flex;flex-direction:column;gap:8px">
+
+                                <form asp-controller="Admin"
+                                      asp-action="ApproveProduct"
+                                      method="post">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <input type="hidden"
+                                           name="productId"
+                                           value="@product.ProductId" />
+
+                                    <button class="btn btn-small"
+                                            type="submit">
+                                        Approve
+                                    </button>
+                                </form>
+
+                                <form asp-controller="Admin"
+                                      asp-action="RejectProduct"
+                                      method="post">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <input type="hidden"
+                                           name="productId"
+                                           value="@product.ProductId" />
+
+                                    <textarea name="reason"
+                                              class="field"
+                                              maxlength="1000"
+                                              rows="2"
+                                              placeholder="Rejection reason"
+                                              required></textarea>
+
+                                    <button class="btn btn-small"
+                                            type="submit">
+                                        Reject
+                                    </button>
+                                </form>
+
+                            </div>
+                        }
+
+                        {   
                             <span class="small">
                                 Awaiting review
                             </span>
@@ -91,10 +154,4 @@
 
 </div>
 
-<div class="panel" style="margin-top:24px">
-    <h3>Product review</h3>
-    <p class="notice">
-        Approval and rejection actions are not
-        enabled in this read-only version.
-    </p>
-</div>
+
