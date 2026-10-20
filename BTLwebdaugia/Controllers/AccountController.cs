@@ -214,11 +214,133 @@ namespace BTLwebdaugia.Controllers
 
 
 
+
         [HttpGet]
-        public IActionResult Profile()
+        [Authorize]
+        public async Task<IActionResult> Profile()
         {
-            return View();
+            if (!long.TryParse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier),
+                out long userId))
+            {
+                return Challenge();
+            }
+
+            var user = await _context.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.UserId == userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var model = new ProfileViewModel
+            {
+                Username = user.Username,
+                Email = user.Email,
+                CreatedAt = user.CreatedAt
+            };
+
+            return View(model);
         }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Profile(ProfileViewModel model)
+        {
+            if (!long.TryParse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier),
+                out long userId))
+            {
+                return Challenge();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.UserId == userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            string username = model.Username.Trim();
+            string email = model.Email.Trim();
+
+            bool usernameExists = await _context.Users.AnyAsync(
+                u => u.Username == username &&
+                     u.UserId != userId);
+
+            if (usernameExists)
+            {
+                ModelState.AddModelError(
+                    nameof(model.Username),
+                    "This username is already taken.");
+
+                return View(model);
+            }
+
+            bool emailExists = await _context.Users.AnyAsync(
+                u => u.Email == email &&
+                     u.UserId != userId);
+
+            if (emailExists)
+            {
+                ModelState.AddModelError(
+                    nameof(model.Email),
+                    "This email is already registered.");
+
+                return View(model);
+            }
+
+            user.Username = username;
+            user.Email = email;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+                when (ex.InnerException is SqlException sqlEx &&
+                      (sqlEx.Number == 2601 || sqlEx.Number == 2627))
+            {
+                ModelState.AddModelError(
+                    string.Empty,
+                    "Username or email already exists.");
+
+                return View(model);
+            }
+
+            // Cập nhật Cookie Claims để header/layout
+            // hiển thị Username và Email mới ngay lập tức.
+            var claims = new List<Claim>
+            {
+                new(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                new(ClaimTypes.Name, user.Username),
+                new(ClaimTypes.Email, user.Email),
+                new(ClaimTypes.Role, user.Role)
+            };
+
+            var identity = new ClaimsIdentity(
+                claims,
+                CookieAuthenticationDefaults.AuthenticationScheme);
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(identity));
+
+            TempData["ProfileSuccess"] =
+                "Profile updated successfully.";
+
+            return RedirectToAction(nameof(Profile));
+        }
+
 
         [HttpGet]
         public IActionResult LogOut()

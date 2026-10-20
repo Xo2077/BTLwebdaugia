@@ -1,22 +1,37 @@
 ﻿
+@model BTLwebdaugia.ViewModels.ProfileViewModel
+
 @{
     ViewData["Title"] = "My Profile";
     Layout = "_Layout";
 }
 
-
 <div class="container">
     <main class="container">
-        <div class="crumb">Home / My account / My Profile</div>
+
+        <div class="crumb">
+            Home / My account / My Profile
+        </div>
+
         <div class="account">
+
             <aside class="sidebar">
+
                 <div class="identity">
-                    <div class="avatar">◯</div><strong>User Name</strong>
-                    <p class="muted small">Member since October 2026</p>
+                    <div class="avatar">◯</div>
+
+                    <strong>@Model.Username</strong>
+
+                    <p class="muted small">
+                        Member since
+                        @Model.CreatedAt.ToString("MMMM yyyy")
+                    </p>
                 </div>
+
                 <nav class="sidebar-nav">
 
-                    <a asp-controller="Account"
+                    <a class="active"
+                       asp-controller="Account"
                        asp-action="Profile">
                         My Profile
                     </a>
@@ -31,60 +46,147 @@
                         My Selling
                     </a>
 
-
                     <a asp-controller="Bidding"
                        asp-action="Index">
                         My Bidding
                     </a>
-
 
                     <a asp-controller="Orders"
                        asp-action="Index">
                         My Orders
                     </a>
 
+                    <form asp-controller="Account"
+                          asp-action="LogOut"
+                          method="post">
 
-                    <a asp-controller="Account"
-                       asp-action="LogOut">
-                        Log out
-                    </a>
+                        @Html.AntiForgeryToken()
+
+                        <button type="submit"
+                                class="btn btn-small">
+                            Log out
+                        </button>
+                    </form>
 
                 </nav>
-                <div class="panel help-box"><strong>Need help?</strong>
-                    <p class="small muted">Contact our team for account or auction support.</p><a href="#">Contact
-                        us</a>
+
+                <div class="panel help-box">
+                    <strong>Need help?</strong>
+                    <p class="small muted">
+                        Contact our team for account support.
+                    </p>
                 </div>
+
             </aside>
+
             <section class="account-body">
+
                 <div class="page-title">
                     <h1>My Profile</h1>
-                    <p>Manage your personal information and account security.</p>
+
+                    <p>
+                        Manage your personal information.
+                    </p>
                 </div>
+
+                @if (TempData["ProfileSuccess"] != null)
+                {
+                    <p class="notice">
+                        @TempData["ProfileSuccess"]
+                    </p>
+                }
+
                 <div class="panel">
+
                     <h3>Personal information</h3>
+
                     <div class="avatar">◯</div>
-                    <p class="muted small">JPG or PNG. Maximum file size 2 MB.</p>
-                    <div class="form-row">
-                        <div class="form-group"><label>First name</label><input class="field" value="Alex"></div>
-                        <div class="form-group"><label>Last name</label><input class="field" value="Morgan"></div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group"><label>Display name</label><input class="field" value="User Name"></div>
-                        <div class="form-group"><label>Email address</label><input class="field" type="email"
-                                value="alex@example.com"></div>
-                    </div>
-                    <div class="form-group"><label>Phone number</label><input class="field" value="+1 202 555 0148">
-                    </div>
-                    <div class="form-group"><label>Address</label><input class="field" value="123 Main Street"></div>
-                    <button class="btn btn-solid" data-demo-action="Save profile">Save changes</button>
-                    <p id="action-feedback" class="notice"></p>
+
+                    <p class="muted small">
+                        Update your account details below.
+                    </p>
+
+                    <form asp-controller="Account"
+                          asp-action="Profile"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger"></div>
+
+                        <div class="form-row">
+
+                            <div class="form-group">
+                                <label asp-for="Username">
+                                    Display name
+                                </label>
+
+                                <input asp-for="Username"
+                                       class="field"
+                                       maxlength="50"
+                                       required />
+
+                                <span asp-validation-for="Username"
+                                      class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Email">
+                                    Email address
+                                </label>
+
+                                <input asp-for="Email"
+                                       type="email"
+                                       class="field"
+                                       maxlength="255"
+                                       required />
+
+                                <span asp-validation-for="Email"
+                                      class="text-danger"></span>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label>Account created</label>
+
+                            <input class="field"
+                                   value="@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm") UTC"
+                                   readonly />
+                        </div>
+
+                        <button class="btn btn-solid"
+                                type="submit">
+                            Save changes
+                        </button>
+
+                    </form>
+
                 </div>
+
                 <div class="panel" style="margin-top:24px">
-                    <h3>Account & security</h3>
-                    <p>Password <span class="muted">· Change password</span></p>
-                    <p>Email verification <span class="tag">Optional</span></p>
+
+                    <h3>Account &amp; security</h3>
+
+                    <p class="muted">
+                        Your password is securely stored
+                        as a hash and is not displayed.
+                    </p>
+
+                    <p>
+                        Account information is loaded
+                        from SQL Server.
+                    </p>
+
                 </div>
+
             </section>
+
         </div>
     </main>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
