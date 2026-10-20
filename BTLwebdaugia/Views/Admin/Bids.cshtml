@@ -1,59 +1,53 @@
 ﻿
+@model List<BTLwebdaugia.Models.Bid>
+
 @{
     ViewData["Title"] = "Admin Bids";
     Layout = "_AdminLayout";
 }
 
 <h1>Bids management</h1>
-
-<p class="muted">
-    Administration wireframe preview.
-    Only approved core workflows will be implemented in MVC.
-</p>
+<p class="muted">Accepted bidding history from SQL Server</p>
 
 <div class="table-shell">
-
     <div class="table-toolbar">
-
-        <input class="field"
-               placeholder="Search bids" />
-
-        <span>Filter by status ▾</span>
-
+        <h3>Displayed bids: @Model.Count</h3>
     </div>
 
     <table>
         <thead>
             <tr>
-                <th>ITEM</th>
-                <th>OWNER</th>
-                <th>CATEGORY / VALUE</th>
-                <th>STATUS</th>
-                <th>ACTION</th>
+                <th>BID ID</th>
+                <th>AUCTION / PRODUCT</th>
+                <th>BIDDER</th>
+                <th>AMOUNT</th>
+                <th>PLACED AT</th>
             </tr>
         </thead>
-
         <tbody>
+            @foreach (var bid in Model)
+            {
+                <tr>
+                    <td>#@bid.BidId</td>
+                    <td>
+                        #@bid.AuctionId
+                        @bid.AuctionNavigation.Product.Name
+                    </td>
+                    <td>@bid.Bidder.Username</td>
+                    <td>$@bid.Amount.ToString("N0")</td>
+                    <td>
+                        @bid.PlacedAt.ToString("dd/MM/yyyy HH:mm:ss")
+                        UTC
+                    </td>
+                </tr>
+            }
 
-            <tr>
-                <td>Sample bids 01</td>
-                <td>Sample user</td>
-                <td>—</td>
-                <td>Demo</td>
-                <td>View</td>
-            </tr>
-
-            <tr>
-                <td>Sample bids 02</td>
-                <td>Sample user</td>
-                <td>—</td>
-                <td>Demo</td>
-                <td>View</td>
-            </tr>
-
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="5">No bids found.</td>
+                </tr>
+            }
         </tbody>
     </table>
-
-    <p id="action-feedback" class="notice"></p>
-
 </div>

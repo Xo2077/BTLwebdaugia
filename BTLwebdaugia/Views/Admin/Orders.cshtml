@@ -1,59 +1,49 @@
 ﻿
+@model List<BTLwebdaugia.Models.Order>
+
 @{
     ViewData["Title"] = "Admin Orders";
     Layout = "_AdminLayout";
 }
 
 <h1>Orders management</h1>
-
-<p class="muted">
-    Administration wireframe preview.
-    Only approved core workflows will be implemented in MVC.
-</p>
+<p class="muted">Order records from SQL Server</p>
 
 <div class="table-shell">
-
     <div class="table-toolbar">
-
-        <input class="field"
-               placeholder="Search orders" />
-
-        <span>Filter by status ▾</span>
-
+        <h3>Orders: @Model.Count</h3>
     </div>
 
     <table>
         <thead>
             <tr>
-                <th>ITEM</th>
-                <th>OWNER</th>
-                <th>CATEGORY / VALUE</th>
+                <th>ORDER</th>
+                <th>PRODUCT</th>
+                <th>WINNER</th>
+                <th>AMOUNT</th>
                 <th>STATUS</th>
-                <th>ACTION</th>
             </tr>
         </thead>
-
         <tbody>
+            @foreach (var order in Model)
+            {
+                <tr>
+                    <td>#@order.OrderId</td>
+                    <td>@order.Auction.Product.Name</td>
+                    <td>@order.Winner.Username</td>
+                    <td>$@order.FinalAmount.ToString("N0")</td>
+                    <td>
+                        <span class="tag">@order.Status</span>
+                    </td>
+                </tr>
+            }
 
-            <tr>
-                <td>Sample orders 01</td>
-                <td>Sample user</td>
-                <td>—</td>
-                <td>Demo</td>
-                <td>View</td>
-            </tr>
-
-            <tr>
-                <td>Sample orders 02</td>
-                <td>Sample user</td>
-                <td>—</td>
-                <td>Demo</td>
-                <td>View</td>
-            </tr>
-
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="5">No orders found.</td>
+                </tr>
+            }
         </tbody>
     </table>
-
-    <p id="action-feedback" class="notice"></p>
-
 </div>

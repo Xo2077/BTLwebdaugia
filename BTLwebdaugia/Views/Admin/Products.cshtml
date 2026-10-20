@@ -1,86 +1,100 @@
 ﻿
+@model List<BTLwebdaugia.Models.Product>
+
 @{
     ViewData["Title"] = "Admin Products";
     Layout = "_AdminLayout";
+
+    int pending = Model.Count(p =>
+        !p.IsDeleted && p.ApprovalStatus == "Pending");
 }
 
 <h1>Products management</h1>
 
 <p class="muted">
-    Administration wireframe preview.
-    Only approved core workflows will be implemented in MVC.
+    Product listings from SQL Server
 </p>
 
 <div class="table-shell">
 
     <div class="table-toolbar">
-
-        <input class="field"
-               placeholder="Search products" />
-
-        <span>Filter by status ▾</span>
-
+        <h3>Products: @Model.Count</h3>
+        <span>Pending review: @pending</span>
     </div>
 
     <table>
         <thead>
             <tr>
-                <th>ITEM</th>
+                <th>ID / ITEM</th>
                 <th>OWNER</th>
-                <th>CATEGORY / VALUE</th>
+                <th>CATEGORY</th>
                 <th>STATUS</th>
-                <th>ACTION</th>
+                <th>REVIEW</th>
             </tr>
         </thead>
-
         <tbody>
-            <tr>
-                <td>Vintage camera</td>
-                <td>Alex</td>
-                <td>Collectibles</td>
-                <td>Pending</td>
-                <td>
-                    <button class="btn btn-small"
-                            data-demo-action="Approve">
-                        Approve
-                    </button>
 
-                    <button class="btn btn-small"
-                            data-demo-action="Reject with reason">
-                        Reject
-                    </button>
-                </td>
-            </tr>
+            @foreach (var product in Model)
+            {
+                <tr>
+                    <td>
+                        #@product.ProductId
+                        <strong>@product.Name</strong>
+                    </td>
 
-            <tr>
-                <td>Classic watch</td>
-                <td>Morgan</td>
-                <td>Fashion</td>
-                <td>Rejected</td>
-                <td>
-                    <span class="small">
-                        Reason required
-                    </span>
-                </td>
-            </tr>
+                    <td>@product.Seller.Username</td>
+                    <td>@product.Category.Name</td>
+
+                    <td>
+                        <span class="tag">
+                            @(product.IsDeleted
+                                ? "Deleted"
+                                : product.ApprovalStatus)
+                        </span>
+                    </td>
+
+                    <td>
+                        @if (product.ApprovalStatus == "Rejected")
+                        {
+                            <span class="small">
+                                @product.RejectionReason
+                            </span>
+                        }
+                        else if (product.ApprovalStatus == "Pending"
+                                 && !product.IsDeleted)
+                        {
+                            <span class="small">
+                                Awaiting review
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="small">
+                                @product.ApprovalStatus
+                            </span>
+                        }
+                    </td>
+                </tr>
+            }
+
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="5">
+                        No products available.
+                    </td>
+                </tr>
+            }
+
         </tbody>
     </table>
-
-    <p id="action-feedback" class="notice"></p>
 
 </div>
 
 <div class="panel" style="margin-top:24px">
-
-    <h3>Reject product — reason required</h3>
-
-    <textarea class="field"
-              rows="3"
-              placeholder="Enter reason for rejection..."></textarea>
-
+    <h3>Product review</h3>
     <p class="notice">
-        The actual approval/rejection action requires
-        a secured Admin controller and validation.
+        Approval and rejection actions are not
+        enabled in this read-only version.
     </p>
-
 </div>

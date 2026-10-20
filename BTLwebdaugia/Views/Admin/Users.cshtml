@@ -1,55 +1,47 @@
 ﻿
+@model List<BTLwebdaugia.Models.User>
+
 @{
     ViewData["Title"] = "Admin Users";
     Layout = "_AdminLayout";
 }
 
 <h1>Users management</h1>
-
-<p class="muted">
-    Administration wireframe preview.
-    Only approved core workflows will be implemented in MVC.
-</p>
+<p class="muted">Registered accounts from SQL Server</p>
 
 <div class="table-shell">
-
     <div class="table-toolbar">
-        <input class="field"
-               placeholder="Search users" />
-
-        <span>Filter by status ▾</span>
+        <h3>Total displayed: @Model.Count</h3>
     </div>
 
     <table>
         <thead>
             <tr>
-                <th>ITEM</th>
-                <th>OWNER</th>
-                <th>CATEGORY / VALUE</th>
-                <th>STATUS</th>
-                <th>ACTION</th>
+                <th>ID</th>
+                <th>USERNAME</th>
+                <th>EMAIL</th>
+                <th>ROLE</th>
+                <th>CREATED</th>
             </tr>
         </thead>
-
         <tbody>
-            <tr>
-                <td>Sample users 01</td>
-                <td>Sample user</td>
-                <td>—</td>
-                <td>Demo</td>
-                <td>View</td>
-            </tr>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.UserId</td>
+                    <td>@user.Username</td>
+                    <td>@user.Email</td>
+                    <td><span class="tag">@user.Role</span></td>
+                    <td>@user.CreatedAt.ToString("dd/MM/yyyy HH:mm") UTC</td>
+                </tr>
+            }
 
-            <tr>
-                <td>Sample users 02</td>
-                <td>Sample user</td>
-                <td>—</td>
-                <td>Demo</td>
-                <td>View</td>
-            </tr>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="5">No users found.</td>
+                </tr>
+            }
         </tbody>
     </table>
-
-    <p id="action-feedback" class="notice"></p>
-
 </div>
