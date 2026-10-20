@@ -748,13 +748,6 @@ th {
     margin-top: 10px
 }
 
-.demo-note {
-    padding: 10px 14px;
-    background: #fafafa;
-    border-bottom: 1px solid #eee;
-    color: #777;
-    font-size: 12px
-}
 
 .hide {
     display: none !important

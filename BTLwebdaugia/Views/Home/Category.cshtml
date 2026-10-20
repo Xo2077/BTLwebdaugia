@@ -1,136 +1,264 @@
 ﻿
+@model BTLwebdaugia.ViewModels.ProductListViewModel
+
 @{
     ViewData["Title"] = "Category & Search";
     Layout = "_Layout";
+    var now = DateTime.UtcNow;
 }
-    <main class="container">
-        <div class="crumb">Home / Category</div>
-        <div class="page-title">
-            <h1>Explore auctions</h1>
-            <p>Discover live listings and browse by category.</p>
-        </div>
-        <div class="filter-layout">
-            <aside class="panel filters">
-                <h3>Filters</h3>
-                <div class="form-group"><label>Search product</label><input class="field"
-                        placeholder="Search auctions..." /></div>
-                <div class="form-group"><label>Categories</label><select class="field" id="category-select">
-                        <option value="">All categories</option>
-                        <option value="Luxury &amp; Jewelry">Luxury &amp; Jewelry</option>
-                        <option value="Motors &amp; Vehicles">Motors &amp; Vehicles</option>
-                        <option value="Fine Art">Fine Art</option>
-                        <option value="Premium Electronics">Premium Electronics</option>
-                        <option value="Designer Fashion">Designer Fashion</option>
-                        <option value="Collectibles">Collectibles</option>
-                        <option value="Real Estate">Real Estate</option>
-                        <option value="Home &amp; Sports">Home &amp; Sports</option>
-                    </select></div>
-                <div class="form-group"><label>Auction status</label><select class="field">
-                        <option>All</option>
-                        <option>Live</option>
-                        <option>Upcoming</option>
-                        <option>Ended</option>
-                    </select></div><button class="btn btn-solid btn-wide" data-demo-action="Apply filters">Apply
-                    filters</button>
-                <p class="notice" id="action-feedback"></p>
-            </aside>
-            <section>
-                <div class="table-toolbar">
-                    <h2>Live &amp; upcoming listings</h2><span>Sort by: Ending soonest ▾</span>
+
+<main class="container">
+
+    <div class="crumb">Home / Category</div>
+
+    <div class="page-title">
+        <h1>Explore auctions</h1>
+        <p>
+            Discover live listings and browse by category.
+        </p>
+    </div>
+
+    <div class="filter-layout">
+
+        <aside class="panel filters">
+
+            <h3>Filters</h3>
+
+            <form asp-controller="Home"
+                  asp-action="Category"
+                  method="get">
+
+                <div class="form-group">
+                    <label for="SearchTerm">
+                        Search product
+                    </label>
+
+                    <input class="field"
+                           type="search"
+                           id="SearchTerm"
+                           name="SearchTerm"
+                           value="@Model.Filter.SearchTerm"
+                           placeholder="Search auctions..." />
                 </div>
-                <div class="grid grid-3">
-                    <article class="product-card" data-category="Luxury &amp; Jewelry">
-                        <div aria-label="PRODUCT IMAGE" class="image-box" role="img">PRODUCT IMAGE</div>
-                        <h3>Vintage camera</h3>
-                        <p><span class="tag">Live Auction</span></p>
-                        <p class="muted">Current Bid</p>
-                        <p class="bid-price">$125.00</p>
-                        <p class="small">Ends in: <strong class="countdown" data-seconds="70000"></strong></p>
-                        <div class="card-bottom"><span class="muted small">BidHub auction</span>
-                            <a class="btn btn-small"
-                               asp-controller="Auction"
-                               asp-action="Details">
-                                Bid now
-                            </a>
-                        </div>
-                    </article>
-                    <article class="product-card" data-category="Motors &amp; Vehicles">
-                        <div aria-label="PRODUCT IMAGE" class="image-box" role="img">PRODUCT IMAGE</div>
-                        <h3>Classic wristwatch</h3>
-                        <p><span class="tag">Live Auction</span></p>
-                        <p class="muted">Current Bid</p>
-                        <p class="bid-price">$210.00</p>
-                        <p class="small">Ends in: <strong class="countdown" data-seconds="140000"></strong></p>
-                        <div class="card-bottom"><span class="muted small">BidHub auction</span>
-                            <a class="btn btn-small"
-                               asp-controller="Auction"
-                               asp-action="Details">
-                                Bid now
-                            </a>
-                        </div>
-                    </article>
-                    <article class="product-card" data-category="Fine Art">
-                        <div aria-label="PRODUCT IMAGE" class="image-box" role="img">PRODUCT IMAGE</div>
-                        <h3>Walnut turntable</h3>
-                        <p><span class="tag">Live Auction</span></p>
-                        <p class="muted">Current Bid</p>
-                        <p class="bid-price">$295.00</p>
-                        <p class="small">Ends in: <strong class="countdown" data-seconds="210000"></strong></p>
-                        <div class="card-bottom"><span class="muted small">BidHub auction</span>
-                            <a class="btn btn-small"
-                               asp-controller="Auction"
-                               asp-action="Details">
-                                Bid now
-                            </a>
-                        </div>
-                    </article>
-                    <article class="product-card" data-category="Premium Electronics">
-                        <div aria-label="PRODUCT IMAGE" class="image-box" role="img">PRODUCT IMAGE</div>
-                        <h3>Collectible vinyl</h3>
-                        <p><span class="tag">Live Auction</span></p>
-                        <p class="muted">Current Bid</p>
-                        <p class="bid-price">$380.00</p>
-                        <p class="small">Ends in: <strong class="countdown" data-seconds="280000"></strong></p>
-                        <div class="card-bottom"><span class="muted small">BidHub auction</span>
-                            <a class="btn btn-small"
-                               asp-controller="Auction"
-                               asp-action="Details">
-                                Bid now
-                            </a>
-                        </div>
-                    </article>
-                    <article class="product-card" data-category="Designer Fashion">
-                        <div aria-label="PRODUCT IMAGE" class="image-box" role="img">PRODUCT IMAGE</div>
-                        <h3>Leather handbag</h3>
-                        <p><span class="tag">Live Auction</span></p>
-                        <p class="muted">Current Bid</p>
-                        <p class="bid-price">$465.00</p>
-                        <p class="small">Ends in: <strong class="countdown" data-seconds="350000"></strong></p>
-                        <div class="card-bottom"><span class="muted small">BidHub auction</span>
-                            <a class="btn btn-small"
-                               asp-controller="Auction"
-                               asp-action="Details">
-                                Bid now
-                            </a>
-                        </div>
-                    </article>
-                    <article class="product-card" data-category="Collectibles">
-                        <div aria-label="PRODUCT IMAGE" class="image-box" role="img">PRODUCT IMAGE</div>
-                        <h3>Classic headphones</h3>
-                        <p><span class="tag">Live Auction</span></p>
-                        <p class="muted">Current Bid</p>
-                        <p class="bid-price">$550.00</p>
-                        <p class="small">Ends in: <strong class="countdown" data-seconds="420000"></strong></p>
-                        <div class="card-bottom"><span class="muted small">BidHub auction</span>
-                            <a class="btn btn-small"
-                               asp-controller="Auction"
-                               asp-action="Details">
-                                Bid now
-                            </a>
-                        </div>
-                    </article>
+
+                <div class="form-group">
+                    <label for="CategoryId">
+                        Categories
+                    </label>
+
+                    <select class="field"
+                            id="CategoryId"
+                            name="CategoryId">
+
+                        <option value="">
+                            All categories
+                        </option>
+
+                        @foreach (var category in Model.Categories)
+                        {
+                            <option value="@category.CategoryId"
+                                    selected="@(Model.Filter.CategoryId == category.CategoryId)">
+                                @category.Name
+                            </option>
+                        }
+
+                    </select>
                 </div>
-                <div class="pager"><button class="active">1</button><button>2</button><button>3</button></div>
-            </section>
-        </div>
-    </main>
+
+                <div class="form-group">
+                    <label for="Status">
+                        Auction status
+                    </label>
+
+                    <select class="field"
+                            id="Status"
+                            name="Status">
+
+                        @foreach (string status in new[]
+                            { "All", "Live", "Upcoming", "Ended" })
+                        {
+                            <option value="@status"
+                                    selected="@(Model.Filter.Status == status)">
+                                @status
+                            </option>
+                        }
+
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="SortBy">
+                        Sort by
+                    </label>
+
+                    <select class="field"
+                            name="SortBy"
+                            id="SortBy">
+
+                        <option value="EndingSoon"
+                                selected="@(Model.Filter.SortBy == "EndingSoon")">
+                            Ending soonest
+                        </option>
+
+                        <option value="Newest"
+                                selected="@(Model.Filter.SortBy == "Newest")">
+                            Newest
+                        </option>
+
+                        <option value="PriceLow"
+                                selected="@(Model.Filter.SortBy == "PriceLow")">
+                            Price: Low to High
+                        </option>
+
+                        <option value="PriceHigh"
+                                selected="@(Model.Filter.SortBy == "PriceHigh")">
+                            Price: High to Low
+                        </option>
+
+                    </select>
+                </div>
+
+                <button type="submit"
+                        class="btn btn-solid btn-wide">
+                    Apply filters
+                </button>
+
+            </form>
+
+        </aside>
+
+        <section>
+
+            <div class="table-toolbar">
+                <h2>Live & upcoming listings</h2>
+
+                <span class="muted">
+                    @Model.TotalItems results
+                </span>
+            </div>
+
+            <div class="grid grid-3">
+
+                @if (!Model.Products.Any())
+                {
+                    <div class="panel">
+                        <p>
+                            No auctions matched your filters.
+                        </p>
+                    </div>
+                }
+
+                @foreach (var product in Model.Products)
+                {
+                    <article class="product-card"
+                             data-category="@product.CategoryName">
+
+                        @if (!string.IsNullOrWhiteSpace(product.ImagePath))
+                        {
+                            <div class="image-box">
+                                <img src="@product.ImagePath"
+                                     alt="@product.Name"
+                                     loading="lazy"
+                                     style="width:100%;height:100%;object-fit:cover;" />
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="image-box"
+                                 role="img"
+                                 aria-label="PRODUCT IMAGE">
+                                PRODUCT IMAGE
+                            </div>
+                        }
+
+                        <h3>@product.Name</h3>
+
+                        <p>
+                            <span class="tag">
+                                @product.AuctionStatus
+                            </span>
+                        </p>
+
+                        <p class="muted">
+                            @(product.AuctionStatus == "Upcoming"
+                                ? "Starting price"
+                                : product.AuctionStatus == "Ended"
+                                    ? "Final / highest bid"
+                                    : "Current bid")
+                        </p>
+
+                        <p class="bid-price">
+                            $@product.CurrentPrice.ToString("N0")
+                        </p>
+
+                        <p class="small">
+                            @if (product.AuctionStatus == "Ended")
+                            {
+                                <span>
+                                    Ended:
+                                    @product.CurrentEndAt.ToString("dd/MM/yyyy HH:mm")
+                                    UTC
+                                </span>
+                            }
+                            else
+                            {
+                                <span>
+                                    Ends:
+                                    @product.CurrentEndAt.ToString("dd/MM/yyyy HH:mm")
+                                    UTC
+                                </span>
+                            }
+                        </p>
+
+                        <div class="card-bottom">
+
+                            <span class="muted small">
+                                BidHub auction
+                            </span>
+
+                            <a class="btn btn-small"
+                               asp-controller="Auction"
+                               asp-action="Details"
+                               asp-route-id="@product.AuctionId">
+                                @(product.AuctionStatus == "Live"
+                                    ? "Bid now"
+                                    : "View product")
+                            </a>
+
+                        </div>
+
+                    </article>
+                }
+
+            </div>
+
+
+                @if (Model.TotalPages > 1)
+                {
+                    <div class="pager">
+
+                        @for (int pageNumber = 1;
+                              pageNumber <= Model.TotalPages;
+                              pageNumber++)
+                        {
+                            <a class="btn @(pageNumber == Model.Filter.Page ? "active" : "")"
+                               asp-controller="Home"
+                               asp-action="Category"
+                               asp-route-SearchTerm="@Model.Filter.SearchTerm"
+                               asp-route-CategoryId="@Model.Filter.CategoryId"
+                               asp-route-Status="@Model.Filter.Status"
+                               asp-route-SortBy="@Model.Filter.SortBy"
+                               asp-route-Page="@(pageNumber)">
+                                @(pageNumber)
+                            </a>
+                        }
+
+                    </div>
+                }
+
+
+        </section>
+
+    </div>
+
+</main>

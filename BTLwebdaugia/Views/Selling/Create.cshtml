@@ -1,66 +1,354 @@
 ﻿
+@model BTLwebdaugia.ViewModels.CreateProductViewModel
+
+@using BTLwebdaugia.ViewModels
+
 @{
     ViewData["Title"] = "Create Product Listing";
     Layout = "_Layout";
+
+    var categories =
+        ViewBag.Categories as IEnumerable<CategoryViewModel>
+        ?? Enumerable.Empty<CategoryViewModel>();
 }
 
 <div class="container">
-
     <main class="container">
-        <div class="crumb">My account / My Selling / Create listing</div>
+
+        <div class="crumb">
+            My account / My Selling / Create listing
+        </div>
+
         <div class="page-title">
             <h1>Create a product listing</h1>
-            <p>Product must be approved by Admin before appearing publicly.</p>
+            <p>
+                Product must be approved by Admin
+                before appearing publicly.
+            </p>
         </div>
-        <div class="auction-detail">
-            <section class="panel">
-                <h3>Product information</h3>
-                <div class="form-group"><label>Product name</label><input class="field"
-                        placeholder="Enter product name" /></div>
-                <div class="form-group"><label>Category</label><select class="field" id="category-select">
-                        <option value="">Select category</option>
-                        <option value="Luxury &amp; Jewelry">Luxury &amp; Jewelry</option>
-                        <option value="Motors &amp; Vehicles">Motors &amp; Vehicles</option>
-                        <option value="Fine Art">Fine Art</option>
-                        <option value="Premium Electronics">Premium Electronics</option>
-                        <option value="Designer Fashion">Designer Fashion</option>
-                        <option value="Collectibles">Collectibles</option>
-                        <option value="Real Estate">Real Estate</option>
-                        <option value="Home &amp; Sports">Home &amp; Sports</option>
-                    </select></div>
-                <div class="form-group"><label>Description</label><textarea class="field"
-                        placeholder="Describe the product" rows="5"></textarea></div>
-                <div class="form-group"><label>Starting price (minimum $50)</label><input class="field" min="50"
-                        type="number" value="100" /></div>
-                <div class="form-group"><label>Minimum bid increment (suggested 2% of starting price)</label><input
-                        class="field" step="1" type="number" value="2" /></div>
-                <h3>Auction schedule</h3><label><input checked="" name="start-mode" type="radio" /> Start after Admin
-                    approval</label>
-                <p><label><input name="start-mode" type="radio" /> Schedule for a future time</label></p><input
-                    class="field" type="datetime-local" />
-                <div class="form-group"><label>End mode</label><select class="field">
-                        <option>Duration (1 hour–30 days)</option>
-                        <option>Specific end date/time</option>
-                    </select></div><input class="field" type="datetime-local" />
-                <p class="notice">Approved product details cannot be edited. Rejected drafts may be corrected and
-                    resubmitted.</p>
-            </section>
-            <aside>
-                <div class="panel">
-                    <h3>Product images</h3>
-                    <div aria-label="PRODUCT IMAGE" class="image-box" role="img">PRODUCT IMAGE</div>
-                    <div class="form-group"><label>Upload photos</label><input accept="image/*" class="field"
-                            multiple="" type="file" /></div>
-                </div>
-                <div class="panel" style="margin-top:22px">
-                    <h3>Listing summary</h3>
-                    <p>Check all details before publishing.</p><button class="btn" data-demo-action="Save draft">Save
-                        draft</button> <button class="btn btn-solid" data-demo-action="Submit for approval">Submit
-                        listing</button>
-                    <p class="notice" id="action-feedback"></p>
-                </div>
-            </aside>
-        </div>
-    </main>
 
+        <form asp-controller="Product"
+              asp-action="Create"
+              method="post"
+              id="create-product-form">
+
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger"></div>
+
+            <div class="auction-detail">
+
+                <section class="panel">
+
+                    <h3>Product information</h3>
+
+                    <div class="form-group">
+                        <label asp-for="Name">
+                            Product name
+                        </label>
+
+                        <input asp-for="Name"
+                               class="field"
+                               maxlength="200"
+                               placeholder="Enter product name" />
+
+                        <span asp-validation-for="Name"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="CategoryId">
+                            Category
+                        </label>
+
+                        <select asp-for="CategoryId"
+                                class="field"
+                                id="category-select">
+
+                            <option value="0">
+                                Select category
+                            </option>
+
+                            @foreach (var category in categories)
+                            {
+                                <option value="@category.CategoryId">
+                                    @category.Name
+                                </option>
+                            }
+
+                        </select>
+
+                        <span asp-validation-for="CategoryId"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Description">
+                            Description
+                        </label>
+
+                        <textarea asp-for="Description"
+                                  class="field"
+                                  placeholder="Describe the product"
+                                  rows="5"></textarea>
+
+                        <span asp-validation-for="Description"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="StartingPrice">
+                            Starting price (minimum $50)
+                        </label>
+
+                        <input asp-for="StartingPrice"
+                               class="field"
+                               type="number"
+                               min="50"
+                               max="999999999999999999"
+                               step="1" />
+
+                        <span asp-validation-for="StartingPrice"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="BidStep">
+                            Minimum bid increment
+                        </label>
+
+                        <input asp-for="BidStep"
+                               class="field"
+                               type="number"
+                               min="1"
+                               step="1" />
+
+                        <span asp-validation-for="BidStep"
+                              class="text-danger"></span>
+                    </div>
+
+                    <h3>Auction schedule</h3>
+
+                    <div class="form-group">
+
+                        <label>
+                            <input asp-for="StartMode"
+                                   type="radio"
+                                   value="AfterApproval"
+                                   checked="@(Model.StartMode != "Scheduled")" />
+
+                            Start after Admin approval
+                        </label>
+
+                        <p>
+                            <label>
+                                <input asp-for="StartMode"
+                                       type="radio"
+                                       value="Scheduled"
+                                       checked="@(Model.StartMode == "Scheduled")" />
+
+                                Schedule for a future time
+                            </label>
+                        </p>
+
+                        <span asp-validation-for="StartMode"
+                              class="text-danger"></span>
+
+                    </div>
+
+                    <div class="form-group"
+                         id="scheduled-start-group">
+
+                        <label asp-for="ScheduledStartAt">
+                            Scheduled start time (UTC)
+                        </label>
+
+                        <input asp-for="ScheduledStartAt"
+                               class="field"
+                               type="datetime-local" />
+
+                        <span asp-validation-for="ScheduledStartAt"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="EndTimeMode">
+                            End mode
+                        </label>
+
+                        <select asp-for="EndTimeMode"
+                                class="field"
+                                id="end-time-mode">
+
+                            <option value="Duration">
+                                Duration (1 hour–30 days)
+                            </option>
+
+                            <option value="Specific">
+                                Specific end date/time
+                            </option>
+
+                        </select>
+
+                        <span asp-validation-for="EndTimeMode"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group"
+                         id="duration-group">
+
+                        <label asp-for="DurationMinutes">
+                            Duration (minutes)
+                        </label>
+
+                        <input asp-for="DurationMinutes"
+                               class="field"
+                               type="number"
+                               min="60"
+                               max="43200"
+                               step="1" />
+
+                        <span asp-validation-for="DurationMinutes"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group"
+                         id="specific-end-group">
+
+                        <label asp-for="SpecificEndAt">
+                            End date and time (UTC)
+                        </label>
+
+                        <input asp-for="SpecificEndAt"
+                               class="field"
+                               type="datetime-local" />
+
+                        <span asp-validation-for="SpecificEndAt"
+                              class="text-danger"></span>
+                    </div>
+
+                    <p class="notice">
+                        Approved product details cannot be edited.
+                        Rejected drafts may be corrected and resubmitted.
+                    </p>
+
+                </section>
+
+                <aside>
+
+                    <div class="panel">
+
+                        <h3>Product images</h3>
+
+                        <div class="image-box"
+                             role="img"
+                             aria-label="PRODUCT IMAGE">
+                            PRODUCT IMAGE
+                        </div>
+
+                        <p class="notice">
+                            Image uploading will be available
+                            in the next implementation step.
+                        </p>
+
+                    </div>
+
+                    <div class="panel" style="margin-top:22px">
+
+                        <h3>Listing summary</h3>
+
+                        <p>
+                            Check all details before submitting.
+                        </p>
+
+                        <button class="btn btn-solid"
+                                type="submit">
+                            Submit listing
+                        </button>
+
+                        <a class="btn"
+                           asp-controller="Selling"
+                           asp-action="Index">
+                            Cancel
+                        </a>
+
+                        <p class="notice">
+                            Your listing will remain pending
+                            until reviewed by Admin.
+                        </p>
+
+                    </div>
+
+                </aside>
+
+            </div>
+
+        </form>
+
+    </main>
 </div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const form = document.getElementById(
+                "create-product-form"
+            );
+
+            if (!form) return;
+
+            const startRadios = form.querySelectorAll(
+                'input[name="StartMode"]'
+            );
+
+            const scheduledGroup = document.getElementById(
+                "scheduled-start-group"
+            );
+
+            const endMode = document.getElementById(
+                "end-time-mode"
+            );
+
+            const durationGroup = document.getElementById(
+                "duration-group"
+            );
+
+            const specificEndGroup = document.getElementById(
+                "specific-end-group"
+            );
+
+            function updateStartMode() {
+                const selected = form.querySelector(
+                    'input[name="StartMode"]:checked'
+                );
+
+                scheduledGroup.hidden =
+                    selected?.value !== "Scheduled";
+            }
+
+            function updateEndMode() {
+                const isDuration =
+                    endMode.value === "Duration";
+
+                durationGroup.hidden = !isDuration;
+                specificEndGroup.hidden = isDuration;
+            }
+
+            startRadios.forEach(radio => {
+                radio.addEventListener(
+                    "change",
+                    updateStartMode
+                );
+            });
+
+            endMode.addEventListener(
+                "change",
+                updateEndMode
+            );
+
+            updateStartMode();
+            updateEndMode();
+        })();
+    </script>
+}

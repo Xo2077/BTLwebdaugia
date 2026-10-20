@@ -1,78 +1,183 @@
 ﻿
+@model List<BTLwebdaugia.Models.Product>
+
+@using System.Linq
+@using BTLwebdaugia.Models
+
 @{
     ViewData["Title"] = "My Selling";
     Layout = "_Layout";
+
+    var now = DateTime.UtcNow;
+
+    var totalListings = Model.Count;
+
+    var pendingCount = Model.Count(p =>
+        p.ApprovalStatus == "Pending");
+
+    var rejectedCount = Model.Count(p =>
+        p.ApprovalStatus == "Rejected");
+
+    var liveCount = Model.Count(p =>
+        p.ApprovalStatus == "Approved" &&
+        p.Auctions.Any(a =>
+            a.ApprovalStatus == "Approved" &&
+            a.StartAt <= now &&
+            a.CurrentEndAt > now));
+
+    var totalBids = Model.Sum(p =>
+        p.Auctions.Sum(a => a.Bids.Count));
 }
 
 <div class="container">
-
     <main class="container">
-        <div class="crumb">Home / My account / My Selling</div>
+
+        <div class="crumb">
+            Home / My account / My Selling
+        </div>
+
         <div class="account">
+
             <aside class="sidebar">
+
                 <div class="identity">
-                    <div class="avatar">◯</div><strong>User Name</strong>
-                    <p class="muted small">Member since October 2026</p>
+                    <div class="avatar">◯</div>
+
+                    <strong>
+                        @User.Identity?.Name
+                    </strong>
+
+                    <p class="muted small">
+                        BidHub member
+                    </p>
                 </div>
-                <nav class="sidebar-nav"><a class="" href="profile.html">My Profile</a><a class="" href="wallet.html">My
-                        Wallet</a><a class="active" href="selling.html">My Selling</a>
 
-                        <a asp-controller="Bidding"
-                           asp-action="Index">
-                            My Bidding
-                        </a>
+                <nav class="sidebar-nav">
 
-                        <a asp-controller="Orders"
-                           asp-action="Index">
-                            My Orders
-                        </a>
+                    <a asp-controller="Account"
+                       asp-action="Profile">
+                        My Profile
+                    </a>
 
-                        <a asp-controller="Account"
-                           asp-action="LogOut">
+                    <a asp-controller="Wallet"
+                       asp-action="Index">
+                        My Wallet
+                    </a>
+
+                    <a class="active"
+                       asp-controller="Selling"
+                       asp-action="Index">
+                        My Selling
+                    </a>
+
+                    <a asp-controller="Bidding"
+                       asp-action="Index">
+                        My Bidding
+                    </a>
+
+                    <a asp-controller="Orders"
+                       asp-action="Index">
+                        My Orders
+                    </a>
+
+                    <form asp-controller="Account"
+                          asp-action="LogOut"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <button type="submit"
+                                class="btn">
                             Log out
-                        </a>
+                        </button>
+                    </form>
+
                 </nav>
-                <div class="panel help-box"><strong>Need help?</strong>
-                    <p class="small muted">Contact our team for account or auction support.</p><a href="#">Contact
-                        us</a>
+
+                <div class="panel help-box">
+                    <strong>Need help?</strong>
+                    <p class="small muted">
+                        Contact our team for account
+                        or auction support.
+                    </p>
+                    <a href="#">Contact us</a>
                 </div>
+
             </aside>
+
             <section class="account-body">
+
                 <div class="page-title">
                     <h1>My Selling</h1>
-                    <p>Manage your listings and keep every auction on track.</p>
+                    <p>
+                        Manage your listings and keep
+                        every auction on track.
+                    </p>
                 </div>
+
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="callout">
+                        @TempData["SuccessMessage"]
+                    </div>
+                }
+
                 <div class="metrics">
+
                     <div class="metric">
-                        <div class="muted small">Live auctions</div><strong>2</strong><small>1 ending today</small>
+                        <div class="muted small">
+                            Live auctions
+                        </div>
+                        <strong>@liveCount</strong>
+                        <small>Currently active</small>
                     </div>
+
                     <div class="metric">
-                        <div class="muted small">Total active bids</div><strong>31</strong><small>Across your live
-                            auctions</small>
+                        <div class="muted small">
+                            Total bids
+                        </div>
+                        <strong>@totalBids</strong>
+                        <small>Across your listings</small>
                     </div>
+
                     <div class="metric">
-                        <div class="muted small">Sales overview</div><strong>$620</strong><small>Demo
-                            transactions</small>
+                        <div class="muted small">
+                            Total listings
+                        </div>
+                        <strong>@totalListings</strong>
+                        <small>Non-deleted products</small>
                     </div>
+
                     <div class="metric">
-                        <div class="muted small">Pending review</div><strong>1</strong><small>Admin approval
-                            required</small>
+                        <div class="muted small">
+                            Pending review
+                        </div>
+                        <strong>@pendingCount</strong>
+                        <small>
+                            @rejectedCount rejected listings
+                        </small>
                     </div>
+
                 </div>
+
                 <div class="table-shell">
+
                     <div class="table-toolbar">
+
                         <h3>Your listings</h3>
 
                         <a class="btn"
-                           asp-controller="Selling"
+                           asp-controller="Product"
                            asp-action="Create">
                             Create listing
                         </a>
 
                     </div>
-                    <div class="tabs"><button
-                            class="active">All</button><button>Live</button><button>Pending</button><button>Rejected</button><button>Sold</button><button>Unsold</button>
+
+                    <div class="tabs">
+                        <span class="active">All listings</span>
                     </div>
+
                     <table>
                         <thead>
                             <tr>
@@ -84,62 +189,123 @@
                                 <th>ACTION</th>
                             </tr>
                         </thead>
+
                         <tbody>
-                            <tr>
-                                <td>Nikon F3 film camera</td>
-                                <td>$460</td>
-                                <td>18</td>
-                                <td>2h left</td>
-                                <td>Live</td>
-                                <td><a href="auction.html">View auction</a></td>
-                            </tr>
-                            <tr>
-                                <td>Brass desk lamp</td>
-                                <td>$185</td>
-                                <td>13</td>
-                                <td>1d left</td>
-                                <td>Live</td>
-                                <td><a href="auction.html">View auction</a></td>
-                            </tr>
-                            <tr>
-                                <td>Ceramic vase</td>
-                                <td>$80</td>
-                                <td>—</td>
-                                <td>Starts later</td>
-                                <td>Pending</td>
-                                <td><a href="create-listing.html">View listing</a></td>
-                            </tr>
-                            <tr>
-                                <td>Nikkor lens</td>
-                                <td>$150</td>
-                                <td>—</td>
-                                <td>—</td>
-                                <td>Rejected</td>
-                                <td><a href="create-listing.html">Edit / resubmit</a></td>
-                            </tr>
-                            <tr>
-                                <td>Walnut speakers</td>
-                                <td>$620</td>
-                                <td>24</td>
-                                <td>Ended</td>
-                                <td>Sold</td>
-                                <td><a href="orders.html">Confirm shipping</a></td>
-                            </tr>
-                            <tr>
-                                <td>Art print</td>
-                                <td>$70</td>
-                                <td>0</td>
-                                <td>Ended</td>
-                                <td>Unsold</td>
-                                <td><a href="create-listing.html">Create new auction</a></td>
-                            </tr>
+
+                            @if (!Model.Any())
+                            {
+                                <tr>
+                                    <td colspan="6">
+                                        You have not created
+                                        any listings yet.
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                @foreach (var product in Model)
+                                {
+                                    var auction = product.Auctions
+                                        .OrderByDescending(a => a.AuctionId)
+                                        .FirstOrDefault();
+
+                                    var bidCount = auction?.Bids.Count ?? 0;
+
+                                    string status = product.ApprovalStatus;
+
+                                    if (product.ApprovalStatus == "Approved"
+                                        && auction != null)
+                                    {
+                                        if (auction.ApprovalStatus != "Approved")
+                                        {
+                                            status = auction.ApprovalStatus;
+                                        }
+                                        else if (auction.StartAt > now)
+                                        {
+                                            status = "Upcoming";
+                                        }
+                                        else if (auction.CurrentEndAt > now)
+                                        {
+                                            status = "Live";
+                                        }
+                                        else
+                                        {
+                                            status = auction.Result ?? "Ended";
+                                        }
+                                    }
+
+                                    <tr>
+                                        <td>
+                                            @product.Name
+                                        </td>
+
+                                        <td>
+                                            @if (auction != null)
+                                            {
+                                                <span>
+                                                    $@auction.StartingPrice.ToString("N0")
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span>—</span>
+                                            }
+                                        </td>
+
+                                        <td>@bidCount</td>
+
+                                        <td>
+                                            @if (auction != null)
+                                            {
+                                                @auction.CurrentEndAt.ToString("dd/MM/yyyy HH:mm")
+                                                <small>UTC</small>
+                                            }
+                                            else
+                                            {
+                                                <span>—</span>
+                                            }
+                                        </td>
+
+                                        <td>
+                                            <span class="tag">
+                                                @status
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            @if (auction != null)
+                                            {
+                                                <a asp-controller="Auction"
+                                                   asp-action="Details"
+                                                   asp-route-id="@auction.AuctionId">
+                                                    View auction
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <span>—</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+
                         </tbody>
                     </table>
-                </div>
-                <div class="callout">After approval, a seller cannot edit or delete the approved product. Rejected
-                    listings can be edited and resubmitted.</div>
-            </section>
-        </div>
-    </main>
 
+                </div>
+
+                <div class="callout">
+                    After approval, a seller cannot edit
+                    or delete the approved product.
+                    Rejected listings can be corrected
+                    and resubmitted when that functionality
+                    is implemented.
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
 </div>
