@@ -1,63 +1,282 @@
 ﻿
-@{
-    ViewData["Title"] = "Auction Detail";
-    Layout = "_Layout";
-}
+@model BTLwebdaugia.ViewModels.AuctionDetailViewModel
 
+@{
+    ViewData["Title"] = Model.ProductName;
+    Layout = "_Layout";
+
+    var now = DateTime.UtcNow;
+    bool isLive = Model.AuctionStatus == "Live";
+
+    long secondsRemaining = Math.Max(
+        0,
+        (long)(Model.CurrentEndAt - now).TotalSeconds
+    );
+}
 
 <div class="container">
     <main class="container">
-        <div class="crumb">Home / Live Auction / Product</div>
-        <div class="page-title">
-            <span class="tag">Live Auction</span>
-            <h1>Vintage camera</h1>
-            <p>by Vintage Focus</p>
-        </div>
-        <div class="auction-detail">
-            <div>
-                <div class="image-box gallery-main">PRODUCT IMAGE</div>
-                <div class="thumbs">
-                    <div class="image-box" role="img" aria-label="IMAGE">IMAGE</div>
-                    <div class="image-box" role="img" aria-label="IMAGE">IMAGE</div>
-                    <div class="image-box" role="img" aria-label="IMAGE">IMAGE</div>
-                </div>
-                <div class="panel bid-history">
-                    <h3>Latest bids</h3>
-                    <ol>
-                        <li><span>User Bidder 01</span><strong>$200</strong></li>
-                        <li><span>User Bidder 02</span><strong>$190</strong></li>
-                        <li><span>User Bidder 03</span><strong>$180</strong></li>
-                    </ol>
-                </div>
-            </div>
-            <div class="panel bid-panel">
-                <p class="muted">Current Bid</p>
-                <div class="price">$200</div>
-                <p>Ends in: <strong class="countdown" data-seconds="156000">01d : 19h : 20m : 00s</strong></p>
-                <hr>
-                <p>Minimum bid increment: <strong>$5</strong></p>
-                <p>Minimum next bid: <strong>$205</strong></p><button class="btn btn-wide" type="button"
-                                                                  onclick="document.querySelector('#bid-value').value=205">
-                Quick bid $205
-            </button>
-            <div class="form-group">
-                <label for="bid-value">Enter your bid (whole USD)</label><input class="field"
-                                                                                id="bid-value" type="number" min="205" step="1" value="205">
-            </div><button class="btn btn-solid btn-wide" data-bid-submit type="button">
-            Place Bid
-            </button>
-                <p class="notice" id="bid-feedback">
-                    You must sign in before placing a real bid. The seller cannot bid on
-                    their own item.
-                </p>
-            </div>
-        </div>
-            <section class="desc-section panel">
-                <h2>Item Description</h2>
-                <p>Product description placeholder from Figma. Backend data will replace this sample text.</p>
-                <h3>Item Details</h3>
-                <p>Condition · Category · Shipping & Delivery</p>
-            </section>
-    </main>
 
+        <div class="crumb">
+            Home / Auction / @Model.CategoryName
+        </div>
+
+        <div class="page-title">
+
+            <span class="tag">
+                @Model.AuctionStatus
+            </span>
+
+            <h1>@Model.ProductName</h1>
+
+            <p>by @Model.SellerName</p>
+
+        </div>
+
+        <div class="auction-detail">
+
+            <div>
+
+                @if (Model.ImagePaths.Any())
+                {
+                    <div class="image-box gallery-main">
+                        <img src="@Model.ImagePaths.First()"
+                             alt="@Model.ProductName"
+                             style="width:100%;height:100%;object-fit:cover;" />
+                    </div>
+
+                    <div class="thumbs">
+                        @foreach (var image in Model.ImagePaths.Skip(1))
+                        {
+                            <div class="image-box">
+                                <img src="@image"
+                                     alt="@Model.ProductName"
+                                     loading="lazy"
+                                     style="width:100%;height:100%;object-fit:cover;" />
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="image-box gallery-main">
+                        Not available
+                    </div>
+                }
+
+                <div class="panel bid-history">
+
+                    <h3>Latest bids</h3>
+
+                    @if (!Model.RecentBids.Any())
+                    {
+                        <p class="muted">
+                            No bids have been placed yet.
+                        </p>
+                    }
+                    else
+                    {
+                        <ol>
+                            @foreach (var bid in Model.RecentBids)
+                            {
+                                <li>
+                                    <span>
+                                        @bid.BidderName
+                                    </span>
+
+                                    <strong>
+                                        $@bid.Amount.ToString("N0")
+                                    </strong>
+                                </li>
+                            }
+                        </ol>
+                    }
+
+                </div>
+
+            </div>
+
+            <div class="panel bid-panel">
+
+                <p class="muted">
+                    @(Model.RecentBids.Any()
+                        ? "Current highest bid"
+                        : "Starting price")
+                </p>
+
+                <div class="price">
+                    $@Model.CurrentPrice.ToString("N0")
+                </div>
+
+                @if (Model.AuctionStatus == "Live")
+                {
+                    <p>
+                        Ends in:
+                        <strong class="countdown"
+                                data-seconds="@secondsRemaining">
+                            Calculating...
+                        </strong>
+                    </p>
+                }
+                else if (Model.AuctionStatus == "Upcoming")
+                {
+                    <p class="muted">
+                        Starts at:
+                        @Model.StartAt.ToString("dd/MM/yyyy HH:mm")
+                        UTC
+                    </p>
+                }
+                else
+                {
+                    <p class="muted">
+                        Auction ended:
+                        @Model.CurrentEndAt.ToString("dd/MM/yyyy HH:mm")
+                        UTC
+                    </p>
+                }
+
+                <hr />
+
+                <p>
+                    Minimum bid increment:
+                    <strong>
+                        $@Model.BidStep.ToString("N0")
+                    </strong>
+                </p>
+
+                <p>
+                    Minimum next bid:
+                    <strong>
+                        $@Model.NextMinimumBid.ToString("N0")
+                    </strong>
+                </p>
+
+
+                @if (isLive)
+                {
+                    @if (TempData["BidSuccess"] != null)
+                    {
+                        <p class="notice">
+                            @TempData["BidSuccess"]
+                        </p>
+                    }
+
+                    @if (TempData["BidError"] != null)
+                    {
+                        <p class="notice text-danger">
+                            @TempData["BidError"]
+                        </p>
+                    }
+
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <form asp-controller="Bidding"
+                              asp-action="PlaceBid"
+                              method="post">
+
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden"
+                                   name="AuctionId"
+                                   value="@Model.AuctionId" />
+
+                            <div class="form-group">
+                                <label for="bid-value">
+                                    Enter your bid (whole USD)
+                                </label>
+
+                                <input class="field"
+                                       id="bid-value"
+                                       name="Amount"
+                                       type="number"
+                                       min="@Model.NextMinimumBid"
+                                       max="999999999999999999"
+                                       step="1"
+                                       value="@Model.NextMinimumBid"
+                                       required />
+                            </div>
+
+                            <button class="btn btn-solid btn-wide"
+                                    type="submit">
+                                Place Bid
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <p class="notice">
+                            Please sign in to place a bid.
+                        </p>
+
+                        <a class="btn btn-solid btn-wide"
+                           asp-controller="Account"
+                           asp-action="SignIn">
+                            Sign in
+                        </a>
+                    }
+                }
+
+                else if (Model.AuctionStatus == "Upcoming")
+                {
+                    <p class="notice">
+                        This auction has not started yet.
+                        Bidding is unavailable.
+                    </p>
+                }
+                else
+                {
+                    <p class="notice">
+                        This auction has ended.
+                        New bids are no longer accepted.
+                    </p>
+                }
+
+                <p class="muted small">
+                    Auction ID: @Model.AuctionId
+                </p>
+
+            </div>
+
+        </div>
+
+        <section class="desc-section panel">
+
+            <h2>Item Description</h2>
+
+            <p>@Model.Description</p>
+
+            <h3>Item Details</h3>
+
+            <p>
+                Category:
+                <strong>@Model.CategoryName</strong>
+            </p>
+
+            <p>
+                Seller:
+                <strong>@Model.SellerName</strong>
+            </p>
+
+            <p>
+                Starting price:
+                <strong>
+                    $@Model.StartingPrice.ToString("N0")
+                </strong>
+            </p>
+
+            <p>
+                Start time:
+                @Model.StartAt.ToString("dd/MM/yyyy HH:mm")
+                UTC
+            </p>
+
+            <p>
+                End time:
+                @Model.CurrentEndAt.ToString("dd/MM/yyyy HH:mm")
+                UTC
+            </p>
+
+        </section>
+
+    </main>
 </div>
