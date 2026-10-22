@@ -22,11 +22,96 @@ namespace BTLwebdaugia.Controllers
             _context = context;
         }
 
+
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            if (!long.TryParse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier),
+                out long userId))
+            {
+                return Challenge();
+            }
+
+            var myBids = await _context.Bids
+                .AsNoTracking()
+                .Where(b => b.BidderId == userId)
+                .GroupBy(b => b.AuctionId)
+                .Select(g => new
+                {
+                    AuctionId = g.Key,
+                    MyHighestBid = g.Max(b => b.Amount)
+                })
+                .ToListAsync();
+
+            if (myBids.Count == 0)
+            {
+                return View(new List<MyBiddingItemViewModel>());
+            }
+
+            var auctionIds = myBids
+                .Select(b => b.AuctionId)
+                .ToList();
+
+            var auctions = await _context.Auctions
+                .AsNoTracking()
+                .Where(a => auctionIds.Contains(a.AuctionId))
+                .Select(a => new
+                {
+                    a.AuctionId,
+                    ProductName = a.Product.Name,
+                    a.StartAt,
+                    a.CurrentEndAt,
+                    a.StartingPrice,
+                    a.Result,
+                    a.WinnerBidId,
+                    HighestBid = a.Bids
+                        .Max(b => (decimal?)b.Amount),
+
+                    WinnerBidderId = a.Bids
+                        .Where(b => b.BidId == a.WinnerBidId)
+                        .Select(b => (long?)b.BidderId)
+                        .FirstOrDefault()
+                })
+                .ToListAsync();
+
+            var now = DateTime.UtcNow;
+
+            var model = (
+                from bid in myBids
+                join auction in auctions
+                    on bid.AuctionId equals auction.AuctionId
+                select new MyBiddingItemViewModel
+                {
+                    AuctionId = auction.AuctionId,
+                    ProductName = auction.ProductName,
+                    MyHighestBid = bid.MyHighestBid,
+                    CurrentHighestBid =
+                        auction.HighestBid ?? auction.StartingPrice,
+                    CurrentEndAt = auction.CurrentEndAt,
+
+                    Status = auction.Result == "Sold"
+                        ? (auction.WinnerBidderId == userId
+                            ? "Won"
+                            : "Lost")
+                        : auction.Result == "Unsold"
+                            ? "Ended"
+                            : auction.CurrentEndAt <= now
+                                ? "Ended"
+                                : auction.StartAt > now
+                                    ? "Upcoming"
+                                    : bid.MyHighestBid ==
+                                      auction.HighestBid
+                                        ? "Leading"
+                                        : "Outbid"
+                }
+            )
+            .OrderBy(x => x.CurrentEndAt)
+            .ToList();
+
+            return View(model);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

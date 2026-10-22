@@ -1,124 +1,238 @@
-﻿
+﻿@model BTLwebdaugia.ViewModels.WalletViewModel
+
 @{
     ViewData["Title"] = "My Wallet";
     Layout = "_Layout";
 }
 
-
 <div class="container">
 
-    <main class="container">
-        <div class="crumb">Home / My account / My Wallet</div>
-        <div class="account">
-            <aside class="sidebar">
-                <div class="identity">
-                    <div class="avatar">◯</div><strong>User Name</strong>
-                    <p class="muted small">Member since October 2026</p>
-                </div>
-                <nav class="sidebar-nav">
-                        <a asp-controller="Account"
-                           asp-action="Profile">
-                            My Profile
-                        </a>
-                        <a class="active"
-                           asp-controller="Wallet"
-                           asp-action="Index">
-                            My Wallet
-                        </a>
-                        <a class="active"
-                           asp-controller="Selling"
-                           asp-action="Index">
-                            My Selling
-                        </a>
+    <div class="crumb">
+        Home / My account / My Wallet
+    </div>
 
+    <div class="account">
 
-                        <a asp-controller="Bidding"
-                           asp-action="Index">
-                            My Bidding
-                        </a>
+        <aside class="sidebar">
 
+            <div class="identity">
+                <div class="avatar">◯</div>
 
-                        <a asp-controller="Orders"
-                           asp-action="Index">
-                            My Orders
-                        </a>
+                <strong>@Model.Username</strong>
 
-                        <a asp-controller="Account"
-                           asp-action="LogOut">
-                            Log out
-                        </a>
+                <p class="muted small">
+                    Member since
+                    @Model.MemberSince.ToString("MMMM yyyy")
+                </p>
+            </div>
 
-                </nav>
-                <div class="panel help-box"><strong>Need help?</strong>
-                    <p class="small muted">Contact our team for account or auction support.</p><a href="#">Contact
-                        us</a>
-                </div>
-            </aside>
-            <section class="account-body">
-                <div class="page-title">
-                    <h1>My Wallet</h1>
-                    <p>Manage your virtual USD wallet and review demo transactions.</p>
-                </div>
-                <div class="grid wallet-tiles">
-                    <div class="metric">
-                        <div class="muted">Available balance</div><strong id="wallet-balance"
-                            data-balance="2000">$2,000.00</strong><small>Virtual USD for paying winning auctions</small>
+            <nav class="sidebar-nav">
+
+                <a asp-controller="Account"
+                   asp-action="Profile">
+                    My Profile
+                </a>
+
+                <a class="active"
+                   asp-controller="Wallet"
+                   asp-action="Index">
+                    My Wallet
+                </a>
+
+                <a asp-controller="Selling"
+                   asp-action="Index">
+                    My Selling
+                </a>
+
+                <a asp-controller="Bidding"
+                   asp-action="Index">
+                    My Bidding
+                </a>
+
+                <a asp-controller="Orders"
+                   asp-action="Index">
+                    My Orders
+                </a>
+
+                <form asp-controller="Account"
+                      asp-action="LogOut"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <button class="btn btn-small"
+                            type="submit">
+                        Log out
+                    </button>
+                </form>
+
+            </nav>
+
+        </aside>
+
+        <section class="account-body">
+
+            <div class="page-title">
+                <h1>My Wallet</h1>
+
+                <p>
+                    Manage your virtual USD wallet
+                    and transaction history.
+                </p>
+            </div>
+
+            @if (TempData["WalletSuccess"] != null)
+            {
+                <p class="notice" role="status">
+                    @TempData["WalletSuccess"]
+                </p>
+            }
+
+            @if (TempData["WalletError"] != null)
+            {
+                <p class="notice text-danger" role="alert">
+                    @TempData["WalletError"]
+                </p>
+            }
+
+            <div class="grid wallet-tiles">
+
+                <div class="metric">
+                    <div class="muted">
+                        Available balance
                     </div>
-                    <div class="metric">
-                        <div class="muted">Demo top-up</div><strong>Virtual funds</strong><small>No real banking or held
-                            deposits</small>
-                    </div>
+
+                    <strong>
+                        $@Model.Balance.ToString("N0")
+                    </strong>
+
                 </div>
-                <div class="panel" style="margin:24px 0">
-                    <h3>Top up virtual wallet</h3>
+
+                <div class="metric">
+                    <div class="muted">
+                        Wallet type
+                    </div>
+
+                    <strong>Virtual USD</strong>
+
+                </div>
+
+            </div>
+
+            <div class="panel" style="margin:24px 0">
+
+                <h3>Top up virtual wallet</h3>
+
+                <form asp-controller="Wallet"
+                      asp-action="TopUp"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden"
+                           name="requestId"
+                           value="@Guid.NewGuid()" />
+
                     <div class="form-row">
-                        <div class="form-group"><label for="topup-amount">Enter amount (USD)</label><input class="field"
-                                type="number" id="topup-amount" min="0.01" step="0.01" placeholder="e.g. 500"></div>
-                        <div class="form-group" style="align-self:end"><button class="btn btn-solid" type="button"
-                                data-topup>Top up wallet</button></div>
+
+                        <div class="form-group">
+
+                            <label for="Amount">
+                                Enter amount (USD)
+                            </label>
+
+                            <input class="field"
+                                   type="number"
+                                   id="Amount"
+                                   name="Amount"
+                                   min="1"
+                                   max="1000000"
+                                   step="1"
+                                   placeholder="e.g. 5000"
+                                   required />
+
+                        </div>
+
+                        <div class="form-group"
+                             style="align-self:end">
+
+                            <button class="btn btn-solid"
+                                    type="submit">
+                                Top up wallet
+                            </button>
+
+                        </div>
+
                     </div>
-                    <p class="notice" id="wallet-feedback">Demo only: entered amount is added to displayed sample
-                        balance.</p>
-                </div>
-                <div class="table-shell">
-                    <h3>Recent transactions</h3>
-                    <table>
-                        <thead>
+
+                </form>
+
+            </div>
+
+            <div class="table-shell">
+
+                <h3>Recent transactions</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>TYPE / DESCRIPTION</th>
+                            <th>AMOUNT</th>
+                            <th>DATE</th>
+                            <th>STATUS</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @if (!Model.Transactions.Any())
+                        {
                             <tr>
-                                <th>TYPE / DESCRIPTION</th>
-                                <th>AMOUNT</th>
-                                <th>DATE</th>
-                                <th>STATUS</th>
+                                <td colspan="4">
+                                    No wallet transactions yet.
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Demo top-up</td>
-                                <td>$500</td>
-                                <td>19 Oct 2026</td>
-                                <td>Completed</td>
-                            </tr>
-                            <tr>
-                                <td>Winning auction payment</td>
-                                <td>−$450</td>
-                                <td>18 Oct 2026</td>
-                                <td>Completed</td>
-                            </tr>
-                            <tr>
-                                <td>Sale payment received</td>
-                                <td>+$320</td>
-                                <td>17 Oct 2026</td>
-                                <td>Completed</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="callout"><strong>About the demo wallet</strong>
-                    <p>Bidding never holds or deducts balance. When a winner pays, their wallet is debited and the
-                        seller wallet is credited.</p>
-                </div>
-            </section>
-        </div>
-    </main>
+                        }
+                        else
+                        {
+                            @foreach (var transaction in Model.Transactions)
+                            {
+                                bool isDebit =
+                                    transaction.TransactionType ==
+                                    "PaymentDebit";
+
+                                <tr>
+
+                                    <td>
+                                        @transaction.Description
+                                    </td>
+
+                                    <td>
+                                        @(isDebit ? "-" : "+")$@transaction.Amount.ToString("N0")
+                                    </td>
+
+                                    <td>
+                                        @transaction.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                                        UTC
+                                    </td>
+
+                                    <td>
+                                        <span class="tag">
+                                            Completed
+                                        </span>
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+
+                    </tbody>
+                </table>
+
+            </div>
+
+        </section>
+
+    </div>
 
 </div>
