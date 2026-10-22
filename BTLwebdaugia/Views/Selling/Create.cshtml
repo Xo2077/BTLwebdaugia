@@ -30,6 +30,7 @@
         <form asp-controller="Product"
               asp-action="Create"
               method="post"
+              enctype="multipart/form-data"
               id="create-product-form">
 
             @Html.AntiForgeryToken()
@@ -237,22 +238,31 @@
 
                 <aside>
 
-                    <div class="panel">
 
-                        <h3>Product images</h3>
+                    <h3>Product images</h3>
 
-                        <div class="image-box"
-                             role="img"
-                             aria-label="PRODUCT IMAGE">
-                            PRODUCT IMAGE
-                        </div>
+                    <div class="form-group">
+                        <label asp-for="Images">
+                            Select product photos
+                        </label>
 
-                        <p class="notice">
-                            Image uploading will be available
-                            in the next implementation step.
+                        <input asp-for="Images"
+                               type="file"
+                               accept=".jpg,.jpeg,.png,.webp,.gif,.bmp,.avif"
+                               multiple
+                               class="field" />
+
+                        <span asp-validation-for="Images"
+                              class="text-danger"></span>
+
+                        <p class="muted small">
+                            JPG, PNG, WebP, GIF, BMP or AVIF.
+                            Maximum 5 images, 5 MB each.
                         </p>
 
+
                     </div>
+
 
                     <div class="panel" style="margin-top:22px">
 

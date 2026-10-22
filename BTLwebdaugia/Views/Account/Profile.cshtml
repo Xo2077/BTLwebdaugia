@@ -4,6 +4,8 @@
 @{
     ViewData["Title"] = "My Profile";
     Layout = "_Layout";
+
+    string? avatarPath = ViewBag.AvatarPath as string;
 }
 
 <div class="container">
@@ -18,7 +20,21 @@
             <aside class="sidebar">
 
                 <div class="identity">
-                    <div class="avatar">◯</div>
+
+                    @if (!string.IsNullOrWhiteSpace(avatarPath))
+                    {
+                        <img src="@avatarPath"
+                             alt="Profile picture"
+                             class="avatar"
+                             style="width:72px;
+                                    height:72px;
+                                    border-radius:50%;
+                                    object-fit:cover;" />
+                    }
+                    else
+                    {
+                        <div class="avatar">◯</div>
+                    }
 
                     <strong>@Model.Username</strong>
 
@@ -26,6 +42,7 @@
                         Member since
                         @Model.CreatedAt.ToString("MMMM yyyy")
                     </p>
+
                 </div>
 
                 <nav class="sidebar-nav">
@@ -66,12 +83,14 @@
                                 class="btn btn-small">
                             Log out
                         </button>
+
                     </form>
 
                 </nav>
 
                 <div class="panel help-box">
                     <strong>Need help?</strong>
+
                     <p class="small muted">
                         Contact our team for account support.
                     </p>
@@ -85,26 +104,80 @@
                     <h1>My Profile</h1>
 
                     <p>
-                        Manage your personal information.
+                        Manage your personal information
+                        and profile picture.
                     </p>
                 </div>
 
                 @if (TempData["ProfileSuccess"] != null)
                 {
-                    <p class="notice">
+                    <p class="notice" role="status">
                         @TempData["ProfileSuccess"]
+                    </p>
+                }
+
+                @if (TempData["AvatarError"] != null)
+                {
+                    <p class="text-danger" role="alert">
+                        @TempData["AvatarError"]
                     </p>
                 }
 
                 <div class="panel">
 
+                    <h3>Profile picture</h3>
+
+                    @if (!string.IsNullOrWhiteSpace(avatarPath))
+                    {
+                        <img src="@avatarPath"
+                             alt="Current profile picture"
+                             class="avatar"
+                             style="width:96px;
+                                    height:96px;
+                                    border-radius:50%;
+                                    object-fit:cover;" />
+                    }
+                    else
+                    {
+                        <div class="avatar">◯</div>
+                    }
+
+                    <form asp-controller="Account"
+                          asp-action="UploadAvatar"
+                          method="post"
+                          enctype="multipart/form-data">
+
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-group">
+                            <label for="avatar">
+                                Choose profile picture
+                            </label>
+
+                            <input id="avatar"
+                                   name="avatar"
+                                   type="file"
+                                   accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                                   class="field"
+                                   required />
+                        </div>
+
+                        <p class="muted small">
+                            JPG or PNG. Maximum file size 2 MB.
+                        </p>
+
+                        <button type="submit"
+                                class="btn btn-solid">
+                            Upload picture
+                        </button>
+
+                    </form>
+
+                </div>
+
+                <div class="panel" style="margin-top:24px">
+
                     <h3>Personal information</h3>
-
-                    <div class="avatar">◯</div>
-
-                    <p class="muted small">
-                        Update your account details below.
-                    </p>
 
                     <form asp-controller="Account"
                           asp-action="Profile"
@@ -118,6 +191,7 @@
                         <div class="form-row">
 
                             <div class="form-group">
+
                                 <label asp-for="Username">
                                     Display name
                                 </label>
@@ -129,9 +203,11 @@
 
                                 <span asp-validation-for="Username"
                                       class="text-danger"></span>
+
                             </div>
 
                             <div class="form-group">
+
                                 <label asp-for="Email">
                                     Email address
                                 </label>
@@ -144,16 +220,19 @@
 
                                 <span asp-validation-for="Email"
                                       class="text-danger"></span>
+
                             </div>
 
                         </div>
 
                         <div class="form-group">
+
                             <label>Account created</label>
 
                             <input class="field"
                                    value="@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm") UTC"
                                    readonly />
+
                         </div>
 
                         <button class="btn btn-solid"
@@ -172,11 +251,6 @@
                     <p class="muted">
                         Your password is securely stored
                         as a hash and is not displayed.
-                    </p>
-
-                    <p>
-                        Account information is loaded
-                        from SQL Server.
                     </p>
 
                 </div>

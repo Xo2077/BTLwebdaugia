@@ -26,6 +26,8 @@ public partial class BidHubDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<UserImage> UserImages { get; set; }
+
     public virtual DbSet<Wallet> Wallets { get; set; }
 
     public virtual DbSet<WalletTransaction> WalletTransactions { get; set; }
@@ -207,6 +209,31 @@ public partial class BidHubDbContext : DbContext
                 .HasMaxLength(50)
                 .UseCollation("Latin1_General_100_CI_AS");
         });
+
+
+        modelBuilder.Entity<UserImage>(entity =>
+        {
+            entity.HasKey(e => e.ImageId);
+
+            entity.ToTable("UserImages");
+
+            entity.HasIndex(e => e.UserId)
+                .IsUnique();
+
+            entity.Property(e => e.ImagePath)
+                .HasMaxLength(500);
+
+            entity.Property(e => e.UploadedAt)
+                .HasPrecision(3)
+                .HasDefaultValueSql("(sysutcdatetime())");
+
+            entity.HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.NoAction)
+                .HasConstraintName("FK_UserImages_Users");
+        });
+
 
         modelBuilder.Entity<Wallet>(entity =>
         {

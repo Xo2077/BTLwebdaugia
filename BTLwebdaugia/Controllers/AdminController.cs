@@ -1,11 +1,10 @@
-﻿using BTLwebdaugia.Data;
+﻿
+using BTLwebdaugia.Data;
 using BTLwebdaugia.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
-
 
 namespace BTLwebdaugia.Controllers
 {
@@ -19,6 +18,9 @@ namespace BTLwebdaugia.Controllers
             _context = context;
         }
 
+        // =====================================
+        // DASHBOARD
+        // =====================================
 
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -59,7 +61,9 @@ namespace BTLwebdaugia.Controllers
             return View(model);
         }
 
-
+        // =====================================
+        // USERS
+        // =====================================
 
         [HttpGet]
         public async Task<IActionResult> Users()
@@ -73,6 +77,9 @@ namespace BTLwebdaugia.Controllers
             return View(users);
         }
 
+        // =====================================
+        // CATEGORIES
+        // =====================================
 
         [HttpGet]
         public async Task<IActionResult> Categories()
@@ -84,6 +91,10 @@ namespace BTLwebdaugia.Controllers
 
             return View(categories);
         }
+
+        // =====================================
+        // PRODUCTS
+        // =====================================
 
         [HttpGet]
         public async Task<IActionResult> Products()
@@ -99,6 +110,10 @@ namespace BTLwebdaugia.Controllers
             return View(products);
         }
 
+        // =====================================
+        // AUCTIONS
+        // =====================================
+
         [HttpGet]
         public async Task<IActionResult> Auctions()
         {
@@ -112,6 +127,10 @@ namespace BTLwebdaugia.Controllers
 
             return View(auctions);
         }
+
+        // =====================================
+        // BIDS
+        // =====================================
 
         [HttpGet]
         public async Task<IActionResult> Bids()
@@ -129,6 +148,10 @@ namespace BTLwebdaugia.Controllers
             return View(bids);
         }
 
+        // =====================================
+        // ORDERS
+        // =====================================
+
         [HttpGet]
         public async Task<IActionResult> Orders()
         {
@@ -144,8 +167,12 @@ namespace BTLwebdaugia.Controllers
             return View(orders);
         }
 
+        // =====================================
+        // WALLETS
+        // =====================================
+
         [HttpGet]
-        public async Task<IActionResult> Wallets()  
+        public async Task<IActionResult> Wallets()
         {
             var wallets = await _context.Wallets
                 .AsNoTracking()
@@ -157,14 +184,15 @@ namespace BTLwebdaugia.Controllers
             return View(wallets);
         }
 
+        // =====================================
+        // APPROVE PRODUCT
+        // =====================================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ApproveProduct(long productId)
         {
-            if (!long.TryParse(
-                User.FindFirstValue(ClaimTypes.NameIdentifier),
-                out long adminId))
+            if (!TryGetAdminId(out long adminId))
                 return Challenge();
 
             var product = await _context.Products
@@ -175,7 +203,9 @@ namespace BTLwebdaugia.Controllers
 
             if (product.ApprovalStatus != "Pending")
             {
-                TempData["AdminError"] = "Product is not pending.";
+                TempData["AdminError"] =
+                    "Product is not pending.";
+
                 return RedirectToAction(nameof(Products));
             }
 
@@ -187,25 +217,33 @@ namespace BTLwebdaugia.Controllers
 
             await _context.SaveChangesAsync();
 
-            TempData["AdminSuccess"] = "Product approved.";
+            TempData["AdminSuccess"] =
+                "Product approved successfully.";
+
             return RedirectToAction(nameof(Products));
         }
+
+        // =====================================
+        // REJECT PRODUCT
+        // =====================================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RejectProduct(
             long productId,
-            [FromForm, Required, StringLength(1000)] string reason)
+            string? reason)
         {
-            if (!long.TryParse(
-                User.FindFirstValue(ClaimTypes.NameIdentifier),
-                out long adminId))
+            if (!TryGetAdminId(out long adminId))
                 return Challenge();
 
+            reason = reason?.Trim();
+
             if (string.IsNullOrWhiteSpace(reason) ||
-                reason.Trim().Length > 1000)
+                reason.Length > 1000)
             {
-                TempData["AdminError"] = "A rejection reason is required.";
+                TempData["AdminError"] =
+                    "Rejection reason is required (maximum 1000 characters).";
+
                 return RedirectToAction(nameof(Products));
             }
 
@@ -217,28 +255,34 @@ namespace BTLwebdaugia.Controllers
 
             if (product.ApprovalStatus != "Pending")
             {
-                TempData["AdminError"] = "Product is not pending.";
+                TempData["AdminError"] =
+                    "Product is not pending.";
+
                 return RedirectToAction(nameof(Products));
             }
 
             product.ApprovalStatus = "Rejected";
-            product.RejectionReason = reason.Trim();
+            product.RejectionReason = reason;
             product.ReviewedBy = adminId;
             product.ReviewedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
 
-            TempData["AdminSuccess"] = "Product rejected.";
+            TempData["AdminSuccess"] =
+                "Product rejected successfully.";
+
             return RedirectToAction(nameof(Products));
         }
+
+        // =====================================
+        // APPROVE AUCTION
+        // =====================================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ApproveAuction(long auctionId)
         {
-            if (!long.TryParse(
-                User.FindFirstValue(ClaimTypes.NameIdentifier),
-                out long adminId))
+            if (!TryGetAdminId(out long adminId))
                 return Challenge();
 
             var auction = await _context.Auctions
@@ -248,6 +292,8 @@ namespace BTLwebdaugia.Controllers
             if (auction == null)
                 return NotFound();
 
+            // Phiên phải đang Pending.
+            // Product phải được duyệt trước.
             if (auction.ApprovalStatus != "Pending" ||
                 auction.Product.ApprovalStatus != "Approved" ||
                 auction.Product.IsDeleted ||
@@ -255,37 +301,104 @@ namespace BTLwebdaugia.Controllers
             {
                 TempData["AdminError"] =
                     "Auction or product is not eligible for approval.";
+
                 return RedirectToAction(nameof(Auctions));
             }
 
             DateTime now = DateTime.UtcNow;
 
-            // A duration-based auction whose stored start is already
-            // in the past is rebased to approval time.
-            if (auction.EndTimeMode == "Duration" &&
-                auction.StartAt <= now)
+            // =====================================
+            // MODE: DURATION
+            // =====================================
+
+            if (auction.EndTimeMode == "Duration")
             {
                 if (!auction.DurationMinutes.HasValue ||
                     auction.DurationMinutes.Value < 60 ||
                     auction.DurationMinutes.Value > 43200)
                 {
-                    TempData["AdminError"] = "Invalid auction duration.";
+                    TempData["AdminError"] =
+                        "Auction duration must be between 1 hour and 30 days.";
+
                     return RedirectToAction(nameof(Auctions));
                 }
 
-                auction.StartAt = now;
-                auction.OriginalEndAt =
-                    now.AddMinutes(auction.DurationMinutes.Value);
-                auction.CurrentEndAt = auction.OriginalEndAt;
+                // Nếu giờ bắt đầu đã qua:
+                // Bắt đầu lại từ thời điểm Admin duyệt.
+                if (auction.StartAt <= now)
+                {
+                    auction.StartAt = now;
+
+                    auction.OriginalEndAt =
+                        now.AddMinutes(
+                            auction.DurationMinutes.Value);
+
+                    auction.CurrentEndAt =
+                        auction.OriginalEndAt;
+                }
             }
-            else if (auction.StartAt <= now ||
-                     auction.CurrentEndAt <= auction.StartAt ||
-                     auction.CurrentEndAt <= now)
+
+            // =====================================
+            // MODE: SPECIFIC
+            // =====================================
+
+            else if (auction.EndTimeMode == "Specific")
+            {
+                // Phiên có giờ kết thúc cố định.
+                // Không tự kéo dài giờ kết thúc.
+
+                if (auction.StartAt <= now)
+                {
+                    // Duyệt muộn:
+                    // Chỉ chấp nhận nếu còn >= 1 giờ.
+                    if (auction.CurrentEndAt < now.AddHours(1))
+                    {
+                        TempData["AdminError"] =
+                            "Auction end time is too close or has expired. " +
+                            "A new valid schedule is required.";
+
+                        return RedirectToAction(nameof(Auctions));
+                    }
+
+                    auction.StartAt = now;
+                }
+
+                TimeSpan duration =
+                    auction.CurrentEndAt - auction.StartAt;
+
+                if (duration < TimeSpan.FromHours(1) ||
+                    duration > TimeSpan.FromDays(30))
+                {
+                    TempData["AdminError"] =
+                        "Auction duration must be between 1 hour and 30 days.";
+
+                    return RedirectToAction(nameof(Auctions));
+                }
+            }
+            else
             {
                 TempData["AdminError"] =
-                    "Auction schedule has expired or is invalid.";
+                    "Invalid auction end time mode.";
+
                 return RedirectToAction(nameof(Auctions));
             }
+
+            // =====================================
+            // FINAL SCHEDULE VALIDATION
+            // =====================================
+
+            if (auction.CurrentEndAt <= auction.StartAt ||
+                auction.CurrentEndAt <= now)
+            {
+                TempData["AdminError"] =
+                    "Auction schedule is invalid.";
+
+                return RedirectToAction(nameof(Auctions));
+            }
+
+            // =====================================
+            // UPDATE SQL SERVER
+            // =====================================
 
             auction.ApprovalStatus = "Approved";
             auction.RejectionReason = null;
@@ -294,25 +407,33 @@ namespace BTLwebdaugia.Controllers
 
             await _context.SaveChangesAsync();
 
-            TempData["AdminSuccess"] = "Auction approved.";
+            TempData["AdminSuccess"] =
+                "Auction approved successfully.";
+
             return RedirectToAction(nameof(Auctions));
         }
+
+        // =====================================
+        // REJECT AUCTION
+        // =====================================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RejectAuction(
             long auctionId,
-            [FromForm, Required, StringLength(1000)] string reason)
+            string? reason)
         {
-            if (!long.TryParse(
-                User.FindFirstValue(ClaimTypes.NameIdentifier),
-                out long adminId))
+            if (!TryGetAdminId(out long adminId))
                 return Challenge();
 
+            reason = reason?.Trim();
+
             if (string.IsNullOrWhiteSpace(reason) ||
-                reason.Trim().Length > 1000)
+                reason.Length > 1000)
             {
-                TempData["AdminError"] = "A rejection reason is required.";
+                TempData["AdminError"] =
+                    "Rejection reason is required (maximum 1000 characters).";
+
                 return RedirectToAction(nameof(Auctions));
             }
 
@@ -324,25 +445,34 @@ namespace BTLwebdaugia.Controllers
 
             if (auction.ApprovalStatus != "Pending")
             {
-                TempData["AdminError"] = "Auction is not pending.";
+                TempData["AdminError"] =
+                    "Auction is not pending.";
+
                 return RedirectToAction(nameof(Auctions));
             }
 
             auction.ApprovalStatus = "Rejected";
-            auction.RejectionReason = reason.Trim();
+            auction.RejectionReason = reason;
             auction.ReviewedBy = adminId;
             auction.ReviewedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
 
-            TempData["AdminSuccess"] = "Auction rejected.";
+            TempData["AdminSuccess"] =
+                "Auction rejected successfully.";
+
             return RedirectToAction(nameof(Auctions));
         }
 
+        // =====================================
+        // HELPER
+        // =====================================
 
-
-
-
-
+        private bool TryGetAdminId(out long adminId)
+        {
+            return long.TryParse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier),
+                out adminId);
+        }
     }
 }
