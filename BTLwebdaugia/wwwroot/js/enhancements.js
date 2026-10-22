@@ -11,13 +11,47 @@
   logos.append(track);logos.setAttribute('aria-label','Scrolling sample partner names');
  }
  const hero=document.querySelector('.hero .image-box');if(hero){hero.textContent='';hero.setAttribute('aria-label','BidHub illustrated auction hero');}
- document.querySelectorAll('.image-box:not(.gallery-main):not(.logo-placeholder)').forEach((el,i)=>{
-   if(el===hero||el.hasAttribute('data-product-image')||el.closest('.thumbs'))return;
-   if(!el.textContent.trim()||/IMAGE|PHOTO|PLACEHOLDER/i.test(el.textContent)){
-      el.textContent='';el.style.backgroundImage=`url('/assets/product-${i%12+1}.svg')`;el.style.backgroundPosition='center';el.style.backgroundSize='cover';
-      el.setAttribute('aria-label','Illustrative sample product image');
-   }
- });
+
+    document.querySelectorAll(
+        '.image-box:not(.gallery-main):not(.logo-placeholder)'
+    ).forEach((el, i) => {
+
+        // Giữ nguyên mọi ảnh HTML lấy từ SQL Server.
+        if (el.querySelector('img')) {
+            el.style.backgroundImage = 'none';
+            return;
+        }
+
+        // Không thêm ảnh minh họa vào card sản phẩm.
+        if (el.closest('.product-card')) {
+            el.style.backgroundImage = 'none';
+            return;
+        }
+
+        // Giữ nguyên các thành phần đặc biệt.
+        if (
+            el === hero ||
+            el.hasAttribute('data-product-image') ||
+            el.closest('.thumbs')
+        ) {
+            return;
+        }
+
+        // Chỉ dùng minh họa cho placeholder khác.
+        if (
+            !el.textContent.trim() ||
+            /IMAGE|PHOTO|PLACEHOLDER/i.test(el.textContent)
+        ) {
+            el.textContent = '';
+
+            el.style.backgroundImage =
+                `url('/assets/product-${i % 12 + 1}.svg')`;
+
+            el.style.backgroundPosition = 'center';
+            el.style.backgroundSize = 'cover';
+        }
+    });
+
  const blocks=document.querySelectorAll('.panel,.metric,.auction-section,.product-card,.table-shell');
  if('IntersectionObserver' in window){const obs=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('in-view');obs.unobserve(entry.target)}}),{threshold:.06});blocks.forEach(el=>{el.classList.add('reveal');obs.observe(el)});} 
  const top=document.createElement('button');top.type='button';top.className='back-top';top.textContent='↑ Top';top.setAttribute('aria-label','Back to top');top.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));document.body.append(top);

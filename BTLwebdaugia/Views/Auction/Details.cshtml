@@ -37,13 +37,16 @@
 
             <div>
 
+
                 @if (Model.ImagePaths.Any())
                 {
-                    <div class="image-box gallery-main">
+                    <div class="image-box gallery-main auction-image-frame">
                         <img src="@Model.ImagePaths.First()"
                              alt="@Model.ProductName"
-                             style="width:100%;height:100%;object-fit:cover;" />
+                             class="auction-product-image"
+                             loading="eager" />
                     </div>
+
 
                     <div class="thumbs">
                         @foreach (var image in Model.ImagePaths.Skip(1))
