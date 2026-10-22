@@ -314,11 +314,11 @@ namespace BTLwebdaugia.Controllers
             if (auction.EndTimeMode == "Duration")
             {
                 if (!auction.DurationMinutes.HasValue ||
-                    auction.DurationMinutes.Value < 60 ||
+                    auction.DurationMinutes.Value < 1 ||
                     auction.DurationMinutes.Value > 43200)
                 {
                     TempData["AdminError"] =
-                        "Auction duration must be between 1 hour and 30 days.";
+                        "Auction duration must be between 1 minute and 30 days.";
 
                     return RedirectToAction(nameof(Auctions));
                 }
@@ -351,11 +351,10 @@ namespace BTLwebdaugia.Controllers
                 {
                     // Duyệt muộn:
                     // Chỉ chấp nhận nếu còn >= 1 giờ.
-                    if (auction.CurrentEndAt < now.AddHours(1))
+                    if (auction.CurrentEndAt < now.AddMinutes(1))
                     {
                         TempData["AdminError"] =
-                            "Auction end time is too close or has expired. " +
-                            "A new valid schedule is required.";
+                            "Auction must have at least 1 minute remaining.";
 
                         return RedirectToAction(nameof(Auctions));
                     }
@@ -366,11 +365,11 @@ namespace BTLwebdaugia.Controllers
                 TimeSpan duration =
                     auction.CurrentEndAt - auction.StartAt;
 
-                if (duration < TimeSpan.FromHours(1) ||
+                if (duration < TimeSpan.FromMinutes(1) ||
                     duration > TimeSpan.FromDays(30))
                 {
                     TempData["AdminError"] =
-                        "Auction duration must be between 1 hour and 30 days.";
+                        "Auction duration must be between 1 minute and 30 days.";
 
                     return RedirectToAction(nameof(Auctions));
                 }

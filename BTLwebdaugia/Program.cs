@@ -1,3 +1,4 @@
+using BTLwebdaugia.Services;
 using BTLwebdaugia.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -30,6 +31,8 @@ builder.Services.AddDbContext<BidHubDbContext>(options =>
         builder.Configuration.GetConnectionString("BidHubConnection")
     )
 );
+
+builder.Services.AddHostedService<AuctionClosingService>();
 
 
 var app = builder.Build();

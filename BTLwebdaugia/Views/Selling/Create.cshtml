@@ -183,7 +183,7 @@
                                 id="end-time-mode">
 
                             <option value="Duration">
-                                Duration (1 hour–30 days)
+                                Duration (1 minute–30 days)
                             </option>
 
                             <option value="Specific">
@@ -206,10 +206,10 @@
                         <input asp-for="DurationMinutes"
                                class="field"
                                type="number"
-                               min="60"
+                               min="1"
                                max="43200"
                                step="1" />
-
+    
                         <span asp-validation-for="DurationMinutes"
                               class="text-danger"></span>
                     </div>

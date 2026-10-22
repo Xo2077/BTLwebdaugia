@@ -1,123 +1,418 @@
-﻿
+﻿@model List<BTLwebdaugia.Models.Order>
+
+@using System.Security.Claims
+
 @{
     ViewData["Title"] = "My Orders";
     Layout = "_Layout";
-}
 
+    long.TryParse(
+        User.FindFirstValue(ClaimTypes.NameIdentifier),
+        out long currentUserId);
+
+    int totalOrders = Model.Count;
+
+    int pendingOrders = Model.Count(o =>
+        o.Status == "PendingPayment");
+
+    int paidOrders = Model.Count(o =>
+        o.Status == "Paid");
+
+    int shippingOrders = Model.Count(o =>
+        o.Status == "Shipping");
+
+    int completedOrders = Model.Count(o =>
+        o.Status == "Completed");
+}
 
 <div class="container">
 
-    <main class="container">
-        <div class="crumb">Home / My account / My Orders</div>
-        <div class="account">
-            <aside class="sidebar">
-                <div class="identity">
-                    <div class="avatar">◯</div><strong>User Name</strong>
-                    <p class="muted small">Member since October 2026</p>
-                </div>
-                <nav class="sidebar-nav">
-                        <a asp-controller="Account"
-                           asp-action="Profile">My Profile</a>
+    <div class="crumb">
+        Home / My account / My Orders
+    </div>
 
-                        <a asp-controller="Wallet"
-                           asp-action="Index">My Wallet</a>
-                        
-                        <a asp-controller="Selling"
-                           asp-action="Index">My Selling</a>
-                        
-                        <a asp-controller="Bidding"
-                           asp-action="Index">My Bidding</a>
+    <div class="account">
 
-                        <a class="active"
-                           asp-controller="Orders"
-                           asp-action="Index">
-                            My Orders
-                        </a>
+        <aside class="sidebar">
 
-                        <a asp-controller="Account"
-                           asp-action="LogOut">
-                            Log out
-                        </a>
-                </nav>
-                <div class="panel help-box"><strong>Need help?</strong>
-                    <p class="small muted">Contact our team for account or auction support.</p><a href="#">Contact
-                        us</a>
+            <div class="identity">
+                <div class="avatar">◯</div>
+
+                <strong>
+                    @User.Identity?.Name
+                </strong>
+            </div>
+
+            <nav class="sidebar-nav">
+
+                <a asp-controller="Account"
+                   asp-action="Profile">
+                    My Profile
+                </a>
+
+                <a asp-controller="Wallet"
+                   asp-action="Index">
+                    My Wallet
+                </a>
+
+                <a asp-controller="Selling"
+                   asp-action="Index">
+                    My Selling
+                </a>
+
+                <a asp-controller="Bidding"
+                   asp-action="Index">
+                    My Bidding
+                </a>
+
+                <a class="active"
+                   asp-controller="Orders"
+                   asp-action="Index">
+                    My Orders
+                </a>
+
+                <form asp-controller="Account"
+                      asp-action="LogOut"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <button class="btn btn-small"
+                            type="submit">
+                        Log out
+                    </button>
+
+                </form>
+
+            </nav>
+
+            <div class="panel help-box">
+                <strong>Need help?</strong>
+
+                <p class="small muted">
+                    Contact our team for account
+                    or auction support.
+                </p>
+            </div>
+
+        </aside>
+
+        <section class="account-body">
+
+            <div class="page-title">
+
+                <h1>My Orders</h1>
+
+                <p>
+                    Manage your purchases, virtual payments
+                    and delivery confirmations.
+                </p>
+
+            </div>
+
+            @if (TempData["OrderSuccess"] != null)
+            {
+                <p class="notice" role="status">
+                    @TempData["OrderSuccess"]
+                </p>
+            }
+
+            @if (TempData["OrderError"] != null)
+            {
+                <p class="notice text-danger" role="alert">
+                    @TempData["OrderError"]
+                </p>
+            }
+
+            <div class="metrics">
+
+                <div class="metric">
+                    <div class="muted small">
+                        Total orders
+                    </div>
+
+                    <strong>@totalOrders</strong>
+
+                    <small>
+                        Orders involving your account
+                    </small>
                 </div>
-            </aside>
-            <section class="account-body">
-                <div class="page-title">
-                    <h1>My Orders</h1>
-                    <p>Manage purchases, virtual payments and delivery confirmation.</p>
+
+                <div class="metric">
+                    <div class="muted small">
+                        Awaiting payment
+                    </div>
+
+                    <strong>@pendingOrders</strong>
+
+                    <small>
+                        Pending wallet payment
+                    </small>
                 </div>
-                <div class="metrics">
-                    <div class="metric">
-                        <div class="muted small">Total orders</div><strong>5</strong><small>Demo orders</small>
+
+                <div class="metric">
+                    <div class="muted small">
+                        Paid
                     </div>
-                    <div class="metric">
-                        <div class="muted small">Awaiting payment</div><strong>1</strong><small>No mandatory payment
-                            deadline</small>
-                    </div>
-                    <div class="metric">
-                        <div class="muted small">Paid</div><strong>1</strong><small>Awaiting seller shipment</small>
-                    </div>
-                    <div class="metric">
-                        <div class="muted small">Completed</div><strong>2</strong><small>Received by buyer</small>
-                    </div>
+
+                    <strong>@paidOrders</strong>
+
+                    <small>
+                        Awaiting seller shipment
+                    </small>
                 </div>
-                <div class="table-shell">
+
+                <div class="metric">
+                    <div class="muted small">
+                        Completed
+                    </div>
+
+                    <strong>@completedOrders</strong>
+
+                    <small>
+                        Confirmed received by buyer
+                    </small>
+                </div>
+
+            </div>
+
+            <div class="table-shell">
+
+                <div class="table-toolbar">
                     <h3>Your orders</h3>
-                    <div class="tabs"><button class="active">All</button><button>Awaiting
-                            payment</button><button>Paid</button><button>Shipping</button><button>Completed</button>
-                    </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ORDER / ITEM</th>
-                                <th>TOTAL</th>
-                                <th>DATE</th>
-                                <th>STATUS</th>
-                                <th>ACTION</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>#BH-1042 · Vintage turntable</td>
-                                <td>$450</td>
-                                <td>18 Oct 2026</td>
-                                <td>Awaiting payment</td>
-                                <td><button class="btn btn-small" data-pay>Pay with wallet</button></td>
-                            </tr>
-                            <tr>
-                                <td>#BH-1040 · Headphones</td>
-                                <td>$180</td>
-                                <td>17 Oct 2026</td>
-                                <td>Paid</td>
-                                <td>Waiting for seller</td>
-                            </tr>
-                            <tr>
-                                <td>#BH-1039 · Camera</td>
-                                <td>$310</td>
-                                <td>16 Oct 2026</td>
-                                <td>Shipping</td>
-                                <td><button class="btn btn-small" data-demo-action="Confirm received">Confirm
-                                        received</button></td>
-                            </tr>
-                            <tr>
-                                <td>#BH-1032 · Watch</td>
-                                <td>$225</td>
-                                <td>12 Oct 2026</td>
-                                <td>Completed</td>
-                                <td>View order</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <p id="payment-feedback" class="notice"></p>
-                    <p id="action-feedback" class="notice"></p>
+
+                    <span class="muted small">
+                        Shipping: @shippingOrders
+                    </span>
                 </div>
-                <div class="callout">Payment and shipping are simulated. No real financial transfer or delivery occurs
-                    in the HTML template.</div>
-            </section>
-        </div>
-    </main>
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>ORDER / ITEM</th>
+                            <th>YOUR ROLE</th>
+                            <th>TOTAL</th>
+                            <th>AUCTION END</th>
+                            <th>STATUS</th>
+                            <th>ACTION</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="6">
+                                    <p class="muted">
+                                        You have no orders yet.
+                                    </p>
+
+                                    <a class="btn btn-small"
+                                       asp-controller="Home"
+                                       asp-action="Category">
+                                        Explore auctions
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var order in Model)
+                            {
+                                bool isBuyer =
+                                    order.WinnerId == currentUserId;
+
+                                bool isSeller =
+                                    order.Auction.Product.SellerId
+                                    == currentUserId;
+
+                                string statusLabel =
+                                    order.Status == "PendingPayment"
+                                        ? "Awaiting payment"
+                                        : order.Status;
+
+                                <tr>
+
+                                    <td>
+
+                                        <strong>
+                                            #BH-@order.OrderId
+                                        </strong>
+
+                                        <div>
+                                            @order.Auction.Product.Name
+                                        </div>
+
+                                        <a asp-controller="Auction"
+                                           asp-action="Details"
+                                           asp-route-id="@order.AuctionId"
+                                           class="muted small">
+                                            View auction #@order.AuctionId
+                                        </a>
+
+                                    </td>
+
+                                    <td>
+                                        @if (isBuyer)
+                                        {
+                                            <span class="tag">
+                                                Buyer
+                                            </span>
+                                        }
+                                        else if (isSeller)
+                                        {
+                                            <span class="tag">
+                                                Seller
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        <strong>
+                                            $@order.FinalAmount.ToString("N0")
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        @order.Auction.CurrentEndAt.ToString(
+                                            "dd/MM/yyyy HH:mm")
+                                        UTC
+                                    </td>
+
+                                    <td>
+                                        <span class="tag">
+                                            @statusLabel
+                                        </span>
+                                    </td>
+
+                                    <td>
+
+                                        @if (order.Status == "PendingPayment"
+                                             && isBuyer)
+                                        {
+                                            <form asp-controller="Orders"
+                                                  asp-action="Pay"
+                                                  method="post">
+
+                                                @Html.AntiForgeryToken()
+
+                                                <input type="hidden"
+                                                       name="orderId"
+                                                       value="@order.OrderId" />
+
+                                                <button type="submit"
+                                                        class="btn btn-small"
+                                                        onclick="return confirm('Pay $@order.FinalAmount.ToString("N0") from your virtual wallet?');">
+                                                    Pay with wallet
+                                                </button>
+
+                                            </form>
+                                        }
+                                        else if (order.Status == "PendingPayment"
+                                                 && isSeller)
+                                        {
+                                            <span class="muted small">
+                                                Waiting for buyer
+                                            </span>
+                                        }
+                                        else if (order.Status == "Paid"
+                                                 && isSeller)
+                                        {
+                                            <form asp-controller="Orders"
+                                                  asp-action="Ship"
+                                                  method="post">
+
+                                                @Html.AntiForgeryToken()
+
+                                                <input type="hidden"
+                                                       name="orderId"
+                                                       value="@order.OrderId" />
+
+                                                <button type="submit"
+                                                        class="btn btn-small"
+                                                        onclick="return confirm('Confirm this order has been shipped?');">
+                                                    Confirm shipment
+                                                </button>
+
+                                            </form>
+                                        }
+                                        else if (order.Status == "Paid"
+                                                 && isBuyer)
+                                        {
+                                            <span class="muted small">
+                                                Waiting for seller
+                                            </span>
+                                        }
+                                        else if (order.Status == "Shipping"
+                                                 && isBuyer)
+                                        {
+                                            <form asp-controller="Orders"
+                                                  asp-action="ConfirmReceived"
+                                                  method="post">
+
+                                                @Html.AntiForgeryToken()
+
+                                                <input type="hidden"
+                                                       name="orderId"
+                                                       value="@order.OrderId" />
+
+                                                <button type="submit"
+                                                        class="btn btn-small"
+                                                        onclick="return confirm('Have you received this item?');">
+                                                    Confirm received
+                                                </button>
+
+                                            </form>
+                                        }
+                                        else if (order.Status == "Shipping"
+                                                 && isSeller)
+                                        {
+                                            <span class="muted small">
+                                                Shipped · awaiting buyer
+                                            </span>
+                                        }
+                                        else if (order.Status == "Completed")
+                                        {
+                                            <span class="tag">
+                                                Completed
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="muted small">
+                                                No action available
+                                            </span>
+                                        }
+
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div class="callout"
+                 style="margin-top:24px">
+
+                <strong>Order process</strong>
+
+                <p>
+                    PendingPayment → Paid → Shipping → Completed.
+                    Payments use virtual wallets and delivery
+                    confirmation is simulated.
+                </p>
+
+            </div>
+
+        </section>
+
+    </div>
 
 </div>

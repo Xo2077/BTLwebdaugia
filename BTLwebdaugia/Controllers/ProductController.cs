@@ -143,12 +143,12 @@ namespace BTLwebdaugia.Controllers
             if (model.EndTimeMode == "Duration")
             {
                 if (!model.DurationMinutes.HasValue ||
-                    model.DurationMinutes.Value < 60 ||
+                    model.DurationMinutes.Value < 1 ||
                     model.DurationMinutes.Value > 43200)
                 {
                     ModelState.AddModelError(
                         nameof(model.DurationMinutes),
-                        "Duration must be between 60 and 43200 minutes.");
+                        "Duration must be between 1 and 43200 minutes.");
                 }
                 else
                 {
