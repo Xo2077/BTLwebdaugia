@@ -1,11 +1,11 @@
-﻿
+
 @{
     var currentAction =
         ViewContext.RouteData.Values["action"]?.ToString();
 }
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -24,8 +24,7 @@
         <div class="container nav-inner">
 
             <a class="brand" href="/">
-                <span class="brand-mark">⚒</span>
-                <span>BidHub</span>
+                <img class="brand-logo" src="~/assets/bidhub-logo.png" asp-append-version="true" alt="BidHub" width="180" height="55" />
             </a>
 
             <button class="nav-toggle"
@@ -37,26 +36,24 @@
             <nav class="nav-links">
 
 
-                <a asp-controller="Home" asp-action="Index">Home</a>
+                <a asp-controller="Home" asp-action="Index">@Labels["Home"]</a>
 
 
-                <a href="/Home/Category">Category</a>
-                <a href="#">About Us</a>
-                <a href="#">Contact</a>
+                <a href="/Home/Category">@Labels["Category"]</a>
             </nav>
 
             <div class="nav-actions">
-                <a href="/Wallet">♡</a>
+                <partial name="_LanguageSwitch" />
 
                 <a asp-controller="Account"
                    asp-action="Profile">
-                    My account
+                    @(User.Identity?.Name ?? "My account")
                 </a>
 
 
                 <a asp-controller="Account"
                    asp-action="SignIn">
-                    Sign in
+                    @Labels["Sign in"]
                 </a>
 
             </div>
@@ -72,13 +69,13 @@
             <a class="@(currentAction == "Index" ? "active" : "")"
                asp-controller="Admin"
                asp-action="Index">
-                Dashboard
+                @Labels["Dashboard"]
             </a>
 
             <a class="@(currentAction == "Users" ? "active" : "")"
                asp-controller="Admin"
                asp-action="Users">
-                Users
+                @Labels["Users"]
             </a>
 
             <a class="@(currentAction == "Categories" ? "active" : "")"
@@ -91,7 +88,7 @@
             <a class="@(currentAction == "Products" ? "active" : "")"
                asp-controller="Admin"
                asp-action="Products">
-                Products
+                @Labels["Products"]
             </a>
 
             <a class="@(currentAction == "Auctions" ? "active" : "")"
@@ -103,13 +100,13 @@
             <a class="@(currentAction == "Bids" ? "active" : "")"
                asp-controller="Admin"
                asp-action="Bids">
-                Bids
+                @Labels["BIDS"]
             </a>
 
             <a class="@(currentAction == "Orders" ? "active" : "")"
                asp-controller="Admin"
                asp-action="Orders">
-                Orders
+                @Labels["Orders"]
             </a>
 
             <a class="@(currentAction == "Wallets" ? "active" : "")"
@@ -130,23 +127,14 @@
 
             <div class="footer-top">
                 <a class="brand" href="/">
-                    <span class="brand-mark">⚒</span>
-                    BidHub
+                    <img class="brand-logo" src="~/assets/bidhub-logo.png" asp-append-version="true" alt="BidHub" width="180" height="55" />
                 </a>
 
                 <div class="footer-links">
-                    <a href="#">About Us</a>
-                    <a href="#">Terms</a>
-                    <a href="#">Policy</a>
-                    <a href="#">Contact</a>
+                    <a asp-controller="Home" asp-action="Privacy">@Labels["Privacy"]</a>
                 </div>
             </div>
 
-            <div class="socials">
-                <span>f</span>
-                <span>◎</span>
-                <span>▶</span>
-            </div>
 
             <div class="footer-bottom">
                 © 2026 Bidhub. All rights reserved.

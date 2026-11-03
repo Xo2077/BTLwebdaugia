@@ -303,28 +303,7 @@ ORDER BY a.AuctionId DESC;
 
 
  
-CREATE TABLE dbo.UserImages
-(
-    ImageId BIGINT IDENTITY(1,1) NOT NULL,
-    UserId BIGINT NOT NULL,
-    ImagePath NVARCHAR(500) NOT NULL,
-    UploadedAt DATETIME2(3) NOT NULL
-        CONSTRAINT DF_UserImages_UploadedAt
-        DEFAULT SYSUTCDATETIME(),
 
-    CONSTRAINT PK_UserImages
-        PRIMARY KEY (ImageId),
-
-    CONSTRAINT UQ_UserImages_UserId
-        UNIQUE (UserId),
-
-    CONSTRAINT FK_UserImages_Users
-        FOREIGN KEY (UserId)
-        REFERENCES dbo.Users(UserId),
-
-    CONSTRAINT CK_UserImages_ImagePath
-        CHECK (LEN(TRIM(ImagePath)) > 0)
-);
 
 
 SELECT

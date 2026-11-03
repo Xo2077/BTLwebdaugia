@@ -1,4 +1,4 @@
-﻿
+
 @model List<BTLwebdaugia.Models.Order>
 
 @{
@@ -6,7 +6,7 @@
     Layout = "_AdminLayout";
 }
 
-<h1>Orders management</h1>
+<h1>@Labels["Orders management"]</h1>
 <p class="muted">Order records from SQL Server</p>
 
 <div class="table-shell">
@@ -17,11 +17,11 @@
     <table>
         <thead>
             <tr>
-                <th>ORDER</th>
-                <th>PRODUCT</th>
-                <th>WINNER</th>
-                <th>AMOUNT</th>
-                <th>STATUS</th>
+                <th>@Labels["ORDER"]</th>
+                <th>@Labels["PRODUCT"]</th>
+                <th>@Labels["WINNER"]</th>
+                <th>@Labels["AMOUNT"]</th>
+                <th>@Labels["STATUS"]</th>
             </tr>
         </thead>
         <tbody>
@@ -41,7 +41,7 @@
             @if (!Model.Any())
             {
                 <tr>
-                    <td colspan="5">No orders found.</td>
+                    <td colspan="5">@Labels["No orders found."]</td>
                 </tr>
             }
         </tbody>

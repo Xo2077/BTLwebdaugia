@@ -1,0 +1,161 @@
+@model BTLwebdaugia.ViewModels.ProfileViewModel
+@{ string? avatarPath = ViewBag.AvatarPath as string; }
+
+            <section class="account-body">
+
+                <div class="page-title">
+                    <h1>@Labels["My Profile"]</h1>
+
+                    <p>
+                        Manage your personal information
+                        and profile picture.
+                    </p>
+                </div>
+
+                @if (TempData["ProfileSuccess"] != null)
+                {
+                    <p class="notice" role="status">
+                        @TempData["ProfileSuccess"]
+                    </p>
+                }
+
+                @if (TempData["AvatarError"] != null)
+                {
+                    <p class="text-danger" role="alert">
+                        @TempData["AvatarError"]
+                    </p>
+                }
+
+                <div class="panel">
+
+                    <h3>@Labels["Profile picture"]</h3>
+
+                    @if (!string.IsNullOrWhiteSpace(avatarPath))
+                    {
+                        <img src="@avatarPath"
+                             alt="Current profile picture"
+                             class="avatar"
+                             style="width:96px;
+                                    height:96px;
+                                    border-radius:50%;
+                                    object-fit:cover;" />
+                    }
+                    else
+                    {
+                        <div class="avatar">◯</div>
+                    }
+
+                    <form asp-controller="Account"
+                          asp-action="UploadAvatar"
+                          method="post"
+                          enctype="multipart/form-data">
+
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-group">
+                            <label for="avatar">
+                                @Labels["Choose profile picture"]
+                            </label>
+
+                            <input id="avatar"
+                                   name="avatar"
+                                   type="file"
+                                   accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                                   class="field"
+                                   required />
+                        </div>
+
+                        <p class="muted small">
+                            JPG or PNG. Maximum file size 2 MB.
+                        </p>
+
+                        <button type="submit"
+                                class="btn btn-solid">
+                            @Labels["Upload picture"]
+                        </button>
+
+                    </form>
+
+                </div>
+
+                <div class="panel" style="margin-top:24px">
+
+                    <h3>@Labels["Personal information"]</h3>
+
+                    <form asp-controller="Account"
+                          asp-action="Profile"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger"></div>
+
+                        <div class="form-row">
+
+                            <div class="form-group">
+
+                                <label asp-for="Username">
+                                    Display name
+                                </label>
+
+                                <input asp-for="Username"
+                                       class="field"
+                                       maxlength="50"
+                                       required />
+
+                                <span asp-validation-for="Username"
+                                      class="text-danger"></span>
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label asp-for="Email">
+                                    @Labels["Email address"]
+                                </label>
+
+                                <input asp-for="Email"
+                                       type="email"
+                                       class="field"
+                                       maxlength="255"
+                                       required />
+
+                                <span asp-validation-for="Email"
+                                      class="text-danger"></span>
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label>@Labels["Account created"]</label>
+
+                            <input class="field"
+                                   value="@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm") UTC"
+                                   readonly />
+
+                        </div>
+
+                        <button class="btn btn-solid"
+                                type="submit">
+                            Save changes
+                        </button>
+
+                    </form>
+
+                </div>
+
+                <div class="panel" style="margin-top:24px">
+
+                    <h3>@Labels["Account &amp; security"]</h3>
+
+                    <p class="muted">
+                        Your password is securely stored
+                        as a hash and is not displayed.
+                    </p>
+
+                </div>
+
+            </section>

@@ -7,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<AccountDisplayService>();
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
 
 builder.Services.AddDistributedMemoryCache();
@@ -65,6 +67,11 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseRequestLocalization(new RequestLocalizationOptions()
+    .SetDefaultCulture("en-US")
+    .AddSupportedCultures("en-US")
+    .AddSupportedUICultures("en-US", "vi-VN"));
 
 // Quản lý trạng thái phiên.
 app.UseSession();

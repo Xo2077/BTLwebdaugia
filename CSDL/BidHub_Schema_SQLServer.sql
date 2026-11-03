@@ -1,12 +1,3 @@
-/*
- BidHub - SQL Server database schema v1.0
- ERD approved 2026-10-20. Nine core tables.
- All date/time fields use UTC by convention.
- Currency: whole USD (DECIMAL(18,0)).
- Run against an EMPTY chosen database. This script does not CREATE DATABASE.
- IMPORTANT: cross-table rules and multi-step actions must be enforced in application
- transactions or purpose-built stored procedures; see notes at end.
-*/
 CREATE DATABASE CSDLWEBDAUGIA;
 GO
 USE CSDLWEBDAUGIA;
@@ -26,6 +17,18 @@ CREATE TABLE dbo.Users (
     CONSTRAINT CK_Users_Role CHECK ([Role] IN ('User','Admin')),
     CONSTRAINT CK_Users_Username_NotEmpty CHECK (LEN(LTRIM(RTRIM(Username))) > 0),
     CONSTRAINT CK_Users_Email_NotEmpty CHECK (LEN(LTRIM(RTRIM(Email))) > 0)
+);
+GO
+
+CREATE TABLE dbo.UserImages (
+    ImageId BIGINT IDENTITY(1,1) NOT NULL,
+    UserId BIGINT NOT NULL,
+    ImagePath NVARCHAR(500) NOT NULL,
+    UploadedAt DATETIME2(3) NOT NULL CONSTRAINT DF_UserImages_UploadedAt DEFAULT SYSUTCDATETIME(),
+    CONSTRAINT PK_UserImages PRIMARY KEY (ImageId),
+    CONSTRAINT UQ_UserImages_UserId UNIQUE (UserId),
+    CONSTRAINT FK_UserImages_Users FOREIGN KEY (UserId) REFERENCES dbo.Users(UserId),
+    CONSTRAINT CK_UserImages_ImagePath CHECK (LEN(TRIM(ImagePath)) > 0)
 );
 GO
 
@@ -224,25 +227,3 @@ CREATE INDEX IX_Bids_Bidder ON dbo.Bids (BidderId);
 CREATE INDEX IX_WalletTransactions_WalletTime ON dbo.WalletTransactions (WalletId, CreatedAt DESC);
 GO
 
-/*
-REQUIRED AT APPLICATION/SERVICE TRANSACTION LAYER (not expressible in these table-only constraints):
- 1. Registration: Role User -> create exactly one Wallet with Balance 0 atomically.
-    Admin -> do not create Wallet. Restrict Admin creation and role changes.
- 2. Username remains immutable; HasBeenApproved remains true once set.
-    Product soft-delete only before first approval; approved product fields immutable.
- 3. Admin product approval before auction approval. Only seller(User) owns product;
-    bidder(User) cannot bid own item or consecutively outbid self.
- 4. One active/pending auction per product; relist only when latest is Unsold.
- 5. Validate start/end scheduling and late approval; extend once upon a valid bid
-    within last five minutes, then CurrentEndAt = bid acceptance UTC + 5 min.
- 6. Serialize bid acceptance and auction close, enforce increment and UTC clock;
-    atomically finalize Result, WinnerBidId, and exactly one Order for Sold.
-    Ensure Orders.WinnerId/FinalAmount matches selected winning Bid and seller exists.
- 7. TopUp: validate RequestId reuse, atomically update Balance and write ledger.
- 8. Payment: serialize by Order and both Wallets; atomically debit winner, credit
-    seller, insert one matching debit/credit pair and set Order Paid. On failure rollback.
-    Ledger pair must use matching OrderId/TransferGroupId and correct wallets/amounts.
- 9. Paid -> Shipping -> Completed transitions and times are simulation only.
-10. All timestamps are UTC; display in Asia/Ho_Chi_Minh (UTC+07:00).
-11. Text lengths, normalization and stricter input-validation remain backend tasks.
-*/

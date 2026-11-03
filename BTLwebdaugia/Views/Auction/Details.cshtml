@@ -1,4 +1,4 @@
-﻿
+
 @model BTLwebdaugia.ViewModels.AuctionDetailViewModel
 
 @{
@@ -14,30 +14,90 @@
     );
 }
 
-<div class="container">
-    <main class="container">
-
+<div class="container auction-page">
         <div class="crumb">
             Home / Auction / @Model.CategoryName
         </div>
 
-        <div class="page-title">
+        <div class="auction-status-row">
+            <span class="tag">@Labels[Model.AuctionStatus]</span>
+                @if (Model.AuctionStatus == "Live")
+                {
+                    <p>
+                        @Labels["Ends in:"]
+                        <strong class="countdown"
+                                data-seconds="@secondsRemaining">
+                            Calculating...
+                        </strong>
+                    </p>
+                }
+                else if (Model.AuctionStatus == "Upcoming")
+                {
+                    <p class="muted">
+                        @Labels["Starts at:"]
+                        @Model.StartAt.AddHours(7).ToString("dd/MM/yyyy HH:mm")
+                        UTC+7
+                    </p>
+                }
+                else
+                {
+                    <p class="muted">
+                        @Labels["Auction ended:"]
+                        @Model.CurrentEndAt.AddHours(7).ToString("dd/MM/yyyy HH:mm")
+                        UTC+7
+                    </p>
+                }
 
-            <span class="tag">
-                @Model.AuctionStatus
-            </span>
+
+        </div>
+
+                <div class="panel bid-history" id="auction-history">
+
+                    <h3>@Labels["Latest bids"]</h3>
+
+                    @if (!Model.RecentBids.Any())
+                    {
+                        <p class="muted">
+                            @Labels["No bids have been placed yet."]
+                        </p>
+                    }
+                    else
+                    {
+                        <ol class="bid-ranks">
+                            @foreach (var bid in Model.RecentBids.Take(3))
+                            {
+                                <li>
+                                    <span>
+                                        @if (!string.IsNullOrWhiteSpace(bid.AvatarPath))
+                                        {
+                                            <img class="bid-rank-avatar" src="@bid.AvatarPath" alt="" />
+                                        }
+                                        else
+                                        {
+                                            <span class="bid-rank-avatar bid-rank-placeholder" aria-hidden="true">@bid.BidderName.FirstOrDefault()</span>
+                                        }
+                                        @bid.BidderName
+                                    </span>
+
+                                    <strong>
+                                        $@bid.Amount.ToString("N0")
+                                    </strong>
+                                </li>
+                            }
+                        </ol>
+                    }
+
+                </div>
+
+        <div class="auction-overview">
+        <div class="page-title">
 
             <h1>@Model.ProductName</h1>
 
             <p>by @Model.SellerName</p>
 
         </div>
-
-        <div class="auction-detail">
-
-            <div>
-
-
+            <div class="auction-gallery">
                 @if (Model.ImagePaths.Any())
                 {
                     <div class="image-box gallery-main auction-image-frame">
@@ -62,44 +122,12 @@
                 }
                 else
                 {
-                    <div class="image-box gallery-main">
+                    <div class="image-box gallery-main auction-image-frame">
                         Not available
                     </div>
                 }
-
-                <div class="panel bid-history">
-
-                    <h3>Latest bids</h3>
-
-                    @if (!Model.RecentBids.Any())
-                    {
-                        <p class="muted">
-                            No bids have been placed yet.
-                        </p>
-                    }
-                    else
-                    {
-                        <ol>
-                            @foreach (var bid in Model.RecentBids)
-                            {
-                                <li>
-                                    <span>
-                                        @bid.BidderName
-                                    </span>
-
-                                    <strong>
-                                        $@bid.Amount.ToString("N0")
-                                    </strong>
-                                </li>
-                            }
-                        </ol>
-                    }
-
-                </div>
-
             </div>
-
-            <div class="panel bid-panel">
+            <div class="panel bid-panel" id="auction-bid-panel">
 
                 <p class="muted">
                     @(Model.RecentBids.Any()
@@ -111,44 +139,17 @@
                     $@Model.CurrentPrice.ToString("N0")
                 </div>
 
-                @if (Model.AuctionStatus == "Live")
-                {
-                    <p>
-                        Ends in:
-                        <strong class="countdown"
-                                data-seconds="@secondsRemaining">
-                            Calculating...
-                        </strong>
-                    </p>
-                }
-                else if (Model.AuctionStatus == "Upcoming")
-                {
-                    <p class="muted">
-                        Starts at:
-                        @Model.StartAt.ToString("dd/MM/yyyy HH:mm")
-                        UTC
-                    </p>
-                }
-                else
-                {
-                    <p class="muted">
-                        Auction ended:
-                        @Model.CurrentEndAt.ToString("dd/MM/yyyy HH:mm")
-                        UTC
-                    </p>
-                }
-
                 <hr />
 
                 <p>
-                    Minimum bid increment:
+                    @Labels["Minimum bid increment:"]
                     <strong>
                         $@Model.BidStep.ToString("N0")
                     </strong>
                 </p>
 
                 <p>
-                    Minimum next bid:
+                    @Labels["Minimum next bid:"]
                     <strong>
                         $@Model.NextMinimumBid.ToString("N0")
                     </strong>
@@ -157,12 +158,6 @@
 
                 @if (isLive)
                 {
-                    @if (TempData["BidSuccess"] != null)
-                    {
-                        <p class="notice">
-                            @TempData["BidSuccess"]
-                        </p>
-                    }
 
                     @if (TempData["BidError"] != null)
                     {
@@ -173,7 +168,7 @@
 
                     @if (User.Identity?.IsAuthenticated == true)
                     {
-                        <form asp-controller="Bidding"
+                        <form id="auction-bid-form" asp-controller="Bidding"
                               asp-action="PlaceBid"
                               method="post">
 
@@ -185,7 +180,7 @@
 
                             <div class="form-group">
                                 <label for="bid-value">
-                                    Enter your bid (whole USD)
+                                    @Labels["Enter your bid (whole USD)"]
                                 </label>
 
                                 <input class="field"
@@ -201,7 +196,7 @@
 
                             <button class="btn btn-solid btn-wide"
                                     type="submit">
-                                Place Bid
+                                @Labels["Place Bid"]
                             </button>
                         </form>
                     }
@@ -214,7 +209,7 @@
                         <a class="btn btn-solid btn-wide"
                            asp-controller="Account"
                            asp-action="SignIn">
-                            Sign in
+                            @Labels["Sign in"]
                         </a>
                     }
                 }
@@ -239,16 +234,15 @@
                 </p>
 
             </div>
-
         </div>
 
-        <section class="desc-section panel">
+        <details class="desc-section panel">
 
-            <h2>Item Description</h2>
+            <summary>@Labels["Item Description"]</summary>
 
             <p>@Model.Description</p>
 
-            <h3>Item Details</h3>
+            <h3>@Labels["Item Details"]</h3>
 
             <p>
                 Category:
@@ -261,25 +255,28 @@
             </p>
 
             <p>
-                Starting price:
+                @Labels["Starting price:"]
                 <strong>
                     $@Model.StartingPrice.ToString("N0")
                 </strong>
             </p>
 
             <p>
-                Start time:
-                @Model.StartAt.ToString("dd/MM/yyyy HH:mm")
-                UTC
+                @Labels["Start time:"]
+                @Model.StartAt.AddHours(7).ToString("dd/MM/yyyy HH:mm")
+                UTC+7
             </p>
 
             <p>
-                End time:
-                @Model.CurrentEndAt.ToString("dd/MM/yyyy HH:mm")
-                UTC
+                @Labels["End time:"]
+                @Model.CurrentEndAt.AddHours(7).ToString("dd/MM/yyyy HH:mm")
+                UTC+7
             </p>
 
-        </section>
-
-    </main>
+        </details>
 </div>
+
+
+@section Scripts {
+    <script src="~/js/auction-bids.js" asp-append-version="true"></script>
+}

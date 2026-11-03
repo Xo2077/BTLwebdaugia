@@ -1,0 +1,10 @@
+@using System.Globalization
+@{
+    bool vietnamese = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "vi";
+    var returnUrl = Context.Request.PathBase.ToString() + Context.Request.Path + Context.Request.QueryString;
+}
+<form asp-controller="Language" asp-action="Set" method="post" class="language-switch">
+    <input type="hidden" name="returnUrl" value="@returnUrl" />
+    <button type="submit" name="language" value="en-US" lang="en" aria-pressed="@(!vietnamese ? "true" : "false")">EN</button>
+    <button type="submit" name="language" value="vi-VN" lang="vi" aria-pressed="@(vietnamese ? "true" : "false")">VN</button>
+</form>

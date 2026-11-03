@@ -1,4 +1,4 @@
-﻿
+
 @model BTLwebdaugia.ViewModels.AdminDashboardViewModel
 
 @{
@@ -6,7 +6,7 @@
     Layout = "_AdminLayout";
 }
 
-<h1>Dashboard</h1>
+<h1>@Labels["Dashboard"]</h1>
 
 <p class="muted">
     Overview of BidHub operations
@@ -15,27 +15,27 @@
 <div class="metrics">
 
     <div class="metric">
-        <div class="muted small">Users</div>
+        <div class="muted small">@Labels["Users"]</div>
         <strong>@Model.TotalUsers</strong>
-        <small>Registered accounts</small>
+        <small>@Labels["Registered accounts"]</small>
     </div>
 
     <div class="metric">
-        <div class="muted small">Products</div>
+        <div class="muted small">@Labels["Products"]</div>
         <strong>@Model.TotalProducts</strong>
         <small>Non-deleted products</small>
     </div>
 
     <div class="metric">
-        <div class="muted small">Live auctions</div>
+        <div class="muted small">@Labels["Live auctions"]</div>
         <strong>@Model.LiveAuctions</strong>
         <small>Approved active sessions</small>
     </div>
 
     <div class="metric">
-        <div class="muted small">Orders</div>
+        <div class="muted small">@Labels["Orders"]</div>
         <strong>@Model.TotalOrders</strong>
-        <small>Total orders</small>
+        <small>@Labels["Total orders"]</small>
     </div>
 
 </div>
@@ -44,7 +44,7 @@
 
     <div class="panel">
 
-        <h3>Auction activity</h3>
+        <h3>@Labels["Auction activity"]</h3>
 
         <div class="metrics">
 
@@ -55,12 +55,12 @@
 
                 <strong>@Model.PendingProducts</strong>
 
-                <small>Awaiting admin review</small>
+                <small>@Labels["Awaiting admin review"]</small>
             </div>
 
             <div class="metric">
                 <div class="muted small">
-                    Live auctions
+                    @Labels["Live auctions"]
                 </div>
 
                 <strong>@Model.LiveAuctions</strong>
@@ -74,7 +74,7 @@
 
     <div class="panel">
 
-        <h3>Quick actions</h3>
+        <h3>@Labels["Quick actions"]</h3>
 
         <p>
             <a class="btn btn-wide"

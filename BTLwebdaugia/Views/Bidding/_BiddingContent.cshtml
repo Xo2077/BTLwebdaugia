@@ -1,0 +1,138 @@
+@model List<BTLwebdaugia.ViewModels.MyBiddingItemViewModel>
+@{
+        int activeCount = Model.Count(x =>
+            x.Status == "Leading" ||
+            x.Status == "Outbid");
+
+        int leadingCount = Model.Count(x =>
+            x.Status == "Leading");
+
+        int outbidCount = Model.Count(x =>
+            x.Status == "Outbid");
+
+        int wonCount = Model.Count(x =>
+            x.Status == "Won");
+}
+
+
+
+
+        <section class="account-body">
+
+            <div class="page-title">
+                <h1>@Labels["My Bidding"]</h1>
+
+                <p>
+                    Your auction activity from SQL Server.
+                </p>
+            </div>
+
+            <div class="metrics">
+
+                <div class="metric">
+                    <div class="muted small">
+                        Active auctions
+                    </div>
+                    <strong>@activeCount</strong>
+                </div>
+
+                <div class="metric">
+                    <div class="muted small">
+                        Currently leading
+                    </div>
+                    <strong>@leadingCount</strong>
+                </div>
+
+                <div class="metric">
+                    <div class="muted small">
+                        Outbid
+                    </div>
+                    <strong>@outbidCount</strong>
+                </div>
+
+                <div class="metric">
+                    <div class="muted small">
+                        Auctions won
+                    </div>
+                    <strong>@wonCount</strong>
+                </div>
+
+            </div>
+
+            <div class="table-shell">
+
+                <h3>@Labels["Your auctions"]</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>AUCTION / PRODUCT</th>
+                            <th>@Labels["CURRENT BID"]</th>
+                            <th>@Labels["YOUR HIGHEST BID"]</th>
+                            <th>@Labels["END TIME"]</th>
+                            <th>@Labels["STATUS"]</th>
+                            <th>@Labels["ACTION"]</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="6">
+                                    You have not placed any bids yet.
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+
+                                    <td>
+                                        #@item.AuctionId
+
+                                        <strong>
+                                            @item.ProductName
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        $@item.CurrentHighestBid.ToString("N0")
+                                    </td>
+
+                                    <td>
+                                        $@item.MyHighestBid.ToString("N0")
+                                    </td>
+
+                                    <td>
+                                        @item.CurrentEndAt.ToString("dd/MM/yyyy HH:mm")
+                                        UTC
+                                    </td>
+
+                                    <td>
+                                        <span class="tag">
+                                            @item.Status
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <a asp-controller="Auction"
+                                           asp-action="Details"
+                                           asp-route-id="@item.AuctionId">
+                                            View auction
+                                        </a>
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+
+                    </tbody>
+                </table>
+
+            </div>
+
+        </section>

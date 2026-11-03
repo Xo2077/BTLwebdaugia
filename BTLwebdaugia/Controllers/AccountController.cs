@@ -1,5 +1,4 @@
-﻿
-using BTLwebdaugia.Data;
+﻿using BTLwebdaugia.Data;
 using BTLwebdaugia.Models;
 using BTLwebdaugia.ViewModels;
 using Microsoft.AspNetCore.Authentication;
@@ -227,6 +226,11 @@ namespace BTLwebdaugia.Controllers
             };
 
             await LoadAvatarAsync(userId);
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_ProfileContent", model);
+            }
 
             return View(model);
         }

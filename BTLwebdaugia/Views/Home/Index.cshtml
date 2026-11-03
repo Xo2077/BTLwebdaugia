@@ -1,4 +1,4 @@
-﻿@model List<BTLwebdaugia.ViewModels.ProductListItemViewModel>
+@model List<BTLwebdaugia.ViewModels.ProductListItemViewModel>
 @using BTLwebdaugia.ViewModels
 
 @{
@@ -17,42 +17,35 @@
         <div class="hero">
             <div>
                 <h1>
-                    Discover unique items and win
-                    your next auction
+                    @Labels["Discover unique items and win your next auction"]
                 </h1>
 
                 <p class="muted">
-                    Explore BidHub auctions and find
-                    products from independent sellers.
+                    @Labels["Explore BidHub auctions and find products from independent sellers."]
                 </p>
 
                 <a class="btn btn-solid"
                    asp-controller="Home"
                    asp-action="Category">
-                    Explore Auctions
+                    @Labels["Explore Auctions"]
                 </a>
             </div>
 
             <div class="image-box"
                  role="img"
                  aria-label="BidHub hero illustration">
-                HERO IMAGE PLACEHOLDER
             </div>
         </div>
 
         <div class="logos">
             @for (int i = 0; i < 5; i++)
             {
-                <div class="image-box logo-placeholder"
-                     role="img"
-                     aria-label="Partner illustration">
-                    PARTNER LOGO
-                </div>
+                <div class="image-box logo-placeholder"></div>
             }
         </div>
 
         <section class="section">
-            <h2>Category</h2>
+            <h2>@Labels["Category"]</h2>
 
 
             <div class="category-grid">

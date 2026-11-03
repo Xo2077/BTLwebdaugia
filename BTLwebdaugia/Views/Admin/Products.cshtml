@@ -1,4 +1,4 @@
-﻿
+
 @model List<BTLwebdaugia.Models.Product>
 
 @{
@@ -26,7 +26,7 @@
 
 
 
-<h1>Products management</h1>
+<h1>@Labels["Products management"]</h1>
 
 <p class="muted">
     Product listings from SQL Server
@@ -43,10 +43,10 @@
         <thead>
             <tr>
                 <th>ID / ITEM</th>
-                <th>OWNER</th>
-                <th>CATEGORY</th>
-                <th>STATUS</th>
-                <th>REVIEW</th>
+                <th>@Labels["OWNER"]</th>
+                <th>@Labels["Category"]</th>
+                <th>@Labels["STATUS"]</th>
+                <th>@Labels["REVIEW"]</th>
             </tr>
         </thead>
         <tbody>

@@ -1,4 +1,4 @@
-﻿
+
 @model List<BTLwebdaugia.Models.User>
 
 @{
@@ -6,7 +6,7 @@
     Layout = "_AdminLayout";
 }
 
-<h1>Users management</h1>
+<h1>@Labels["Users management"]</h1>
 <p class="muted">Registered accounts from SQL Server</p>
 
 <div class="table-shell">
@@ -18,10 +18,10 @@
         <thead>
             <tr>
                 <th>ID</th>
-                <th>USERNAME</th>
+                <th>@Labels["USERNAME"]</th>
                 <th>EMAIL</th>
-                <th>ROLE</th>
-                <th>CREATED</th>
+                <th>@Labels["ROLE"]</th>
+                <th>@Labels["CREATED"]</th>
             </tr>
         </thead>
         <tbody>
@@ -39,7 +39,7 @@
             @if (!Model.Any())
             {
                 <tr>
-                    <td colspan="5">No users found.</td>
+                    <td colspan="5">@Labels["No users found."]</td>
                 </tr>
             }
         </tbody>

@@ -1,4 +1,4 @@
-﻿
+
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
@@ -21,9 +21,6 @@ public class CreateProductViewModel
     public decimal StartingPrice { get; set; }
 
     public decimal BidStep { get; set; }
-
-    [Required(ErrorMessage = "Please select a start mode.")]
-    public string StartMode { get; set; } = string.Empty;
 
     public DateTime? ScheduledStartAt { get; set; }
 

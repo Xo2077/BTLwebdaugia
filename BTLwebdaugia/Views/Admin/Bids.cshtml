@@ -1,4 +1,4 @@
-﻿
+
 @model List<BTLwebdaugia.Models.Bid>
 
 @{
@@ -6,7 +6,7 @@
     Layout = "_AdminLayout";
 }
 
-<h1>Bids management</h1>
+<h1>@Labels["Bids management"]</h1>
 <p class="muted">Accepted bidding history from SQL Server</p>
 
 <div class="table-shell">
@@ -17,11 +17,11 @@
     <table>
         <thead>
             <tr>
-                <th>BID ID</th>
+                <th>@Labels["BID ID"]</th>
                 <th>AUCTION / PRODUCT</th>
-                <th>BIDDER</th>
-                <th>AMOUNT</th>
-                <th>PLACED AT</th>
+                <th>@Labels["BIDDER"]</th>
+                <th>@Labels["AMOUNT"]</th>
+                <th>@Labels["PLACED AT"]</th>
             </tr>
         </thead>
         <tbody>
@@ -45,7 +45,7 @@
             @if (!Model.Any())
             {
                 <tr>
-                    <td colspan="5">No bids found.</td>
+                    <td colspan="5">@Labels["No bids found."]</td>
                 </tr>
             }
         </tbody>

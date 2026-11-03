@@ -1,29 +1,10 @@
-﻿@using System.Security.Claims
-@using Microsoft.EntityFrameworkCore
-@inject BTLwebdaugia.Data.BidHubDbContext DbContext
-
+@inject BTLwebdaugia.Services.AccountDisplayService AccountDisplay
 @{
-    string? navAvatarPath = null;
-
-    if (User.Identity?.IsAuthenticated == true &&
-        long.TryParse(
-            User.FindFirstValue(ClaimTypes.NameIdentifier),
-            out long currentUserId))
-    {
-        navAvatarPath = await DbContext.UserImages
-            .AsNoTracking()
-            .Where(x => x.UserId == currentUserId)
-            .Select(x => x.ImagePath)
-            .FirstOrDefaultAsync();
-    }
+    var navAvatarPath = (await AccountDisplay.GetAsync(User))?.AvatarPath;
 }
 
-
-
-
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -41,8 +22,7 @@
         <div class="container nav-inner">
 
             <a class="brand" href="/">
-                <span class="brand-mark">⚒</span>
-                <span>BidHub</span>
+                <img class="brand-logo" src="~/assets/bidhub-logo.png" asp-append-version="true" alt="BidHub" width="180" height="55" />
             </a>
 
             <button class="nav-toggle" type="button" aria-label="Toggle navigation">
@@ -51,17 +31,16 @@
 
             <nav class="nav-links">
 
-                <a asp-controller="Home" asp-action="Index">Home</a>
+                <a asp-controller="Home" asp-action="Index">@Labels["Home"]</a>
 
 
-                <a asp-controller="Home" asp-action="Category">Category</a>
+                <a asp-controller="Home" asp-action="Category">@Labels["Category"]</a>
 
-                <a href="#">About Us</a>
-                <a href="#">Contact</a>
             </nav>
 
 
             <div class="nav-actions">
+                <partial name="_LanguageSwitch" />
 
                 @if (User.Identity?.IsAuthenticated == true)
                 {
@@ -73,12 +52,10 @@
                         </a>
                     }
 
-                    <a asp-controller="Wallet"
-                       asp-action="Index">♡</a>
 
                     <a asp-controller="Account"
                        asp-action="Profile">
-                        My account
+                        @(User.Identity?.Name ?? "My account")
                     </a>
 
 
@@ -124,7 +101,7 @@
                             <a asp-controller="Account"
                                asp-action="Profile"
                                class="nav-avatar-menu-item">
-                                My Profile
+                                @Labels["My Profile"]
                             </a>
 
                             <form asp-controller="Account"
@@ -135,7 +112,7 @@
 
                                 <button type="submit"
                                         class="nav-avatar-logout">
-                                    Sign out
+                                    @Labels["Sign out"]
                                 </button>
                             </form>
 
@@ -148,7 +125,7 @@
                 {
                     <a asp-controller="Account"
                        asp-action="SignIn">
-                        Sign in
+                        @Labels["Sign in"]
                     </a>
                 }
 
@@ -170,24 +147,15 @@
                 <a class="brand"
                    asp-controller="Home"
                    asp-action="Index">
-                    <span class="brand-mark">⚒</span>
-                    <span>BidHub</span>
+                    <img class="brand-logo" src="~/assets/bidhub-logo.png" asp-append-version="true" alt="BidHub" width="180" height="55" />
                 </a>
 
 
                 <div class="footer-links">
-                    <a href="#">About Us</a>
-                    <a href="#">Terms</a>
-                    <a href="#">Policy</a>
-                    <a href="#">Contact</a>
+                    <a asp-controller="Home" asp-action="Privacy">@Labels["Privacy"]</a>
                 </div>
             </div>
 
-            <div class="socials">
-                <span>f</span>
-                <span>◎</span>
-                <span>▶</span>
-            </div>
 
             <div class="footer-bottom">
                 © 2026 Bidhub. All rights reserved.
@@ -196,12 +164,21 @@
         </div>
     </footer>
 
-    <script src="~/js/app.js" asp-append-version="true"></script>
-    <script src="~/js/enhancements.js" asp-append-version="true"></script>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"
+            asp-append-version="true"></script>
+
+    <script src="~/js/app.js"
+            asp-append-version="true"></script>
+
+    <script src="~/js/enhancements.js"
+            asp-append-version="true"></script>
+
+    <script src="~/js/account-ajax.js"
+            asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 
-    
     <script>
         document.addEventListener("DOMContentLoaded", function () {
 

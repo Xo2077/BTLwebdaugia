@@ -1,4 +1,3 @@
-﻿
 using BTLwebdaugia.Data;
 using BTLwebdaugia.Models;
 using BTLwebdaugia.ViewModels;
@@ -46,7 +45,14 @@ namespace BTLwebdaugia.Controllers
 
             if (myBids.Count == 0)
             {
-                return View(new List<MyBiddingItemViewModel>());
+                var emptyModel = new List<MyBiddingItemViewModel>();
+
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return PartialView("_BiddingContent", emptyModel);
+                }
+
+                return View(emptyModel);
             }
 
             var auctionIds = myBids
@@ -108,6 +114,11 @@ namespace BTLwebdaugia.Controllers
             )
             .OrderBy(x => x.CurrentEndAt)
             .ToList();
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_BiddingContent", model);
+            }
 
             return View(model);
         }
@@ -263,6 +274,14 @@ namespace BTLwebdaugia.Controllers
 
         private IActionResult RedirectToAuction(long auctionId)
         {
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                if (TempData["BidError"] is string error)
+                    return BadRequest(new { message = error });
+
+                return Json(new { message = TempData["BidSuccess"] });
+            }
+
             if (auctionId <= 0)
             {
                 return RedirectToAction("Category", "Home");

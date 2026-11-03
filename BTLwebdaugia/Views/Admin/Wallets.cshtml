@@ -1,4 +1,4 @@
-﻿
+
 @model List<BTLwebdaugia.Models.Wallet>
 
 @{
@@ -6,7 +6,7 @@
     Layout = "_AdminLayout";
 }
 
-<h1>Wallets management</h1>
+<h1>@Labels["Wallets management"]</h1>
 <p class="muted">
     Virtual wallet balances from SQL Server
 </p>
@@ -19,11 +19,11 @@
     <table>
         <thead>
             <tr>
-                <th>WALLET ID</th>
-                <th>OWNER</th>
-                <th>BALANCE</th>
-                <th>CREATED</th>
-                <th>STATUS</th>
+                <th>@Labels["WALLET ID"]</th>
+                <th>@Labels["OWNER"]</th>
+                <th>@Labels["BALANCE"]</th>
+                <th>@Labels["CREATED"]</th>
+                <th>@Labels["STATUS"]</th>
             </tr>
         </thead>
         <tbody>
@@ -37,14 +37,14 @@
                         @wallet.CreatedAt.ToString("dd/MM/yyyy HH:mm")
                         UTC
                     </td>
-                    <td>Read only</td>
+                    <td>@Labels["Read only"]</td>
                 </tr>
             }
 
             @if (!Model.Any())
             {
                 <tr>
-                    <td colspan="5">No wallets found.</td>
+                    <td colspan="5">@Labels["No wallets found."]</td>
                 </tr>
             }
         </tbody>

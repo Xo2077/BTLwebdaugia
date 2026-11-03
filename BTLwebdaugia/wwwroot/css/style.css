@@ -1,4 +1,4 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
 
 :root {
     --ink: #2c2c2c;
@@ -1136,7 +1136,7 @@ button,
         height: 390px;
         border: 0;
         border-radius: 24px;
-        background: #E7F6F2 url('../assets/hero-art.svg') center/cover no-repeat;
+        background: #E7F6F2 url('../assets/hero-art.jpg') center/cover no-repeat;
         box-shadow: var(--shadow);
         font-size: 0
     }
@@ -1954,3 +1954,164 @@ tbody tr:hover {
     background-color: #E7F6F2;
     border: 1px solid #A5C9CA;
 }
+
+
+/* ====================================
+   MY ACCOUNT AJAX
+   ==================================== */
+
+/* Vùng chứa nội dung AJAX */
+#account-content {
+    width: 100%;
+    min-width: 0;
+}
+
+/* Giữ nội dung không phá vỡ grid */
+.account > #account-content {
+    min-width: 0;
+}
+
+/* Trạng thái tải dữ liệu */
+#account-ajax-status:not(:empty) {
+    padding: 10px 16px;
+    margin-bottom: 12px;
+    background: #E7F6F2;
+    color: #395B64;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+/* Sidebar item đang được chọn */
+.sidebar-nav a[data-account-ajax].active {
+    background: #E7F6F2;
+    color: #395B64;
+    font-weight: 600;
+}
+
+/* Không làm mờ toàn bộ nội dung khi tải */
+#account-content[aria-busy="true"] {
+    pointer-events: none;
+}
+
+.brand-logo {
+    display: block;
+    width: clamp(116px, 22vw, 180px);
+    height: auto;
+}
+
+.auction-status-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.auction-status-row p {
+    margin: 0;
+}
+
+.auction-page .bid-history {
+    margin: 12px 0 18px;
+    padding: 12px 16px;
+}
+
+.auction-page .bid-history h3,
+.auction-page .bid-history ol {
+    margin: 0;
+}
+
+.auction-overview {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1fr);
+    align-items: start;
+    gap: clamp(12px, 2vw, 24px);
+}
+
+.auction-overview .page-title {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.auction-overview .page-title h1 {
+    font-size: clamp(1.25rem, 2.2vw, 2rem);
+}
+
+.auction-overview .auction-image-frame {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 1;
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+    background: transparent;
+}
+
+.auction-overview .auction-image-frame > .auction-product-image {
+    position: absolute;
+    inset: 0;
+    display: block;
+    background: transparent;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.auction-page .desc-section {
+    margin-block: 16px;
+}
+
+.auction-page summary {
+    cursor: pointer;
+    font-weight: 600;
+}
+
+@media (max-width: 800px) {
+    .auction-overview {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .auction-gallery {
+        width: min(100%, 360px);
+        justify-self: center;
+    }
+}
+
+.language-switch { display: inline-flex; gap: 4px; }
+.language-switch button {
+    padding: 4px 7px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+.language-switch button[aria-pressed="true"] {
+    border-color: #a8cbca;
+    background: #e4f3ef;
+    font-weight: 600;
+}
+
+.auction-page .bid-ranks {
+    list-style: none;
+    padding: 0;
+    counter-reset: bid-rank;
+}
+.auction-page .bid-ranks li {
+    counter-increment: bid-rank;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 12px;
+    margin-block: 8px;
+    border: 1px solid #a8b8bb;
+    border-radius: 12px;
+}
+.auction-page .bid-ranks li::before { content: counter(bid-rank); }
+.auction-page .bid-ranks li:nth-child(2) { padding-block: 10px; }
+.auction-page .bid-ranks li:first-child { padding-block: 16px; font-size: 1.15rem; }
+.bid-ranks li > span { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.bid-rank-avatar { width: 32px; height: 32px; flex: 0 0 32px; border-radius: 50%; object-fit: cover; }
+.bid-rank-placeholder { display: grid; place-items: center; background: #eaddff; color: #543879; }

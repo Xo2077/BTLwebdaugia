@@ -1,0 +1,417 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms</value>
+  </resheader>
+  <data name="Latest bids" xml:space="preserve">
+    <value>Lượt đặt giá gần đây</value>
+  </data>
+  <data name="Place Bid" xml:space="preserve">
+    <value>Đặt giá</value>
+  </data>
+  <data name="Sign in" xml:space="preserve">
+    <value>Đăng nhập</value>
+  </data>
+  <data name="Item Description" xml:space="preserve">
+    <value>Mô tả sản phẩm</value>
+  </data>
+  <data name="Explore Auctions" xml:space="preserve">
+    <value>Khám phá đấu giá</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Danh mục</value>
+  </data>
+  <data name="My Profile" xml:space="preserve">
+    <value>Hồ sơ</value>
+  </data>
+  <data name="My Wallet" xml:space="preserve">
+    <value>Ví của tôi</value>
+  </data>
+  <data name="My Selling" xml:space="preserve">
+    <value>Sản phẩm đang bán</value>
+  </data>
+  <data name="My Bidding" xml:space="preserve">
+    <value>Lượt đặt giá</value>
+  </data>
+  <data name="My Orders" xml:space="preserve">
+    <value>Đơn hàng</value>
+  </data>
+  <data name="Log out" xml:space="preserve">
+    <value>Đăng xuất</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Trang chủ</value>
+  </data>
+  <data name="Privacy" xml:space="preserve">
+    <value>Quyền riêng tư</value>
+  </data>
+  <data name="Sign out" xml:space="preserve">
+    <value>Đăng xuất</value>
+  </data>
+  <data name="User Name" xml:space="preserve">
+    <value>Tên người dùng</value>
+  </data>
+  <data name="Need help?" xml:space="preserve">
+    <value>Bạn cần trợ giúp?</value>
+  </data>
+  <data name="Log out of your account?" xml:space="preserve">
+    <value>Đăng xuất khỏi tài khoản?</value>
+  </data>
+  <data name="Email address" xml:space="preserve">
+    <value>Địa chỉ email</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Mật khẩu</value>
+  </data>
+  <data name="Forgot password?" xml:space="preserve">
+    <value>Quên mật khẩu?</value>
+  </data>
+  <data name="Sign Up" xml:space="preserve">
+    <value>Đăng ký</value>
+  </data>
+  <data name="First name" xml:space="preserve">
+    <value>Tên</value>
+  </data>
+  <data name="Last name" xml:space="preserve">
+    <value>Họ</value>
+  </data>
+  <data name="Confirm password" xml:space="preserve">
+    <value>Xác nhận mật khẩu</value>
+  </data>
+  <data name="Profile picture" xml:space="preserve">
+    <value>Ảnh đại diện</value>
+  </data>
+  <data name="Choose profile picture" xml:space="preserve">
+    <value>Chọn ảnh đại diện</value>
+  </data>
+  <data name="Upload picture" xml:space="preserve">
+    <value>Tải ảnh lên</value>
+  </data>
+  <data name="Personal information" xml:space="preserve">
+    <value>Thông tin cá nhân</value>
+  </data>
+  <data name="Account created" xml:space="preserve">
+    <value>Ngày tạo tài khoản</value>
+  </data>
+  <data name="Account &amp;amp; security" xml:space="preserve">
+    <value>Tài khoản và bảo mật</value>
+  </data>
+  <data name="Auctions management" xml:space="preserve">
+    <value>Quản lý phiên đấu giá</value>
+  </data>
+  <data name="SELLER" xml:space="preserve">
+    <value>Người bán</value>
+  </data>
+  <data name="STARTING PRICE" xml:space="preserve">
+    <value>Giá khởi điểm</value>
+  </data>
+  <data name="END TIME" xml:space="preserve">
+    <value>Giờ kết thúc</value>
+  </data>
+  <data name="STATUS" xml:space="preserve">
+    <value>Trạng thái</value>
+  </data>
+  <data name="ACTION" xml:space="preserve">
+    <value>Thao tác</value>
+  </data>
+  <data name="Auction approval policy" xml:space="preserve">
+    <value>Quy định duyệt phiên</value>
+  </data>
+  <data name="Bids management" xml:space="preserve">
+    <value>Quản lý lượt đặt giá</value>
+  </data>
+  <data name="BID ID" xml:space="preserve">
+    <value>Mã lượt đặt giá</value>
+  </data>
+  <data name="BIDDER" xml:space="preserve">
+    <value>Người đặt giá</value>
+  </data>
+  <data name="AMOUNT" xml:space="preserve">
+    <value>Số tiền</value>
+  </data>
+  <data name="PLACED AT" xml:space="preserve">
+    <value>Thời điểm đặt giá</value>
+  </data>
+  <data name="No bids found." xml:space="preserve">
+    <value>Chưa có lượt đặt giá.</value>
+  </data>
+  <data name="Categories management" xml:space="preserve">
+    <value>Quản lý danh mục</value>
+  </data>
+  <data name="Create new category" xml:space="preserve">
+    <value>Tạo danh mục mới</value>
+  </data>
+  <data name="Category name" xml:space="preserve">
+    <value>Tên danh mục</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Mô tả</value>
+  </data>
+  <data name="Existing categories" xml:space="preserve">
+    <value>Danh mục hiện có</value>
+  </data>
+  <data name="Category information" xml:space="preserve">
+    <value>Thông tin danh mục</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Lưu</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Xóa</value>
+  </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value>Tổng quan</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Người dùng</value>
+  </data>
+  <data name="Registered accounts" xml:space="preserve">
+    <value>Tài khoản đã đăng ký</value>
+  </data>
+  <data name="Products" xml:space="preserve">
+    <value>Sản phẩm</value>
+  </data>
+  <data name="Live auctions" xml:space="preserve">
+    <value>Phiên đang diễn ra</value>
+  </data>
+  <data name="Orders" xml:space="preserve">
+    <value>Đơn hàng</value>
+  </data>
+  <data name="Total orders" xml:space="preserve">
+    <value>Tổng số đơn hàng</value>
+  </data>
+  <data name="Auction activity" xml:space="preserve">
+    <value>Hoạt động đấu giá</value>
+  </data>
+  <data name="Awaiting admin review" xml:space="preserve">
+    <value>Đang chờ duyệt</value>
+  </data>
+  <data name="Quick actions" xml:space="preserve">
+    <value>Thao tác nhanh</value>
+  </data>
+  <data name="Orders management" xml:space="preserve">
+    <value>Quản lý đơn hàng</value>
+  </data>
+  <data name="ORDER" xml:space="preserve">
+    <value>Đơn hàng</value>
+  </data>
+  <data name="PRODUCT" xml:space="preserve">
+    <value>Sản phẩm</value>
+  </data>
+  <data name="WINNER" xml:space="preserve">
+    <value>Người thắng</value>
+  </data>
+  <data name="No orders found." xml:space="preserve">
+    <value>Chưa có đơn hàng.</value>
+  </data>
+  <data name="Products management" xml:space="preserve">
+    <value>Quản lý sản phẩm</value>
+  </data>
+  <data name="OWNER" xml:space="preserve">
+    <value>Chủ sở hữu</value>
+  </data>
+  <data name="REVIEW" xml:space="preserve">
+    <value>Kiểm duyệt</value>
+  </data>
+  <data name="Users management" xml:space="preserve">
+    <value>Quản lý người dùng</value>
+  </data>
+  <data name="USERNAME" xml:space="preserve">
+    <value>Tên người dùng</value>
+  </data>
+  <data name="ROLE" xml:space="preserve">
+    <value>Vai trò</value>
+  </data>
+  <data name="CREATED" xml:space="preserve">
+    <value>Ngày tạo</value>
+  </data>
+  <data name="No users found." xml:space="preserve">
+    <value>Chưa có người dùng.</value>
+  </data>
+  <data name="Wallets management" xml:space="preserve">
+    <value>Quản lý ví</value>
+  </data>
+  <data name="WALLET ID" xml:space="preserve">
+    <value>Mã ví</value>
+  </data>
+  <data name="BALANCE" xml:space="preserve">
+    <value>Số dư</value>
+  </data>
+  <data name="Read only" xml:space="preserve">
+    <value>Chỉ xem</value>
+  </data>
+  <data name="No wallets found." xml:space="preserve">
+    <value>Chưa có ví.</value>
+  </data>
+  <data name="Ends in:" xml:space="preserve">
+    <value>Còn lại:</value>
+  </data>
+  <data name="Starts at:" xml:space="preserve">
+    <value>Bắt đầu lúc:</value>
+  </data>
+  <data name="Auction ended:" xml:space="preserve">
+    <value>Đã kết thúc lúc:</value>
+  </data>
+  <data name="No bids have been placed yet." xml:space="preserve">
+    <value>Chưa có lượt đặt giá nào.</value>
+  </data>
+  <data name="Minimum bid increment:" xml:space="preserve">
+    <value>Bước giá tối thiểu:</value>
+  </data>
+  <data name="Minimum next bid:" xml:space="preserve">
+    <value>Giá đặt tối thiểu tiếp theo:</value>
+  </data>
+  <data name="Enter your bid (whole USD)" xml:space="preserve">
+    <value>Nhập mức giá (số nguyên USD)</value>
+  </data>
+  <data name="Item Details" xml:space="preserve">
+    <value>Chi tiết sản phẩm</value>
+  </data>
+  <data name="Starting price:" xml:space="preserve">
+    <value>Giá khởi điểm:</value>
+  </data>
+  <data name="Start time:" xml:space="preserve">
+    <value>Giờ bắt đầu:</value>
+  </data>
+  <data name="End time:" xml:space="preserve">
+    <value>Giờ kết thúc:</value>
+  </data>
+  <data name="Your auctions" xml:space="preserve">
+    <value>Phiên đấu giá của bạn</value>
+  </data>
+  <data name="CURRENT BID" xml:space="preserve">
+    <value>Giá hiện tại</value>
+  </data>
+  <data name="YOUR HIGHEST BID" xml:space="preserve">
+    <value>Giá cao nhất bạn đã đặt</value>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>Bộ lọc</value>
+  </data>
+  <data name="Paid" xml:space="preserve">
+    <value>Đã thanh toán</value>
+  </data>
+  <data name="Completed" xml:space="preserve">
+    <value>Hoàn tất</value>
+  </data>
+  <data name="Your orders" xml:space="preserve">
+    <value>Đơn hàng của bạn</value>
+  </data>
+  <data name="YOUR ROLE" xml:space="preserve">
+    <value>Vai trò của bạn</value>
+  </data>
+  <data name="TOTAL" xml:space="preserve">
+    <value>Tổng cộng</value>
+  </data>
+  <data name="AUCTION END" xml:space="preserve">
+    <value>Kết thúc đấu giá</value>
+  </data>
+  <data name="Order process" xml:space="preserve">
+    <value>Quy trình đơn hàng</value>
+  </data>
+  <data name="Create a product listing" xml:space="preserve">
+    <value>Đăng sản phẩm</value>
+  </data>
+  <data name="Product information" xml:space="preserve">
+    <value>Thông tin sản phẩm</value>
+  </data>
+  <data name="Auction schedule" xml:space="preserve">
+    <value>Lịch đấu giá</value>
+  </data>
+  <data name="All auctions require Admin approval." xml:space="preserve">
+    <value>Mọi phiên đấu giá đều cần quản trị viên duyệt.</value>
+  </data>
+  <data name="Scheduled start time (Vietnam time, UTC+7)" xml:space="preserve">
+    <value>Giờ bắt đầu dự kiến (giờ Việt Nam, UTC+7)</value>
+  </data>
+  <data name="End mode" xml:space="preserve">
+    <value>Cách kết thúc</value>
+  </data>
+  <data name="Duration (minutes)" xml:space="preserve">
+    <value>Thời lượng (phút)</value>
+  </data>
+  <data name="End date and time (Vietnam time, UTC+7)" xml:space="preserve">
+    <value>Ngày giờ kết thúc (giờ Việt Nam, UTC+7)</value>
+  </data>
+  <data name="Product images" xml:space="preserve">
+    <value>Ảnh sản phẩm</value>
+  </data>
+  <data name="Listing summary" xml:space="preserve">
+    <value>Tổng quan sản phẩm đã đăng</value>
+  </data>
+  <data name="Across your listings" xml:space="preserve">
+    <value>Trên các sản phẩm đã đăng</value>
+  </data>
+  <data name="Your listings" xml:space="preserve">
+    <value>Sản phẩm bạn đã đăng</value>
+  </data>
+  <data name="All listings" xml:space="preserve">
+    <value>Tất cả sản phẩm đã đăng</value>
+  </data>
+  <data name="ITEM" xml:space="preserve">
+    <value>Sản phẩm</value>
+  </data>
+  <data name="BIDS" xml:space="preserve">
+    <value>Lượt đặt giá</value>
+  </data>
+  <data name="TIME" xml:space="preserve">
+    <value>Thời gian</value>
+  </data>
+  <data name="Virtual USD" xml:space="preserve">
+    <value>USD ảo</value>
+  </data>
+  <data name="Top up virtual wallet" xml:space="preserve">
+    <value>Nạp tiền vào ví ảo</value>
+  </data>
+  <data name="Recent transactions" xml:space="preserve">
+    <value>Giao dịch gần đây</value>
+  </data>
+  <data name="DATE" xml:space="preserve">
+    <value>Ngày</value>
+  </data>
+  <data name="Live" xml:space="preserve">
+    <value>Đang diễn ra</value>
+  </data>
+  <data name="Upcoming" xml:space="preserve">
+    <value>Sắp diễn ra</value>
+  </data>
+  <data name="Ended" xml:space="preserve">
+    <value>Đã kết thúc</value>
+  </data>
+  <data name="PendingPayment" xml:space="preserve">
+    <value>Chờ thanh toán</value>
+  </data>
+  <data name="Shipping" xml:space="preserve">
+    <value>Đang giao hàng</value>
+  </data>
+  <data name="Approved" xml:space="preserve">
+    <value>Đã duyệt</value>
+  </data>
+  <data name="Rejected" xml:space="preserve">
+    <value>Bị từ chối</value>
+  </data>
+  <data name="Pending" xml:space="preserve">
+    <value>Chờ duyệt</value>
+  </data>
+  <data name="Sold" xml:space="preserve">
+    <value>Đã bán</value>
+  </data>
+  <data name="Unsold" xml:space="preserve">
+    <value>Chưa bán</value>
+  </data>
+  <data name="Discover unique items and win your next auction" xml:space="preserve">
+    <value>Khám phá món đồ độc đáo và chinh phục phiên đấu giá tiếp theo</value>
+  </data>
+  <data name="Explore BidHub auctions and find products from independent sellers." xml:space="preserve">
+    <value>Khám phá các phiên đấu giá trên BidHub và tìm sản phẩm từ những người bán độc lập.</value>
+  </data>
+</root>

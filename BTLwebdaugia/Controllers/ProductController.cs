@@ -1,4 +1,4 @@
-﻿
+
 using BTLwebdaugia.Data;
 using BTLwebdaugia.Models;
 using BTLwebdaugia.ViewModels;
@@ -109,33 +109,22 @@ namespace BTLwebdaugia.Controllers
             DateTime now = DateTime.UtcNow;
             DateTime startAt = now;
 
-            if (model.StartMode == "Scheduled")
+            if (!model.ScheduledStartAt.HasValue)
             {
-                if (!model.ScheduledStartAt.HasValue)
+                ModelState.AddModelError(
+                    nameof(model.ScheduledStartAt),
+                    "Scheduled start time is required.");
+            }
+            else
+            {
+                startAt = new DateTimeOffset(model.ScheduledStartAt.Value, TimeSpan.FromHours(7)).UtcDateTime;
+
+                if (startAt <= now)
                 {
                     ModelState.AddModelError(
                         nameof(model.ScheduledStartAt),
-                        "Scheduled start time is required.");
+                        "Start time must be in the future.");
                 }
-                else
-                {
-                    startAt = DateTime.SpecifyKind(
-                        model.ScheduledStartAt.Value,
-                        DateTimeKind.Utc);
-
-                    if (startAt <= now)
-                    {
-                        ModelState.AddModelError(
-                            nameof(model.ScheduledStartAt),
-                            "Start time must be in the future.");
-                    }
-                }
-            }
-            else if (model.StartMode != "AfterApproval")
-            {
-                ModelState.AddModelError(
-                    nameof(model.StartMode),
-                    "Invalid start mode.");
             }
 
             DateTime endAt = startAt;
@@ -166,9 +155,7 @@ namespace BTLwebdaugia.Controllers
                 }
                 else
                 {
-                    endAt = DateTime.SpecifyKind(
-                        model.SpecificEndAt.Value,
-                        DateTimeKind.Utc);
+                    endAt = new DateTimeOffset(model.SpecificEndAt.Value, TimeSpan.FromHours(7)).UtcDateTime;
 
                     if (endAt <= startAt)
                     {

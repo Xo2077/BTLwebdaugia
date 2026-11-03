@@ -1,4 +1,4 @@
-﻿
+
 @model List<BTLwebdaugia.Models.Auction>
 
 @{
@@ -11,7 +11,7 @@
         a.ApprovalStatus == "Pending");
 }
 
-<h1>Auctions management</h1>
+<h1>@Labels["Auctions management"]</h1>
 
 <p class="muted">
     Manage auction sessions and review pending auctions
@@ -46,11 +46,11 @@
         <thead>
             <tr>
                 <th>AUCTION / ITEM</th>
-                <th>SELLER</th>
-                <th>STARTING PRICE</th>
-                <th>END TIME</th>
-                <th>STATUS</th>
-                <th>ACTION</th>
+                <th>@Labels["SELLER"]</th>
+                <th>@Labels["STARTING PRICE"]</th>
+                <th>@Labels["END TIME"]</th>
+                <th>@Labels["STATUS"]</th>
+                <th>@Labels["ACTION"]</th>
             </tr>
         </thead>
 
@@ -206,7 +206,7 @@
 
 <div class="panel" style="margin-top:24px;">
 
-    <h3>Auction approval policy</h3>
+    <h3>@Labels["Auction approval policy"]</h3>
 
     <p class="muted small">
         Products must be approved before their

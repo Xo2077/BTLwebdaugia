@@ -1,7 +1,7 @@
-﻿@model BTLwebdaugia.ViewModels.RegisterViewModel
+@model BTLwebdaugia.ViewModels.RegisterViewModel
 
 @{
-    ViewData["Title"] = "Sign Up";
+    ViewData["Title"] = Labels["Sign Up"].Value;
     Layout = "_Layout";
 }
 
@@ -9,7 +9,7 @@
 
     <section class="auth-shell panel">
 
-        <h1>Sign Up</h1>
+        <h1>@Labels["Sign Up"]</h1>
 
         <form asp-controller="Account" asp-action="SignUp" method="post">
             @Html.AntiForgeryToken()
@@ -17,7 +17,7 @@
             <div class="form-row">
 
                 <div class="form-group">
-                    <label asp-for="FirstName">First name</label>
+                    <label asp-for="FirstName">@Labels["First name"]</label>
                     <input asp-for="FirstName" class="field"
                            placeholder="First name"
                            autocomplete="given-name" />
@@ -25,7 +25,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="LastName">Last name</label>
+                    <label asp-for="LastName">@Labels["Last name"]</label>
                     <input asp-for="LastName" class="field"
                            placeholder="Last name"
                            autocomplete="family-name" />
@@ -35,7 +35,7 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="Email">Email address</label>
+                <label asp-for="Email">@Labels["Email address"]</label>
                 <input asp-for="Email" class="field"
                        type="email"
                        placeholder="Enter your email address"
@@ -44,7 +44,7 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="Password">Password</label>
+                <label asp-for="Password">@Labels["Password"]</label>
                 <input asp-for="Password" class="field"
                        type="password"
                        placeholder="Create a password"
@@ -53,7 +53,7 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="ConfirmPassword">Confirm password</label>
+                <label asp-for="ConfirmPassword">@Labels["Confirm password"]</label>
                 <input asp-for="ConfirmPassword" class="field"
                        type="password"
                        placeholder="Re-enter your password"
@@ -70,7 +70,7 @@
             <button class="btn btn-solid btn-wide"
                     type="submit"
                     style="margin-top:20px">
-                Sign Up
+                @Labels["Sign Up"]
             </button>
 
             <div asp-validation-summary="ModelOnly" class="notice"></div>
@@ -81,7 +81,7 @@
 
             <a asp-controller="Account"
                asp-action="SignIn">
-                Sign In
+                @Labels["Sign in"]
             </a>
         </p>
 

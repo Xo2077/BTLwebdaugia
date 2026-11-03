@@ -1,4 +1,4 @@
-﻿@model List<BTLwebdaugia.Models.Category>
+@model List<BTLwebdaugia.Models.Category>
 
 @{
     ViewData["Title"] = "Admin Categories";
@@ -6,7 +6,7 @@
 }
 
 
-<h1>Categories management</h1>
+<h1>@Labels["Categories management"]</h1>
 
 @if (TempData["CategoryError"] != null)
 {
@@ -22,7 +22,7 @@
     </p>
 }
 
-<h2>Create new category</h2>
+<h2>@Labels["Create new category"]</h2>
 
 <form asp-controller="Admin"
       asp-action="CreateCategory"
@@ -31,7 +31,7 @@
     @Html.AntiForgeryToken()
 
     <div class="form-group">
-        <label>Category name</label>
+        <label>@Labels["Category name"]</label>
         <input class="field"
                name="Name"
                maxlength="120"
@@ -39,7 +39,7 @@
     </div>
 
     <div class="form-group">
-        <label>Description</label>
+        <label>@Labels["Description"]</label>
         <textarea class="field"
                   name="Description"
                   maxlength="1000"></textarea>
@@ -50,16 +50,16 @@
     </button>
 </form>
 
-<h2>Existing categories</h2>
+<h2>@Labels["Existing categories"]</h2>
 
 <div class="table-shell">
     <table>
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Category information</th>
-                <th>Save</th>
-                <th>Delete</th>
+                <th>@Labels["Category information"]</th>
+                <th>@Labels["Save"]</th>
+                <th>@Labels["Delete"]</th>
             </tr>
         </thead>
 
@@ -100,7 +100,7 @@
                         <button class="btn"
                                 type="submit"
                                 form="@formId">
-                            Save
+                            @Labels["Save"]
                         </button>
                     </td>
 
@@ -118,7 +118,7 @@
                             <button class="btn"
                                     type="submit"
                                     onclick="return confirm('Delete this category?');">
-                                Delete
+                                @Labels["Delete"]
                             </button>
                         </form>
                     </td>

@@ -1,7 +1,7 @@
-﻿@model BTLwebdaugia.ViewModels.WalletViewModel
+@model BTLwebdaugia.ViewModels.WalletViewModel
 
 @{
-    ViewData["Title"] = "My Wallet";
+    ViewData["Title"] = Labels["My Wallet"].Value;
     Layout = "_Layout";
 }
 
@@ -11,172 +11,13 @@
         Home / My account / My Wallet
     </div>
 
-    <div class="account">
+    <div class="account" data-account-page="wallet">
 
         @await Html.PartialAsync("_AccountSidebar")
 
-        <section class="account-body">
-
-            <div class="page-title">
-                <h1>My Wallet</h1>
-
-                <p>
-                    Manage your virtual USD wallet
-                    and transaction history.
-                </p>
-            </div>
-
-            @if (TempData["WalletSuccess"] != null)
-            {
-                <p class="notice" role="status">
-                    @TempData["WalletSuccess"]
-                </p>
-            }
-
-            @if (TempData["WalletError"] != null)
-            {
-                <p class="notice text-danger" role="alert">
-                    @TempData["WalletError"]
-                </p>
-            }
-
-            <div class="grid wallet-tiles">
-
-                <div class="metric">
-                    <div class="muted">
-                        Available balance
-                    </div>
-
-                    <strong>
-                        $@Model.Balance.ToString("N0")
-                    </strong>
-
-                </div>
-
-                <div class="metric">
-                    <div class="muted">
-                        Wallet type
-                    </div>
-
-                    <strong>Virtual USD</strong>
-
-                </div>
-
-            </div>
-
-            <div class="panel" style="margin:24px 0">
-
-                <h3>Top up virtual wallet</h3>
-
-                <form asp-controller="Wallet"
-                      asp-action="TopUp"
-                      method="post">
-
-                    @Html.AntiForgeryToken()
-
-                    <input type="hidden"
-                           name="requestId"
-                           value="@Guid.NewGuid()" />
-
-                    <div class="form-row">
-
-                        <div class="form-group">
-
-                            <label for="Amount">
-                                Enter amount (USD)
-                            </label>
-
-                            <input class="field"
-                                   type="number"
-                                   id="Amount"
-                                   name="Amount"
-                                   min="1"
-                                   max="1000000"
-                                   step="1"
-                                   placeholder="e.g. 5000"
-                                   required />
-
-                        </div>
-
-                        <div class="form-group"
-                             style="align-self:end">
-
-                            <button class="btn btn-solid"
-                                    type="submit">
-                                Top up wallet
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </form>
-
-            </div>
-
-            <div class="table-shell">
-
-                <h3>Recent transactions</h3>
-
-                <table>
-                    <thead>
-                        <tr>
-                            <th>TYPE / DESCRIPTION</th>
-                            <th>AMOUNT</th>
-                            <th>DATE</th>
-                            <th>STATUS</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-
-                        @if (!Model.Transactions.Any())
-                        {
-                            <tr>
-                                <td colspan="4">
-                                    No wallet transactions yet.
-                                </td>
-                            </tr>
-                        }
-                        else
-                        {
-                            @foreach (var transaction in Model.Transactions)
-                            {
-                                bool isDebit =
-                                    transaction.TransactionType ==
-                                    "PaymentDebit";
-
-                                <tr>
-
-                                    <td>
-                                        @transaction.Description
-                                    </td>
-
-                                    <td>
-                                        @(isDebit ? "-" : "+")$@transaction.Amount.ToString("N0")
-                                    </td>
-
-                                    <td>
-                                        @transaction.CreatedAt.ToString("dd/MM/yyyy HH:mm")
-                                        UTC
-                                    </td>
-
-                                    <td>
-                                        <span class="tag">
-                                            Completed
-                                        </span>
-                                    </td>
-
-                                </tr>
-                            }
-                        }
-
-                    </tbody>
-                </table>
-
-            </div>
-
-        </section>
+        <div id="account-content">
+            @await Html.PartialAsync("_WalletContent", Model)
+        </div>
 
     </div>
 

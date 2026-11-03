@@ -39,6 +39,11 @@ namespace BTLwebdaugia.Controllers
                 .OrderByDescending(o => o.OrderId)
                 .ToListAsync();
 
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_OrdersContent", orders);
+            }
+
             return View(orders);
         }
 

@@ -1,4 +1,4 @@
-﻿@model BTLwebdaugia.ViewModels.ProductListViewModel
+@model BTLwebdaugia.ViewModels.ProductListViewModel
 
 @{
     ViewData["Title"] = "Category & Search";
@@ -11,7 +11,7 @@
     <div class="crumb">Home / Category</div>
 
     <div class="page-title">
-        <h1>Explore auctions</h1>
+        <h1>@Labels["Explore Auctions"]</h1>
         @if (ViewBag.LastHomepageCategoryName is string lastName)
         {
             <p class="muted">
@@ -27,7 +27,7 @@
 
         <aside class="panel filters">
 
-            <h3>Filters</h3>
+            <h3>@Labels["Filters"]</h3>
 
             <form asp-controller="Home"
                   asp-action="Category"
@@ -180,7 +180,7 @@
 
                         <p>
                             <span class="tag">
-                                @product.AuctionStatus
+                                @Labels[product.AuctionStatus]
                             </span>
                         </p>
 
@@ -201,16 +201,16 @@
                             {
                                 <span>
                                     Ended:
-                                    @product.CurrentEndAt.ToString("dd/MM/yyyy HH:mm")
-                                    UTC
+                                    @product.CurrentEndAt.AddHours(7).ToString("dd/MM/yyyy HH:mm")
+                                    UTC+7
                                 </span>
                             }
                             else
                             {
                                 <span>
                                     Ends:
-                                    @product.CurrentEndAt.ToString("dd/MM/yyyy HH:mm")
-                                    UTC
+                                    @product.CurrentEndAt.AddHours(7).ToString("dd/MM/yyyy HH:mm")
+                                    UTC+7
                                 </span>
                             }
                         </p>

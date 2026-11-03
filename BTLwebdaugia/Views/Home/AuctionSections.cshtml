@@ -1,4 +1,4 @@
-﻿@model List<BTLwebdaugia.ViewModels.ProductListItemViewModel>
+@model List<BTLwebdaugia.ViewModels.ProductListItemViewModel>
 
 @{
     // Danh mục đang được lọc.
@@ -93,7 +93,7 @@
 
                         <div>
                             <span class="tag">
-                                @product.AuctionStatus
+                                @Labels[product.AuctionStatus]
                             </span>
 
                             <h3>@product.Name</h3>
@@ -114,8 +114,8 @@
 
                             <p class="small">
                                 Ends:
-                                @product.CurrentEndAt.ToString("dd/MM/yyyy HH:mm")
-                                UTC
+                                @product.CurrentEndAt.AddHours(7).ToString("dd/MM/yyyy HH:mm")
+                                UTC+7
                             </p>
 
                             <div class="card-bottom">

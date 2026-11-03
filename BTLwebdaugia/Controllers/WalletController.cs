@@ -1,5 +1,4 @@
-﻿
-using BTLwebdaugia.Data;
+﻿using BTLwebdaugia.Data;
 using BTLwebdaugia.Models;
 using BTLwebdaugia.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -93,6 +92,11 @@ namespace BTLwebdaugia.Controllers
                             CreatedAt = t.CreatedAt
                         })
                         .ToListAsync();
+            }
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_WalletContent", model);
             }
 
             return View(model);

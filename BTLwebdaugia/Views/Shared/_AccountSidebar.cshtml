@@ -1,27 +1,7 @@
-﻿@using System.Security.Claims
-@using Microsoft.EntityFrameworkCore
-@inject BTLwebdaugia.Data.BidHubDbContext DbContext
-
+@inject BTLwebdaugia.Services.AccountDisplayService AccountDisplay
 @{
-    long.TryParse(
-        User.FindFirstValue(ClaimTypes.NameIdentifier),
-        out long currentUserId);
-
-    var accountInfo = await DbContext.Users
-        .AsNoTracking()
-        .Where(u => u.UserId == currentUserId)
-        .Select(u => new
-        {
-            u.Username,
-            u.CreatedAt
-        })
-        .FirstOrDefaultAsync();
-
-    string? avatarPath = await DbContext.UserImages
-        .AsNoTracking()
-        .Where(x => x.UserId == currentUserId)
-        .Select(x => x.ImagePath)
-        .FirstOrDefaultAsync();
+    var accountInfo = await AccountDisplay.GetAsync(User);
+    var avatarPath = accountInfo?.AvatarPath;
 
     string currentController =
         ViewContext.RouteData.Values["controller"]?
@@ -68,32 +48,37 @@
         <a class="@(currentController == "Account" &&
                      currentAction == "Profile" ? "active" : "")"
            asp-controller="Account"
-           asp-action="Profile">
-            My Profile
+           asp-action="Profile"
+           data-account-ajax="true">
+            @Labels["My Profile"]
         </a>
 
         <a class="@(currentController == "Wallet" ? "active" : "")"
            asp-controller="Wallet"
-           asp-action="Index">
-            My Wallet
+           asp-action="Index"
+           data-account-ajax="true">
+            @Labels["My Wallet"]
         </a>
 
         <a class="@(currentController == "Selling" ? "active" : "")"
            asp-controller="Selling"
-           asp-action="Index">
-            My Selling
+           asp-action="Index"
+           data-account-ajax="true">
+            @Labels["My Selling"]
         </a>
 
         <a class="@(currentController == "Bidding" ? "active" : "")"
            asp-controller="Bidding"
-           asp-action="Index">
-            My Bidding
+           asp-action="Index"
+           data-account-ajax="true">
+            @Labels["My Bidding"]
         </a>
 
         <a class="@(currentController == "Orders" ? "active" : "")"
            asp-controller="Orders"
-           asp-action="Index">
-            My Orders
+           asp-action="Index"
+           data-account-ajax="true">
+            @Labels["My Orders"]
         </a>
 
         <form asp-controller="Account"
@@ -104,7 +89,7 @@
 
             <button type="submit"
                     class="btn btn-small">
-                Log out
+                @Labels["Log out"]
             </button>
 
         </form>

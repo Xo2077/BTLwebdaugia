@@ -1,4 +1,4 @@
-﻿
+
 using BTLwebdaugia.Data;
 using BTLwebdaugia.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -70,14 +70,15 @@ namespace BTLwebdaugia.Controllers
             var recentBids = await _context.Bids
                 .AsNoTracking()
                 .Where(b => b.AuctionId == id)
-                .OrderByDescending(b => b.Amount)
-                .ThenBy(b => b.PlacedAt)
-                .ThenBy(b => b.BidId)
-                .Take(10)
+                .OrderByDescending(b => b.PlacedAt)
+                .ThenByDescending(b => b.BidId)
+                .Take(3)
                 .Select(b => new BidHistoryItemViewModel
                 {
                     BidId = b.BidId,
                     BidderName = b.Bidder.Username,
+                    AvatarPath = _context.UserImages.Where(i => i.UserId == b.BidderId)
+                        .Select(i => i.ImagePath).FirstOrDefault(),
                     Amount = b.Amount,
                     PlacedAt = b.PlacedAt
                 })
@@ -125,7 +126,7 @@ namespace BTLwebdaugia.Controllers
         [HttpGet]
         public IActionResult Ended()
         {
-            return View();
+            return RedirectToAction("Category", "Home", new { Status = "Ended" });
         }
     }
 }

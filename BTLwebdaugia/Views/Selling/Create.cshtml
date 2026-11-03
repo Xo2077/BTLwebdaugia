@@ -1,4 +1,4 @@
-﻿@model BTLwebdaugia.ViewModels.CreateProductViewModel
+@model BTLwebdaugia.ViewModels.CreateProductViewModel
 
 @using BTLwebdaugia.ViewModels
 
@@ -19,7 +19,7 @@
         </div>
 
         <div class="page-title">
-            <h1>Create a product listing</h1>
+            <h1>@Labels["Create a product listing"]</h1>
             <p>
                 Product must be approved by Admin
                 before appearing publicly.
@@ -41,7 +41,7 @@
 
                 <section class="panel">
 
-                    <h3>Product information</h3>
+                    <h3>@Labels["Product information"]</h3>
 
                     <div class="form-group">
                         <label asp-for="Name">
@@ -59,7 +59,7 @@
 
                     <div class="form-group">
                         <label asp-for="CategoryId">
-                            Category
+                            @Labels["Category"]
                         </label>
 
                         <select asp-for="CategoryId"
@@ -85,7 +85,7 @@
 
                     <div class="form-group">
                         <label asp-for="Description">
-                            Description
+                            @Labels["Description"]
                         </label>
 
                         <textarea asp-for="Description"
@@ -129,40 +129,14 @@
                               class="text-danger"></span>
                     </div>
 
-                    <h3>Auction schedule</h3>
+                    <h3>@Labels["Auction schedule"]</h3>
+
+                    <p class="muted">@Labels["All auctions require Admin approval."]</p>
 
                     <div class="form-group">
 
-                        <label>
-                            <input asp-for="StartMode"
-                                   type="radio"
-                                   value="AfterApproval"
-                                   checked="@(Model.StartMode != "Scheduled")" />
-
-                            Start after Admin approval
-                        </label>
-
-                        <p>
-                            <label>
-                                <input asp-for="StartMode"
-                                       type="radio"
-                                       value="Scheduled"
-                                       checked="@(Model.StartMode == "Scheduled")" />
-
-                                Schedule for a future time
-                            </label>
-                        </p>
-
-                        <span asp-validation-for="StartMode"
-                              class="text-danger"></span>
-
-                    </div>
-
-                    <div class="form-group"
-                         id="scheduled-start-group">
-
                         <label asp-for="ScheduledStartAt">
-                            Scheduled start time (UTC)
+                            @Labels["Scheduled start time (Vietnam time, UTC+7)"]
                         </label>
 
                         <input asp-for="ScheduledStartAt"
@@ -175,7 +149,7 @@
 
                     <div class="form-group">
                         <label asp-for="EndTimeMode">
-                            End mode
+                            @Labels["End mode"]
                         </label>
 
                         <select asp-for="EndTimeMode"
@@ -200,7 +174,7 @@
                          id="duration-group">
 
                         <label asp-for="DurationMinutes">
-                            Duration (minutes)
+                            @Labels["Duration (minutes)"]
                         </label>
 
                         <input asp-for="DurationMinutes"
@@ -218,7 +192,7 @@
                          id="specific-end-group">
 
                         <label asp-for="SpecificEndAt">
-                            End date and time (UTC)
+                            @Labels["End date and time (Vietnam time, UTC+7)"]
                         </label>
 
                         <input asp-for="SpecificEndAt"
@@ -239,7 +213,7 @@
                 <aside>
 
 
-                    <h3>Product images</h3>
+                    <h3>@Labels["Product images"]</h3>
 
                     <div class="form-group">
                         <label asp-for="Images">
@@ -266,7 +240,7 @@
 
                     <div class="panel" style="margin-top:22px">
 
-                        <h3>Listing summary</h3>
+                        <h3>@Labels["Listing summary"]</h3>
 
                         <p>
                             Check all details before submitting.
@@ -355,14 +329,6 @@
 
             if (!form) return;
 
-            const startRadios = form.querySelectorAll(
-                'input[name="StartMode"]'
-            );
-
-            const scheduledGroup = document.getElementById(
-                "scheduled-start-group"
-            );
-
             const endMode = document.getElementById(
                 "end-time-mode"
             );
@@ -375,15 +341,6 @@
                 "specific-end-group"
             );
 
-            function updateStartMode() {
-                const selected = form.querySelector(
-                    'input[name="StartMode"]:checked'
-                );
-
-                scheduledGroup.hidden =
-                    selected?.value !== "Scheduled";
-            }
-
             function updateEndMode() {
                 const isDuration =
                     endMode.value === "Duration";
@@ -392,19 +349,11 @@
                 specificEndGroup.hidden = isDuration;
             }
 
-            startRadios.forEach(radio => {
-                radio.addEventListener(
-                    "change",
-                    updateStartMode
-                );
-            });
-
             endMode.addEventListener(
                 "change",
                 updateEndMode
             );
 
-            updateStartMode();
             updateEndMode();
         })();
     </script>
