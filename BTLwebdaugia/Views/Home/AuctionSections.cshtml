@@ -1,0 +1,149 @@
+﻿@model List<BTLwebdaugia.ViewModels.ProductListItemViewModel>
+
+@{
+    // Danh mục đang được lọc.
+    long? selectedCategoryId =
+        ViewData["SelectedCategoryId"] is long id
+            ? id
+            : null;
+
+    // Chia phiên đấu giá thành ba nhóm.
+    var groups = new[]
+    {
+        new
+        {
+            Title = "Live Auction",
+            Status = "Live",
+            Css = "live",
+            Items = Model
+                .Where(a => a.AuctionStatus == "Live")
+                .Take(3)
+                .ToList()
+        },
+        new
+        {
+            Title = "Upcoming Auction",
+            Status = "Upcoming",
+            Css = "upcoming",
+            Items = Model
+                .Where(a => a.AuctionStatus == "Upcoming")
+                .Take(3)
+                .ToList()
+        },
+        new
+        {
+            Title = "End Auction",
+            Status = "Ended",
+            Css = "ended",
+            Items = Model
+                .Where(a => a.AuctionStatus == "Ended")
+                .OrderByDescending(a => a.CurrentEndAt)
+                .Take(3)
+                .ToList()
+        }
+    };
+}
+
+@foreach (var group in groups)
+{
+    <section class="auction-section"
+             data-auction-section="@group.Css">
+
+        <div class="section-heading">
+            <h2>@group.Title</h2>
+        </div>
+
+        <div class="auction-list @(group.Css == "upcoming" ? "upcoming-list" : "")">
+
+            @if (!group.Items.Any())
+            {
+                <div class="empty-message">
+                    No @group.Status.ToLowerInvariant()
+                    auctions available.
+                </div>
+            }
+            else
+            {
+                @foreach (var product in group.Items)
+                {
+                    <article class="product-card @(group.Css == "upcoming" ? "product-horizontal" : "")">
+
+                        <div class="image-box product-image-frame">
+                            @if (!string.IsNullOrWhiteSpace(product.ImagePath))
+                            {
+                                <img src="@product.ImagePath"
+                                     alt="@product.Name"
+                                     loading="lazy"
+                                     class="product-image"
+                                     style="display:block;
+                                width:100%;
+                                height:100%;
+                                max-width:100%;
+                                max-height:100%;
+                                object-fit:contain;
+                                object-position:center;" />
+                            }
+                            else
+                            {
+                                <span class="muted small">
+                                    No product image
+                                </span>
+                            }
+                        </div>
+
+                        <div>
+                            <span class="tag">
+                                @product.AuctionStatus
+                            </span>
+
+                            <h3>@product.Name</h3>
+
+                            <p class="muted">
+                                @product.CategoryName
+                            </p>
+
+                            <p class="muted">
+                                @(group.Status == "Upcoming"
+                                    ? "Starting price"
+                                    : "Current / highest bid")
+                            </p>
+
+                            <p class="bid-price">
+                                $@product.CurrentPrice.ToString("N0")
+                            </p>
+
+                            <p class="small">
+                                Ends:
+                                @product.CurrentEndAt.ToString("dd/MM/yyyy HH:mm")
+                                UTC
+                            </p>
+
+                            <div class="card-bottom">
+                                <a class="btn btn-small"
+                                   asp-controller="Auction"
+                                   asp-action="Details"
+                                   asp-route-id="@product.AuctionId">
+                                    @(group.Status == "Live"
+                                        ? "Bid now"
+                                        : "View product")
+                                </a>
+                            </div>
+                        </div>
+
+                    </article>
+                }
+            }
+        </div>
+
+        <div class="section-footer">
+            <a class="btn"
+               asp-controller="Home"
+               asp-action="Category"
+               asp-route-Status="@group.Status"
+               asp-route-CategoryId="@selectedCategoryId">
+                View All
+            </a>
+        </div>
+
+    </section>
+}

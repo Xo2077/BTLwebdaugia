@@ -1746,3 +1746,47 @@ tbody tr:hover {
         max-height: 72px;
     }
 }
+
+
+/* Homepage AJAX category filter */
+
+.category-grid .category-button.selected {
+    background-color: #172554;
+    color: #ffffff;
+    border-color: #172554;
+}
+
+.category-grid .category-button {
+    cursor: pointer;
+}
+
+#auction-ajax-status:not(:empty) {
+    margin: 12px 0;
+    font-size: 14px;
+    color: #64748b;
+}
+
+
+/* Danh mục đang được chọn */
+.category-grid .category-button.selected {
+    background-color: #111111;
+    color: #ffffff;
+    border-color: #111111;
+}
+
+/* Các danh mục luôn có thể chọn */
+.category-grid .category-button {
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+    /* Trạng thái khi đưa chuột vào */
+    .category-grid .category-button:hover {
+        border-color: #111111;
+    }
+
+    /* Không vô hiệu hóa danh mục không có sản phẩm */
+    .category-grid .category-button:focus-visible {
+        outline: 2px solid #111111;
+        outline-offset: 3px;
+    }

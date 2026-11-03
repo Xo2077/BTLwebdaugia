@@ -1,5 +1,4 @@
-﻿
-using BTLwebdaugia.Data;
+﻿using BTLwebdaugia.Data;
 using BTLwebdaugia.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -16,11 +16,11 @@ namespace BTLwebdaugia.Controllers
         }
 
 
+
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var now = DateTime.UtcNow;
-
+            // Lấy danh mục từ SQL Server.
             var categories = await _context.Categories
                 .AsNoTracking()
                 .OrderBy(c => c.Name)
@@ -32,12 +32,51 @@ namespace BTLwebdaugia.Controllers
                 })
                 .ToListAsync();
 
-            var auctions = await _context.Auctions
+            // Lấy các phiên đấu giá ban đầu.
+            var auctions = await GetHomepageAuctionsAsync(null);
+
+            ViewBag.Categories = categories;
+            ViewBag.SelectedCategoryId = null;
+
+            return View(auctions);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> FilterAuctions(
+            [FromQuery] long? categoryId)
+        {
+            // Truy vấn dữ liệu theo danh mục được chọn.
+            var auctions = await GetHomepageAuctionsAsync(categoryId);
+
+            // Chuyển danh mục đang chọn sang PartialView.
+            ViewBag.SelectedCategoryId = categoryId;
+
+            // Chỉ trả về phần HTML card, không trả về Layout.
+            return PartialView("_AuctionSections", auctions);
+        }
+
+
+        private async Task<List<ProductListItemViewModel>>
+            GetHomepageAuctionsAsync(long? categoryId)
+        {
+            var now = DateTime.UtcNow;
+
+            var query = _context.Auctions
                 .AsNoTracking()
                 .Where(a =>
                     a.ApprovalStatus == "Approved" &&
                     a.Product.ApprovalStatus == "Approved" &&
-                    !a.Product.IsDeleted)
+                    !a.Product.IsDeleted);
+
+            // Nếu người dùng chọn danh mục thì lọc.
+            if (categoryId.HasValue && categoryId.Value > 0)
+            {
+                query = query.Where(a =>
+                    a.Product.CategoryId == categoryId.Value);
+            }
+
+            var auctions = await query
                 .OrderBy(a => a.CurrentEndAt)
                 .Select(a => new ProductListItemViewModel
                 {
@@ -65,27 +104,8 @@ namespace BTLwebdaugia.Controllers
                 })
                 .ToListAsync();
 
-            ViewBag.Categories = categories;
-
-            ViewBag.LiveAuctions = auctions
-                .Where(a => a.AuctionStatus == "Live")
-                .Take(3)
-                .ToList();
-
-            ViewBag.UpcomingAuctions = auctions
-                .Where(a => a.AuctionStatus == "Upcoming")
-                .Take(3)
-                .ToList();
-
-            ViewBag.EndedAuctions = auctions
-                .Where(a => a.AuctionStatus == "Ended")
-                .OrderByDescending(a => a.CurrentEndAt)
-                .Take(3)
-                .ToList();
-
-            return View();
+            return auctions;
         }
-
 
         [HttpGet]
         public async Task<IActionResult> Category(

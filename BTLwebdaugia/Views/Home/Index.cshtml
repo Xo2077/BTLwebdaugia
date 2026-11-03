@@ -1,4 +1,4 @@
-﻿
+﻿@model List<BTLwebdaugia.ViewModels.ProductListItemViewModel>
 @using BTLwebdaugia.ViewModels
 
 @{
@@ -8,41 +8,8 @@
     var categories =
         ViewBag.Categories as List<CategoryViewModel>
         ?? new List<CategoryViewModel>();
-
-    var live =
-        ViewBag.LiveAuctions as List<ProductListItemViewModel>
-        ?? new List<ProductListItemViewModel>();
-
-    var upcoming =
-        ViewBag.UpcomingAuctions as List<ProductListItemViewModel>
-        ?? new List<ProductListItemViewModel>();
-
-    var ended =
-        ViewBag.EndedAuctions as List<ProductListItemViewModel>
-        ?? new List<ProductListItemViewModel>();
-
-    var groups = new[]
-    {
-        new {
-            Title = "Live Auction",
-            Status = "Live",
-            Css = "live",
-            Items = live
-        },
-        new {
-            Title = "Upcoming Auction",
-            Status = "Upcoming",
-            Css = "upcoming",
-            Items = upcoming
-        },
-        new {
-            Title = "End Auction",
-            Status = "Ended",
-            Css = "ended",
-            Items = ended
-        }
-    };
 }
+
 
 <main>
     <div class="container">
@@ -87,7 +54,15 @@
         <section class="section">
             <h2>Category</h2>
 
+
             <div class="category-grid">
+
+                <a class="category-button selected"
+                   asp-controller="Home"
+                   asp-action="Index"
+                   data-category-id="">
+                    All categories
+                </a>
 
                 @if (!categories.Any())
                 {
@@ -102,7 +77,8 @@
                         <a class="category-button"
                            asp-controller="Home"
                            asp-action="Category"
-                           asp-route-CategoryId="@category.CategoryId">
+                           asp-route-CategoryId="@category.CategoryId"
+                           data-category-id="@category.CategoryId">
                             @category.Name
                         </a>
                     }
@@ -111,113 +87,112 @@
             </div>
         </section>
 
-        @foreach (var group in groups)
-        {
-            <section class="auction-section"
-                     data-auction-section="@group.Css">
 
-                <div class="section-heading">
-                    <h2>@group.Title</h2>
-                </div>
+        <div id="auction-ajax-status"
+             role="status"
+             aria-live="polite">
+        </div>
 
-                <div class="auction-list @(group.Css == "upcoming" ? "upcoming-list" : "")">
-
-                    @if (!group.Items.Any())
-                    {
-                        <div class="empty-message">
-                            No @group.Status.ToLowerInvariant()
-                            auctions available.
-                        </div>
-                    }
-                    else
-                    {
-
-                        @foreach (var product in group.Items)
-                        {
-                            <article class="product-card @(group.Css == "upcoming" ? "product-horizontal" : "")">
-
-                                <div class="image-box product-image-frame">
-
-                                    @if (!string.IsNullOrWhiteSpace(product.ImagePath))
-                                    {
-                                        <img src="@product.ImagePath"
-                                             alt="@product.Name"
-                                             loading="lazy"
-                                             class="product-image"
-                                             style="display:block;
-                                        width:100%;
-                                        height:100%;
-                                        max-width:100%;
-                                        max-height:100%;
-                                        object-fit:contain;
-                                        object-position:center;" />
-                                    }
-                                    else
-                                    {
-                                        <span class="muted small">
-                                            No product image
-                                        </span>
-                                    }
-
-                                </div>
-
-                                <div>
-                                    <span class="tag">
-                                        @product.AuctionStatus
-                                    </span>
-
-                                    <h3>@product.Name</h3>
-
-                                    <p class="muted">
-                                        @product.CategoryName
-                                    </p>
-
-                                    <p class="muted">
-                                        @(group.Status == "Upcoming"
-                                            ? "Starting price"
-                                            : "Current / highest bid")
-                                    </p>
-
-                                    <p class="bid-price">
-                                        $@product.CurrentPrice.ToString("N0")
-                                    </p>
-
-                                    <p class="small">
-                                        Ends:
-                                        @product.CurrentEndAt.ToString("dd/MM/yyyy HH:mm")
-                                        UTC
-                                    </p>
-
-                                    <div class="card-bottom">
-                                        <a class="btn btn-small"
-                                           asp-controller="Auction"
-                                           asp-action="Details"
-                                           asp-route-id="@product.AuctionId">
-                                            @(group.Status == "Live"
-                                                ? "Bid now"
-                                                : "View product")
-                                        </a>
-                                    </div>
-                                </div>
-
-                            </article>
-                        }
-
-                    }
-
-                </div>
-
-                <div class="section-footer">
-                    <a class="btn"
-                       asp-controller="Home"
-                       asp-action="Category"
-                       asp-route-Status="@group.Status">
-                        View All
-                    </a>
-                </div>
-
-            </section>
-        }
+        <div id="auction-results">
+            @await Html.PartialAsync("AuctionSections", Model)
+        </div>
 
     </div>
 </main>
+
+                           
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"
+            asp-append-version="true"></script>
+
+    <script>
+        $(function () {
+
+            const ajaxUrl = '@Url.Action("FilterAuctions", "Home")';
+
+            let currentRequest = null;
+
+            $(".category-grid").on(
+                "click",
+                ".category-button",
+                function (event) {
+
+                    event.preventDefault();
+
+                    const clickedButton = $(this);
+
+                    const categoryId =
+                        clickedButton.attr("data-category-id");
+
+                    // 1. Bôi đen ngay danh mục được chọn.
+                    $(".category-grid .category-button")
+                        .removeClass("selected")
+                        .removeAttr("aria-current");
+
+                    clickedButton
+                        .addClass("selected")
+                        .attr("aria-current", "true");
+
+                    // 2. Hủy request cũ khi chọn nhanh.
+                    if (currentRequest) {
+                        currentRequest.abort();
+                    }
+
+                    // 3. Thông báo trạng thái tải.
+                    $("#auction-ajax-status")
+                        .text("Loading auctions...");
+
+                    // 4. Lấy dữ liệu mới từ server.
+                    const request = $.ajax({
+                        url: ajaxUrl,
+                        type: "GET",
+                        data: {
+                            categoryId: categoryId
+                        },
+                        dataType: "html",
+                        cache: false
+                    });
+
+                    currentRequest = request;
+
+                    request.done(function (response) {
+
+                        // Chỉ cập nhật kết quả request mới nhất.
+                        if (currentRequest !== request) {
+                            return;
+                        }
+
+                        // HTML vẫn được cập nhật khi không có card.
+                        $("#auction-results").html(response);
+
+                        $("#auction-ajax-status").text("");
+                    });
+
+                    request.fail(function (xhr, status) {
+
+                        if (
+                            status === "abort" ||
+                            currentRequest !== request
+                        ) {
+                            return;
+                        }
+
+                        $("#auction-ajax-status").text(
+                            "Failed to load auctions. Please try again."
+                        );
+                    });
+
+                    request.always(function () {
+
+                        if (currentRequest === request) {
+                            currentRequest = null;
+                        }
+                    });
+
+                }
+            );
+
+        });
+    </script>
+}
