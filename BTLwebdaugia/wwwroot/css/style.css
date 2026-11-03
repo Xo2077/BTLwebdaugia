@@ -1136,7 +1136,7 @@ button,
         height: 390px;
         border: 0;
         border-radius: 24px;
-        background: #E7F6F2 url('../assets/hero-art.jpg') center/cover no-repeat;
+        background: #E7F6F2 url('../assets/hero-art.png') center/cover no-repeat;
         box-shadow: var(--shadow);
         font-size: 0
     }
