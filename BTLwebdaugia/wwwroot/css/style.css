@@ -1790,3 +1790,167 @@ tbody tr:hover {
         outline: 2px solid #111111;
         outline-offset: 3px;
     }
+
+
+/* ======================================
+   FIX: CATEGORY PRODUCT IMAGE OVERFLOW
+   ====================================== */
+
+/* Khung ảnh trên trang Category */
+.filter-layout .product-card .category-product-image-frame {
+    width: 100%;
+    height: 280px;
+    min-width: 0;
+    min-height: 0;
+    max-width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    border-radius: 14px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* Ảnh sản phẩm nằm hoàn toàn trong khung */
+.filter-layout .product-card .category-product-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    object-position: center;
+    position: static;
+    flex-shrink: 1;
+}
+
+/* Ngăn card bị kéo rộng bởi nội dung */
+.filter-layout .product-card {
+    min-width: 0;
+    overflow: hidden;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .filter-layout .product-card .category-product-image-frame {
+        height: 220px;
+    }
+}
+
+
+/* =====================================
+   HEADER USER AVATAR
+   ===================================== */
+
+.nav-avatar-dropdown {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.nav-avatar-button {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 2px solid #A5C9CA;
+    border-radius: 50%;
+    background: #E7F6F2;
+    overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+    .nav-avatar-button:hover,
+    .nav-avatar-button:focus-visible {
+        border-color: #395B64;
+        box-shadow: 0 0 0 3px rgba(57,91,100,.12);
+    }
+
+.nav-avatar-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 50%;
+}
+
+.nav-avatar-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #395B64;
+}
+
+/* Dropdown menu */
+
+.nav-avatar-menu {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    z-index: 1000;
+    width: 175px;
+    padding: 8px;
+    background: #ffffff;
+    border: 1px solid #d4e4e3;
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(0,0,0,.12);
+}
+
+    .nav-avatar-menu[hidden] {
+        display: none;
+    }
+
+.nav-actions .nav-avatar-menu-item,
+.nav-avatar-logout {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #2C3333;
+    font: inherit;
+    font-size: 14px;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+    .nav-actions .nav-avatar-menu-item:hover,
+    .nav-avatar-logout:hover {
+        background: #E7F6F2;
+        color: #395B64;
+    }
+
+.nav-avatar-menu form {
+    margin: 0;
+}
+
+
+/* Shared Account Sidebar Avatar */
+
+.account-sidebar-avatar {
+    width: 82px;
+    height: 82px;
+    min-width: 82px;
+    min-height: 82px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: #E7F6F2;
+    border: 1px solid #A5C9CA;
+}

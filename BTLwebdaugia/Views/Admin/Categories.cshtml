@@ -1,47 +1,139 @@
-﻿
-@model List<BTLwebdaugia.Models.Category>
+﻿@model List<BTLwebdaugia.Models.Category>
 
 @{
     ViewData["Title"] = "Admin Categories";
     Layout = "_AdminLayout";
 }
 
-<h1>Categories management</h1>
-<p class="muted">
-    Categories from SQL Server. Read only.
-</p>
 
-<div class="table-shell">
-    <div class="table-toolbar">
-        <h3>Total categories: @Model.Count</h3>
+<h1>Categories management</h1>
+
+@if (TempData["CategoryError"] != null)
+{
+    <p class="text-danger">
+        @TempData["CategoryError"]
+    </p>
+}
+
+@if (TempData["CategorySuccess"] != null)
+{
+    <p class="text-success">
+        @TempData["CategorySuccess"]
+    </p>
+}
+
+<h2>Create new category</h2>
+
+<form asp-controller="Admin"
+      asp-action="CreateCategory"
+      method="post">
+
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        <label>Category name</label>
+        <input class="field"
+               name="Name"
+               maxlength="120"
+               required />
     </div>
 
+    <div class="form-group">
+        <label>Description</label>
+        <textarea class="field"
+                  name="Description"
+                  maxlength="1000"></textarea>
+    </div>
+
+    <button class="btn btn-solid" type="submit">
+        Create category
+    </button>
+</form>
+
+<h2>Existing categories</h2>
+
+<div class="table-shell">
     <table>
         <thead>
             <tr>
                 <th>ID</th>
-                <th>CATEGORY</th>
-                <th>DESCRIPTION</th>
-                <th>POLICY</th>
+                <th>Category information</th>
+                <th>Save</th>
+                <th>Delete</th>
             </tr>
         </thead>
+
         <tbody>
             @foreach (var category in Model)
             {
+                string formId =
+                    $"edit-category-{category.CategoryId}";
+
                 <tr>
                     <td>@category.CategoryId</td>
-                    <td>@category.Name</td>
-                    <td>@category.Description</td>
-                    <td>Fixed · Read only</td>
+
+                    <td>
+                        <form id="@formId"
+                              asp-controller="Admin"
+                              asp-action="UpdateCategory"
+                              method="post">
+
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden"
+                                   name="CategoryId"
+                                   value="@category.CategoryId" />
+
+                            <input class="field"
+                                   name="Name"
+                                   value="@category.Name"
+                                   maxlength="120"
+                                   required />
+
+                            <textarea class="field"
+                                      name="Description"
+                                      maxlength="1000">@category.Description</textarea>
+                        </form>
+                    </td>
+
+                    <td>
+                        <button class="btn"
+                                type="submit"
+                                form="@formId">
+                            Save
+                        </button>
+                    </td>
+
+                    <td>
+                        <form asp-controller="Admin"
+                              asp-action="DeleteCategory"
+                              method="post">
+
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden"
+                                   name="categoryId"
+                                   value="@category.CategoryId" />
+
+                            <button class="btn"
+                                    type="submit"
+                                    onclick="return confirm('Delete this category?');">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
                 </tr>
             }
 
             @if (!Model.Any())
             {
                 <tr>
-                    <td colspan="4">No categories found.</td>
+                    <td colspan="4">
+                        No categories available.
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
+

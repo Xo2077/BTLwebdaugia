@@ -1,5 +1,4 @@
-﻿
-@model BTLwebdaugia.ViewModels.ProductListViewModel
+﻿@model BTLwebdaugia.ViewModels.ProductListViewModel
 
 @{
     ViewData["Title"] = "Category & Search";
@@ -13,11 +12,17 @@
 
     <div class="page-title">
         <h1>Explore auctions</h1>
+        @if (ViewBag.LastHomepageCategoryName is string lastName)
+        {
+            <p class="muted">
+                Previously explored category: @lastName
+            </p>
+        }
         <p>
             Discover live listings and browse by category.
         </p>
     </div>
-
+        
     <div class="filter-layout">
 
         <aside class="panel filters">
@@ -155,19 +160,19 @@
 
                         @if (!string.IsNullOrWhiteSpace(product.ImagePath))
                         {
-                            <div class="image-box">
+                            <div class="image-box category-product-image-frame">
                                 <img src="@product.ImagePath"
                                      alt="@product.Name"
                                      loading="lazy"
-                                     style="width:100%;height:100%;object-fit:cover;" />
+                                     class="category-product-image" />
                             </div>
                         }
                         else
                         {
-                            <div class="image-box"
-                                 role="img"
-                                 aria-label="PRODUCT IMAGE">
-                                PRODUCT IMAGE
+                            <div class="image-box category-product-image-frame">
+                                <span class="muted small">
+                                    No product image
+                                </span>
                             </div>
                         }
 

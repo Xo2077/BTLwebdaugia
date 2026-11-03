@@ -472,5 +472,145 @@ namespace BTLwebdaugia.Controllers
                 User.FindFirstValue(ClaimTypes.NameIdentifier),
                 out adminId);
         }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateCategory(
+            CategoryInputViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["CategoryError"] =
+                    "Please enter a valid category name.";
+                return RedirectToAction(nameof(Categories));
+            }
+
+            string name = model.Name.Trim();
+
+            bool exists = await _context.Categories
+                .AnyAsync(c => c.Name == name);
+
+            if (exists)
+            {
+                TempData["CategoryError"] =
+                    "Category name already exists.";
+                return RedirectToAction(nameof(Categories));
+            }
+
+            _context.Categories.Add(new BTLwebdaugia.Models.Category
+            {
+                Name = name,
+                Description = model.Description?.Trim()
+            });
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                TempData["CategorySuccess"] =
+                    "Category created successfully.";
+            }
+            catch (DbUpdateException)
+            {
+                TempData["CategoryError"] =
+                    "Unable to create category. Check for duplicates.";
+            }
+
+            return RedirectToAction(nameof(Categories));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateCategory(
+            CategoryInputViewModel model)
+        {
+            if (!ModelState.IsValid || model.CategoryId <= 0)
+            {
+                TempData["CategoryError"] =
+                    "Invalid category information.";
+                return RedirectToAction(nameof(Categories));
+            }
+
+            var category = await _context.Categories
+                .FindAsync(model.CategoryId);
+
+            if (category == null)
+                return NotFound();
+
+            string name = model.Name.Trim();
+
+            bool exists = await _context.Categories
+                .AnyAsync(c =>
+                    c.CategoryId != model.CategoryId &&
+                    c.Name == name);
+
+            if (exists)
+            {
+                TempData["CategoryError"] =
+                    "Category name already exists.";
+                return RedirectToAction(nameof(Categories));
+            }
+
+            category.Name = name;
+            category.Description = model.Description?.Trim();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                TempData["CategorySuccess"] =
+                    "Category updated successfully.";
+            }
+            catch (DbUpdateException)
+            {
+                TempData["CategoryError"] =
+                    "Unable to update category.";
+            }
+
+            return RedirectToAction(nameof(Categories));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteCategory(int categoryId)
+        {
+            var category = await _context.Categories
+                .FindAsync(categoryId);
+
+            if (category == null)
+                return NotFound();
+
+            // Bảo toàn quan hệ khóa ngoại với sản phẩm.
+            bool hasProducts = await _context.Products
+                .AnyAsync(p => p.CategoryId == categoryId);
+
+            if (hasProducts)
+            {
+                TempData["CategoryError"] =
+                    "Cannot delete a category containing products.";
+                return RedirectToAction(nameof(Categories));
+            }
+
+            _context.Categories.Remove(category);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+
+                TempData["CategorySuccess"] =
+                    "Category deleted successfully.";
+            }
+            catch (DbUpdateException)
+            {
+                TempData["CategoryError"] =
+                    "Unable to delete this category.";
+            }
+
+            return RedirectToAction(nameof(Categories));
+        }
+
+
+
+
+
     }
 }

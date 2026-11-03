@@ -42,19 +42,40 @@ namespace BTLwebdaugia.Controllers
         }
 
 
+
         [HttpGet]
         public async Task<IActionResult> FilterAuctions(
             [FromQuery] long? categoryId)
         {
-            // Truy vấn dữ liệu theo danh mục được chọn.
+            // Không ghi Session nếu categoryId không hợp lệ.
+            if (categoryId.HasValue && categoryId.Value < 1)
+            {
+                return BadRequest("Invalid category.");
+            }
+
             var auctions = await GetHomepageAuctionsAsync(categoryId);
 
-            // Chuyển danh mục đang chọn sang PartialView.
+            // Session lưu danh mục được chọn gần nhất.
+            if (categoryId.HasValue)
+            {
+                HttpContext.Session.SetInt32(
+                    "LastHomepageCategoryId",
+                    checked((int)categoryId.Value)
+                );
+            }
+            else
+            {
+                // All categories: xóa bộ lọc đã lưu.
+                HttpContext.Session.Remove(
+                    "LastHomepageCategoryId"
+                );
+            }
+
             ViewBag.SelectedCategoryId = categoryId;
 
-            // Chỉ trả về phần HTML card, không trả về Layout.
-            return PartialView("_AuctionSections", auctions);
+            return PartialView("AuctionSections", auctions);
         }
+
 
 
         private async Task<List<ProductListItemViewModel>>
@@ -247,6 +268,16 @@ namespace BTLwebdaugia.Controllers
                 TotalItems = totalItems,
                 TotalPages = totalPages
             };
+
+
+            int? lastCategoryId = HttpContext.Session.GetInt32(
+                "LastHomepageCategoryId"
+            );
+
+            ViewBag.LastHomepageCategoryName = categories
+                .FirstOrDefault(c => c.CategoryId == lastCategoryId)
+                ?.Name;
+
 
             return View(viewModel);
         }

@@ -1,0 +1,114 @@
+﻿@using System.Security.Claims
+@using Microsoft.EntityFrameworkCore
+@inject BTLwebdaugia.Data.BidHubDbContext DbContext
+
+@{
+    long.TryParse(
+        User.FindFirstValue(ClaimTypes.NameIdentifier),
+        out long currentUserId);
+
+    var accountInfo = await DbContext.Users
+        .AsNoTracking()
+        .Where(u => u.UserId == currentUserId)
+        .Select(u => new
+        {
+            u.Username,
+            u.CreatedAt
+        })
+        .FirstOrDefaultAsync();
+
+    string? avatarPath = await DbContext.UserImages
+        .AsNoTracking()
+        .Where(x => x.UserId == currentUserId)
+        .Select(x => x.ImagePath)
+        .FirstOrDefaultAsync();
+
+    string currentController =
+        ViewContext.RouteData.Values["controller"]?
+            .ToString() ?? "";
+
+    string currentAction =
+        ViewContext.RouteData.Values["action"]?
+            .ToString() ?? "";
+}
+
+<aside class="sidebar">
+
+    <div class="identity">
+
+        @if (!string.IsNullOrWhiteSpace(avatarPath))
+        {
+            <img src="@avatarPath"
+                 alt="Profile picture"
+                 class="avatar account-sidebar-avatar" />
+        }
+        else
+        {
+            <div class="avatar account-sidebar-avatar">
+                ◯
+            </div>
+        }
+
+        <strong>
+            @(accountInfo?.Username ?? User.Identity?.Name)
+        </strong>
+
+        @if (accountInfo != null)
+        {
+            <p class="muted small">
+                Member since
+                @accountInfo.CreatedAt.ToString("MMMM yyyy")
+            </p>
+        }
+
+    </div>
+
+    <nav class="sidebar-nav">
+
+        <a class="@(currentController == "Account" &&
+                     currentAction == "Profile" ? "active" : "")"
+           asp-controller="Account"
+           asp-action="Profile">
+            My Profile
+        </a>
+
+        <a class="@(currentController == "Wallet" ? "active" : "")"
+           asp-controller="Wallet"
+           asp-action="Index">
+            My Wallet
+        </a>
+
+        <a class="@(currentController == "Selling" ? "active" : "")"
+           asp-controller="Selling"
+           asp-action="Index">
+            My Selling
+        </a>
+
+        <a class="@(currentController == "Bidding" ? "active" : "")"
+           asp-controller="Bidding"
+           asp-action="Index">
+            My Bidding
+        </a>
+
+        <a class="@(currentController == "Orders" ? "active" : "")"
+           asp-controller="Orders"
+           asp-action="Index">
+            My Orders
+        </a>
+
+        <form asp-controller="Account"
+              asp-action="LogOut"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <button type="submit"
+                    class="btn btn-small">
+                Log out
+            </button>
+
+        </form>
+
+    </nav>
+
+</aside>

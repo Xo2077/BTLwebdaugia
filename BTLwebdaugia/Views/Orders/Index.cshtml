@@ -33,69 +33,7 @@
 
     <div class="account">
 
-        <aside class="sidebar">
-
-            <div class="identity">
-                <div class="avatar">◯</div>
-
-                <strong>
-                    @User.Identity?.Name
-                </strong>
-            </div>
-
-            <nav class="sidebar-nav">
-
-                <a asp-controller="Account"
-                   asp-action="Profile">
-                    My Profile
-                </a>
-
-                <a asp-controller="Wallet"
-                   asp-action="Index">
-                    My Wallet
-                </a>
-
-                <a asp-controller="Selling"
-                   asp-action="Index">
-                    My Selling
-                </a>
-
-                <a asp-controller="Bidding"
-                   asp-action="Index">
-                    My Bidding
-                </a>
-
-                <a class="active"
-                   asp-controller="Orders"
-                   asp-action="Index">
-                    My Orders
-                </a>
-
-                <form asp-controller="Account"
-                      asp-action="LogOut"
-                      method="post">
-
-                    @Html.AntiForgeryToken()
-
-                    <button class="btn btn-small"
-                            type="submit">
-                        Log out
-                    </button>
-
-                </form>
-
-            </nav>
-
-            <div class="panel help-box">
-                <strong>Need help?</strong>
-
-                <p class="small muted">
-                    Contact our team for account
-                    or auction support.
-                </p>
-            </div>
-
-        </aside>
+        @await Html.PartialAsync("_AccountSidebar")
 
         <section class="account-body">
 

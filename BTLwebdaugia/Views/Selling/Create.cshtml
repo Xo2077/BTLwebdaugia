@@ -1,5 +1,4 @@
-﻿
-@model BTLwebdaugia.ViewModels.CreateProductViewModel
+﻿@model BTLwebdaugia.ViewModels.CreateProductViewModel
 
 @using BTLwebdaugia.ViewModels
 
@@ -90,6 +89,7 @@
                         </label>
 
                         <textarea asp-for="Description"
+                                  id="product-description"
                                   class="field"
                                   placeholder="Describe the product"
                                   rows="5"></textarea>
@@ -300,6 +300,53 @@
 </div>
 
 @section Scripts {
+    
+    <script src="https://cdn.jsdelivr.net/npm/easymde@2.21.0/dist/easymde.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const textarea =
+                document.getElementById("product-description");
+
+            const form =
+                document.getElementById("create-product-form");
+
+            if (!textarea || !form || typeof EasyMDE === "undefined")
+                return;
+
+            const editor = new EasyMDE({
+                element: textarea,
+                spellChecker: false,
+                status: false,
+                autoDownloadFontAwesome: false,
+                toolbar: [
+                    "bold",
+                    "italic",
+                    "heading",
+                    "|",
+                    "quote",
+                    "unordered-list",
+                    "ordered-list",
+                    "|",
+                    "link",
+                    "preview",
+                    "guide"
+                ]
+            });
+
+            // Đồng bộ nội dung editor với textarea trước POST.
+            form.addEventListener("submit", function () {
+                editor.codemirror.save();
+            });
+        });
+    </script>
+
+
+
+
+
+
+
     <script>
         (function () {
             const form = document.getElementById(
