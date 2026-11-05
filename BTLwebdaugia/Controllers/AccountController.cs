@@ -1,4 +1,4 @@
-﻿using BTLwebdaugia.Data;
+using BTLwebdaugia.Data;
 using BTLwebdaugia.Models;
 using BTLwebdaugia.Services;
 using BTLwebdaugia.ViewModels;
@@ -9,15 +9,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using System.Globalization;
 using System.Security.Claims;
-using System.Text;
+using Microsoft.Extensions.Localization;
 
 namespace BTLwebdaugia.Controllers
 {
     public class AccountController : Controller
     {
         private readonly BidHubDbContext _context;
+        private readonly IStringLocalizer<SharedLabels> _labels;
         private readonly ILogger<AccountController> _logger;
         private readonly IWebHostEnvironment _environment;
         private readonly PasswordHasher<User> _passwordHasher = new();
@@ -25,10 +25,12 @@ namespace BTLwebdaugia.Controllers
         public AccountController(
             BidHubDbContext context,
             IWebHostEnvironment environment,
-            ILogger<AccountController> logger)
+            ILogger<AccountController> logger,
+            IStringLocalizer<SharedLabels> labels)
         {
             _context = context;
             _logger = logger;
+            _labels = labels;
             _environment = environment;
         }
 
@@ -108,23 +110,11 @@ namespace BTLwebdaugia.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
+            string username = model.Username.Trim();
             string email = model.Email.Trim();
 
-            bool emailExists = await _context.Users
-                .AnyAsync(u => u.Email == email);
-
-            if (emailExists)
-            {
-                ModelState.AddModelError(
-                    nameof(model.Email),
-                    "This email is already registered.");
-
+            if (await AddSignUpConflictErrorsAsync(username, email))
                 return View(model);
-            }
-
-            string username = await GenerateUniqueUsernameAsync(
-                model.FirstName,
-                model.LastName);
 
             var user = new User
             {
@@ -138,52 +128,41 @@ namespace BTLwebdaugia.Controllers
                 user,
                 model.Password);
 
-            for (int attempt = 1; attempt <= 3; attempt++)
+            try
             {
-                try
-                {
-                    _context.Users.Add(user);
-                    await _context.SaveChangesAsync();
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
 
-                    return RedirectToAction(nameof(SignIn));
-                }
-                catch (DbUpdateException ex)
-                    when (ex.InnerException is SqlException sqlEx &&
-                          (sqlEx.Number == 2601 ||
-                           sqlEx.Number == 2627))
-                {
-                    _context.Entry(user).State = EntityState.Detached;
-
-                    if (await _context.Users
-                        .AnyAsync(u => u.Email == email))
-                    {
-                        ModelState.AddModelError(
-                            nameof(model.Email),
-                            "This email is already registered.");
-
-                        return View(model);
-                    }
-
-                    bool usernameTaken = await _context.Users
-                        .AnyAsync(u => u.Username == user.Username);
-
-                    if (!usernameTaken)
-                        throw;
-
-                    if (attempt == 3)
-                        break;
-
-                    user.Username = await GenerateUniqueUsernameAsync(
-                        model.FirstName,
-                        model.LastName);
-                }
+                return RedirectToAction(nameof(SignIn));
             }
+            catch (DbUpdateException ex)
+                when (ex.InnerException is SqlException sqlEx &&
+                      (sqlEx.Number == 2601 || sqlEx.Number == 2627))
+            {
+                // Another registration may claim the username/email after the initial check.
+                _context.Entry(user).State = EntityState.Detached;
 
-            ModelState.AddModelError(
-                string.Empty,
-                "Registration could not be completed. Please try again.");
+                if (!await AddSignUpConflictErrorsAsync(username, email))
+                    throw;
 
-            return View(model);
+                return View(model);
+            }
+        }
+
+        private async Task<bool> AddSignUpConflictErrorsAsync(string username, string email)
+        {
+            bool usernameExists = await _context.Users.AnyAsync(u => u.Username == username);
+            bool emailExists = await _context.Users.AnyAsync(u => u.Email == email);
+
+            if (usernameExists)
+                ModelState.AddModelError(nameof(RegisterViewModel.Username),
+                    _labels["This username is already taken. Please choose another."].Value);
+
+            if (emailExists)
+                ModelState.AddModelError(nameof(RegisterViewModel.Email),
+                    _labels["This email is already registered."].Value);
+
+            return usernameExists || emailExists;
         }
 
         [HttpGet]
@@ -567,73 +546,5 @@ namespace BTLwebdaugia.Controllers
                 : RedirectToAction("Index", "Home");
         }
 
-        private static string GenerateBaseUsername(
-            string firstName,
-            string lastName)
-        {
-            string fullName = $"{firstName}{lastName}"
-                .Trim()
-                .ToLowerInvariant()
-                .Replace('đ', 'd');
-
-            string normalized = fullName.Normalize(
-                NormalizationForm.FormD);
-
-            var builder = new StringBuilder();
-
-            foreach (char character in normalized)
-            {
-                UnicodeCategory category =
-                    CharUnicodeInfo.GetUnicodeCategory(character);
-
-                if (category == UnicodeCategory.NonSpacingMark)
-                    continue;
-
-                if ((character >= 'a' && character <= 'z') ||
-                    (character >= '0' && character <= '9'))
-                {
-                    builder.Append(character);
-                }
-            }
-
-            string username = builder.ToString();
-
-            if (string.IsNullOrEmpty(username))
-                username = "user";
-
-            if (username.Length > 50)
-                username = username[..50];
-
-            return username;
-        }
-
-        private async Task<string> GenerateUniqueUsernameAsync(
-            string firstName,
-            string lastName)
-        {
-            string baseUsername = GenerateBaseUsername(
-                firstName,
-                lastName);
-
-            string username = baseUsername;
-            int suffix = 2;
-
-            while (await _context.Users
-                .AnyAsync(u => u.Username == username))
-            {
-                string suffixText = suffix.ToString();
-                int maxBaseLength = 50 - suffixText.Length;
-
-                string shortenedBase =
-                    baseUsername.Length > maxBaseLength
-                        ? baseUsername[..maxBaseLength]
-                        : baseUsername;
-
-                username = shortenedBase + suffixText;
-                suffix++;
-            }
-
-            return username;
-        }
     }
 }

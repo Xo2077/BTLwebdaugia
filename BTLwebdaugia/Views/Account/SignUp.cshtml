@@ -14,31 +14,21 @@
         <form asp-controller="Account" asp-action="SignUp" method="post">
             @Html.AntiForgeryToken()
 
-            <div class="form-row">
-
-                <div class="form-group">
-                    <label asp-for="FirstName">@Labels["First name"]</label>
-                    <input asp-for="FirstName" class="field"
-                           placeholder="First name"
-                           autocomplete="given-name" />
-                    <span asp-validation-for="FirstName" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="LastName">@Labels["Last name"]</label>
-                    <input asp-for="LastName" class="field"
-                           placeholder="Last name"
-                           autocomplete="family-name" />
-                    <span asp-validation-for="LastName" class="text-danger"></span>
-                </div>
-
+            <div class="form-group">
+                <label asp-for="Username">@Labels["Registration username"]</label>
+                <input asp-for="Username" class="field"
+                       placeholder="@Labels["Enter a username"]"
+                       autocomplete="username" minlength="3" maxlength="50"
+                       aria-describedby="username-help" />
+                <small id="username-help">@Labels["Use 3–50 characters: letters, numbers, dots, underscores or hyphens."]</small>
+                <span asp-validation-for="Username" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="Email">@Labels["Email address"]</label>
                 <input asp-for="Email" class="field"
                        type="email"
-                       placeholder="Enter your email address"
+                       placeholder="@Labels["Enter your email address"]"
                        autocomplete="email" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
@@ -47,7 +37,7 @@
                 <label asp-for="Password">@Labels["Password"]</label>
                 <input asp-for="Password" class="field"
                        type="password"
-                       placeholder="Create a password"
+                       placeholder="@Labels["Create a password"]"
                        autocomplete="new-password" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
@@ -56,14 +46,14 @@
                 <label asp-for="ConfirmPassword">@Labels["Confirm password"]</label>
                 <input asp-for="ConfirmPassword" class="field"
                        type="password"
-                       placeholder="Re-enter your password"
+                       placeholder="@Labels["Re-enter your password"]"
                        autocomplete="new-password" />
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
 
             <label>
                 <input asp-for="AgreeToTerms" type="checkbox" />
-                I am 18 or older and agree to the Terms of Service.
+                @Labels["I am 18 or older and agree to the Terms of Service."]
             </label>
             <span asp-validation-for="AgreeToTerms" class="text-danger"></span>
 
@@ -77,7 +67,7 @@
         </form>
 
         <p>
-            Already have an account?
+            @Labels["Already have an account?"]
 
             <a asp-controller="Account"
                asp-action="SignIn">

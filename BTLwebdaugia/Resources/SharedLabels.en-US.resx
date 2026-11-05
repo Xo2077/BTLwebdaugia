@@ -54,4 +54,67 @@
   <data name="My account" xml:space="preserve">
     <value>My account</value>
   </data>
+  <data name="Registration username" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="Enter a username" xml:space="preserve">
+    <value>Enter a username</value>
+  </data>
+  <data name="Use 3–50 characters: letters, numbers, dots, underscores or hyphens." xml:space="preserve">
+    <value>Use 3–50 characters: letters, numbers, dots, underscores or hyphens.</value>
+  </data>
+  <data name="Please enter a username." xml:space="preserve">
+    <value>Please enter a username.</value>
+  </data>
+  <data name="Username must be between 3 and 50 characters." xml:space="preserve">
+    <value>Username must be between 3 and 50 characters.</value>
+  </data>
+  <data name="Username may only contain letters, numbers, dots, underscores and hyphens." xml:space="preserve">
+    <value>Username may only contain letters, numbers, dots, underscores and hyphens.</value>
+  </data>
+  <data name="This username is already taken. Please choose another." xml:space="preserve">
+    <value>This username is already taken. Please choose another.</value>
+  </data>
+  <data name="This email is already registered." xml:space="preserve">
+    <value>This email is already registered.</value>
+  </data>
+  <data name="Email cannot exceed 254 characters." xml:space="preserve">
+    <value>Email cannot exceed 254 characters.</value>
+  </data>
+  <data name="Please enter your email." xml:space="preserve">
+    <value>Please enter your email.</value>
+  </data>
+  <data name="Invalid email address." xml:space="preserve">
+    <value>Invalid email address.</value>
+  </data>
+  <data name="Please enter your password." xml:space="preserve">
+    <value>Please enter your password.</value>
+  </data>
+  <data name="Password must be at least 8 characters." xml:space="preserve">
+    <value>Password must be at least 8 characters.</value>
+  </data>
+  <data name="Please confirm your password." xml:space="preserve">
+    <value>Please confirm your password.</value>
+  </data>
+  <data name="Passwords do not match." xml:space="preserve">
+    <value>Passwords do not match.</value>
+  </data>
+  <data name="You must agree to the Terms of Service." xml:space="preserve">
+    <value>You must agree to the Terms of Service.</value>
+  </data>
+  <data name="Enter your email address" xml:space="preserve">
+    <value>Enter your email address</value>
+  </data>
+  <data name="Create a password" xml:space="preserve">
+    <value>Create a password</value>
+  </data>
+  <data name="Re-enter your password" xml:space="preserve">
+    <value>Re-enter your password</value>
+  </data>
+  <data name="I am 18 or older and agree to the Terms of Service." xml:space="preserve">
+    <value>I am 18 or older and agree to the Terms of Service.</value>
+  </data>
+  <data name="Already have an account?" xml:space="preserve">
+    <value>Already have an account?</value>
+  </data>
 </root>

@@ -957,4 +957,67 @@
   <data name="My account" xml:space="preserve">
     <value>Tài khoản của tôi</value>
   </data>
+  <data name="Registration username" xml:space="preserve">
+    <value>Tên người dùng</value>
+  </data>
+  <data name="Enter a username" xml:space="preserve">
+    <value>Nhập tên người dùng</value>
+  </data>
+  <data name="Use 3–50 characters: letters, numbers, dots, underscores or hyphens." xml:space="preserve">
+    <value>Dùng 3–50 ký tự: chữ không dấu, số, dấu chấm, gạch dưới hoặc gạch ngang.</value>
+  </data>
+  <data name="Please enter a username." xml:space="preserve">
+    <value>Vui lòng nhập tên người dùng.</value>
+  </data>
+  <data name="Username must be between 3 and 50 characters." xml:space="preserve">
+    <value>Tên người dùng phải có từ 3 đến 50 ký tự.</value>
+  </data>
+  <data name="Username may only contain letters, numbers, dots, underscores and hyphens." xml:space="preserve">
+    <value>Tên người dùng chỉ được chứa chữ không dấu, số, dấu chấm, gạch dưới và gạch ngang.</value>
+  </data>
+  <data name="This username is already taken. Please choose another." xml:space="preserve">
+    <value>Tên người dùng đã được sử dụng. Vui lòng chọn tên khác.</value>
+  </data>
+  <data name="This email is already registered." xml:space="preserve">
+    <value>Email này đã được đăng ký.</value>
+  </data>
+  <data name="Email cannot exceed 254 characters." xml:space="preserve">
+    <value>Email không được vượt quá 254 ký tự.</value>
+  </data>
+  <data name="Please enter your email." xml:space="preserve">
+    <value>Vui lòng nhập email.</value>
+  </data>
+  <data name="Invalid email address." xml:space="preserve">
+    <value>Địa chỉ email không hợp lệ.</value>
+  </data>
+  <data name="Please enter your password." xml:space="preserve">
+    <value>Vui lòng nhập mật khẩu.</value>
+  </data>
+  <data name="Password must be at least 8 characters." xml:space="preserve">
+    <value>Mật khẩu phải có ít nhất 8 ký tự.</value>
+  </data>
+  <data name="Please confirm your password." xml:space="preserve">
+    <value>Vui lòng xác nhận mật khẩu.</value>
+  </data>
+  <data name="Passwords do not match." xml:space="preserve">
+    <value>Mật khẩu xác nhận không khớp.</value>
+  </data>
+  <data name="You must agree to the Terms of Service." xml:space="preserve">
+    <value>Bạn phải đồng ý với Điều khoản dịch vụ.</value>
+  </data>
+  <data name="Enter your email address" xml:space="preserve">
+    <value>Nhập địa chỉ email</value>
+  </data>
+  <data name="Create a password" xml:space="preserve">
+    <value>Tạo mật khẩu</value>
+  </data>
+  <data name="Re-enter your password" xml:space="preserve">
+    <value>Nhập lại mật khẩu</value>
+  </data>
+  <data name="I am 18 or older and agree to the Terms of Service." xml:space="preserve">
+    <value>Tôi từ 18 tuổi trở lên và đồng ý với Điều khoản dịch vụ.</value>
+  </data>
+  <data name="Already have an account?" xml:space="preserve">
+    <value>Bạn đã có tài khoản?</value>
+  </data>
 </root>

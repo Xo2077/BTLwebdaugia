@@ -1,3 +1,4 @@
+using BTLwebdaugia;
 using BTLwebdaugia.Services;
 using BTLwebdaugia.Data;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +7,10 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddDataAnnotationsLocalization(options =>
+        options.DataAnnotationLocalizerProvider = (_, factory) =>
+            factory.Create(typeof(SharedLabels)));
 builder.Services.AddScoped<AccountDisplayService>();
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
