@@ -1,0 +1,36 @@
+@using BTLwebdaugia.ViewModels
+@{
+    var filter = (AdminListFilterViewModel)ViewBag.AdminFilter;
+    var statuses = (string[])ViewBag.AdminStatuses;
+    string searchPlaceholder = ViewBag.AdminSearchPlaceholder ?? "Search";
+}
+<form method="get" class="admin-filter-form">
+    <label>
+        @Labels["Search"]
+        <input class="field" name="Search" value="@filter.Search" placeholder="@Labels[searchPlaceholder]" />
+    </label>
+    @if (statuses.Length > 0)
+    {
+        <label>
+            @Labels["Status"]
+            <select class="field" name="Status">
+                <option value="">@Labels["All"]</option>
+                @foreach (var status in statuses)
+                {
+                    <option value="@status" selected="@(filter.Status == status)">@Labels[status]</option>
+                }
+            </select>
+        </label>
+    }
+    <label>
+        @Labels["Rows per page"]
+        <select class="field" name="PageSize">
+            @foreach (var size in new[] { 10, 20, 50 })
+            {
+                <option value="@size" selected="@(filter.PageSize == size)">@size</option>
+            }
+        </select>
+    </label>
+    <button class="btn" type="submit">@Labels["Apply filters"]</button>
+</form>
+<p>@Labels["Total results"]: @filter.TotalItems</p>

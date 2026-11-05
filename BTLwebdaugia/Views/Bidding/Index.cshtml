@@ -1,4 +1,4 @@
-@model List<BTLwebdaugia.ViewModels.MyBiddingItemViewModel>
+﻿@model List<BTLwebdaugia.ViewModels.MyBiddingItemViewModel>
 
 @{
     ViewData["Title"] = Labels["My Bidding"].Value;
@@ -9,13 +9,11 @@
 
 <div class="container">
 
-    <div class="crumb">
-        Home / My account / My Bidding
-    </div>
+    @await Html.PartialAsync("_AccountBreadcrumb", "My Bidding")
 
     <div class="account" data-account-page="bidding">
 
-        @await Html.PartialAsync("_AccountSidebar")
+        @await Component.InvokeAsync("AccountSidebar")
 
         <div id="account-content">
             @await Html.PartialAsync("_BiddingContent", Model)

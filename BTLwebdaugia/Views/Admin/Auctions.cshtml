@@ -2,7 +2,7 @@
 @model List<BTLwebdaugia.Models.Auction>
 
 @{
-    ViewData["Title"] = "Admin Auctions";
+    ViewData["Title"] = Labels["Admin Auctions"].Value;
     Layout = "_AdminLayout";
 
     var now = DateTime.UtcNow;
@@ -12,10 +12,10 @@
 }
 
 <h1>@Labels["Auctions management"]</h1>
+<partial name="_AdminListControls" />
 
 <p class="muted">
-    Manage auction sessions and review pending auctions
-    from SQL Server.
+    @Labels["Manage auction sessions and review pending auctions from SQL Server."]
 </p>
 
 @if (TempData["AdminSuccess"] != null)
@@ -35,7 +35,7 @@
 <div class="table-shell">
 
     <div class="table-toolbar">
-        <h3>Auctions: @Model.Count</h3>
+        <h3>@Labels["Auctions"]: @Model.Count</h3>
 
         <span class="muted">
             Pending review: @pendingCount
@@ -45,7 +45,7 @@
     <table>
         <thead>
             <tr>
-                <th>AUCTION / ITEM</th>
+                <th>@Labels["AUCTION / ITEM"]</th>
                 <th>@Labels["SELLER"]</th>
                 <th>@Labels["STARTING PRICE"]</th>
                 <th>@Labels["END TIME"]</th>
@@ -60,7 +60,7 @@
             {
                 <tr>
                     <td colspan="6">
-                        No auctions found.
+                        @Labels["No auctions found."]
                     </td>
                 </tr>
             }
@@ -106,13 +106,13 @@
                         </td>
 
                         <td>
-                            @auction.CurrentEndAt.ToString("dd/MM/yyyy HH:mm")
-                            UTC
+                            @auction.CurrentEndAt.AddHours(7).ToString("dd/MM/yyyy HH:mm")
+                            UTC+7
                         </td>
 
                         <td>
                             <span class="tag">
-                                @status
+                                @Labels[status]
                             </span>
 
                             @if (auction.ApprovalStatus == "Rejected" &&
@@ -148,7 +148,7 @@
 
                                             <button class="btn btn-small"
                                                     type="submit">
-                                                Approve
+                                                @Labels["Approve"]
                                             </button>
 
                                         </form>
@@ -156,7 +156,7 @@
                                     else
                                     {
                                         <span class="muted small">
-                                            Product approval required
+                                            @Labels["Product approval required"]
                                         </span>
                                     }
 
@@ -174,12 +174,13 @@
                                                   name="reason"
                                                   rows="2"
                                                   maxlength="1000"
-                                                  placeholder="Reason for rejection"
+                                                  placeholder="@Labels["Reason for rejection"]"
                                                   required></textarea>
+<span class="text-danger field-validation-valid" data-valmsg-for="reason" data-valmsg-replace="true"></span>
 
                                         <button class="btn btn-small"
                                                 type="submit">
-                                            Reject
+                                            @Labels["Reject"]
                                         </button>
 
                                     </form>
@@ -189,7 +190,7 @@
                             else
                             {
                                 <span class="muted small">
-                                    Reviewed
+                                    @Labels["Reviewed"]
                                 </span>
                             }
 
@@ -209,18 +210,17 @@
     <h3>@Labels["Auction approval policy"]</h3>
 
     <p class="muted small">
-        Products must be approved before their
-        auctions can be approved.
+        @Labels["Products must be approved before their auctions can be approved."]
     </p>
 
     <p class="muted small">
-        Pending auctions can be approved or rejected
-        by an Admin. A rejection reason is required.
+        @Labels["Pending auctions can be approved or rejected by an Admin. A rejection reason is required."]
     </p>
 
     <p class="muted small">
-        Approved auctions become publicly visible
-        when their scheduled start time is reached.
+        @Labels["Approved auctions become publicly visible when their scheduled start time is reached."]
     </p>
 
 </div>
+
+<partial name="_AdminPager" />

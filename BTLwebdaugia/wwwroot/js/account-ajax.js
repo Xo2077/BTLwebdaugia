@@ -1,4 +1,4 @@
-$(function () {
+﻿$(function () {
 
     // Chỉ chạy AJAX ở các trang My Account.
     if (!$(".account[data-account-page]").length) {
@@ -47,28 +47,18 @@ $(function () {
     }
 
     function updateBreadcrumb(url) {
-        const path = new URL(url).pathname.toLowerCase();
-
-        const titles = {
-            "/account/profile": "My Profile",
-            "/wallet": "My Wallet",
-            "/wallet/index": "My Wallet",
-            "/selling": "My Selling",
-            "/selling/index": "My Selling",
-            "/bidding": "My Bidding",
-            "/bidding/index": "My Bidding",
-            "/orders": "My Orders",
-            "/orders/index": "My Orders"
-        };
-
-        const title = titles[path];
-
+        function normalizePath(value) {
+            return new URL(value, window.location.href).pathname
+                .replace(/\/+$/, '').replace(/\/index$/i, '').toLowerCase();
+        }
+        const path = normalizePath(url);
+        const $link = $('.sidebar-nav a[data-account-ajax]').filter(function () {
+            return normalizePath(this.href) === path;
+        }).first();
+        const title = $link.text().trim();
         if (title) {
-            $(".crumb").first().text(
-                "Home / My account / " + title
-            );
-
-            document.title = title + " | BidHub";
+            $('.crumb [aria-current="page"]').first().text(title);
+            document.title = title + ' | BidHub';
         }
     }
 

@@ -2,11 +2,12 @@
 @model List<BTLwebdaugia.Models.Wallet>
 
 @{
-    ViewData["Title"] = "Admin Wallets";
+    ViewData["Title"] = Labels["Admin Wallets"].Value;
     Layout = "_AdminLayout";
 }
 
 <h1>@Labels["Wallets management"]</h1>
+<partial name="_AdminListControls" />
 <p class="muted">
     Virtual wallet balances from SQL Server
 </p>
@@ -50,3 +51,5 @@
         </tbody>
     </table>
 </div>
+
+<partial name="_AdminPager" />

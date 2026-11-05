@@ -1,10 +1,9 @@
-using BTLwebdaugia.Data;
+﻿using BTLwebdaugia.Data;
 using BTLwebdaugia.Models;
+using BTLwebdaugia.Services;
 using BTLwebdaugia.ViewModels;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Security.Claims;
@@ -20,7 +19,6 @@ namespace BTLwebdaugia.Controllers
         {
             _context = context;
         }
-
 
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -123,7 +121,6 @@ namespace BTLwebdaugia.Controllers
             return View(model);
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> PlaceBid(
@@ -146,7 +143,7 @@ namespace BTLwebdaugia.Controllers
 
             if (model.Amount != decimal.Truncate(model.Amount) ||
                 model.Amount < 1 ||
-                model.Amount > 999999999999999999m)
+                model.Amount > MoneyRules.MaxStoredAmount)
             {
                 TempData["BidError"] =
                     "Bid amount must be a valid whole number.";
@@ -260,10 +257,7 @@ namespace BTLwebdaugia.Controllers
 
                 return RedirectToAuction(model.AuctionId);
             }
-            catch (SqlException ex)
-                when (ex.Number == 1205 ||
-                      ex.Number == 1222 ||
-                      ex.Number == 3960)
+            catch (Exception ex) when (SqlFailure.IsConcurrencyConflict(ex))
             {
                 TempData["BidError"] =
                     "Another transaction affected this auction. Please try again.";

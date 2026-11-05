@@ -1,0 +1,6 @@
+﻿@model string
+<nav class="crumb" aria-label="@Labels["Breadcrumb"]">
+    <a asp-controller="Home" asp-action="Index">@Labels["Home"]</a>
+    / <a asp-controller="Account" asp-action="Profile">@Labels["My account"]</a>
+    / <span aria-current="page">@Labels[Model]</span>
+</nav>

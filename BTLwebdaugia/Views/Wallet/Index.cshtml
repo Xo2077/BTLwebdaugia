@@ -1,4 +1,4 @@
-@model BTLwebdaugia.ViewModels.WalletViewModel
+﻿@model BTLwebdaugia.ViewModels.WalletViewModel
 
 @{
     ViewData["Title"] = Labels["My Wallet"].Value;
@@ -7,13 +7,11 @@
 
 <div class="container">
 
-    <div class="crumb">
-        Home / My account / My Wallet
-    </div>
+    @await Html.PartialAsync("_AccountBreadcrumb", "My Wallet")
 
     <div class="account" data-account-page="wallet">
 
-        @await Html.PartialAsync("_AccountSidebar")
+        @await Component.InvokeAsync("AccountSidebar")
 
         <div id="account-content">
             @await Html.PartialAsync("_WalletContent", Model)

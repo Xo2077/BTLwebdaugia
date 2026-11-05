@@ -1,4 +1,4 @@
-@model BTLwebdaugia.ViewModels.ProductListViewModel
+﻿@model BTLwebdaugia.ViewModels.ProductListViewModel
 
 @{
     ViewData["Title"] = "Category & Search";
@@ -8,7 +8,10 @@
 
 <main class="container">
 
-    <div class="crumb">Home / Category</div>
+    <nav class="crumb" aria-label="@Labels["Breadcrumb"]">
+        <a asp-controller="Home" asp-action="Index">@Labels["Home"]</a>
+        / <span aria-current="page">@Labels["Category"]</span>
+    </nav>
 
     <div class="page-title">
         <h1>@Labels["Explore Auctions"]</h1>
@@ -197,7 +200,15 @@
                         </p>
 
                         <p class="small">
-                            @if (product.AuctionStatus == "Ended")
+                            @if (product.AuctionStatus == "Upcoming")
+                            {
+                                <span>
+                                    @Labels["Starts at:"]
+                                    @product.StartAt.AddHours(7).ToString("dd/MM/yyyy HH:mm")
+                                    UTC+7
+                                </span>
+                            }
+                            else if (product.AuctionStatus == "Ended")
                             {
                                 <span>
                                     Ended:

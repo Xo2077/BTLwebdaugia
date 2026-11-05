@@ -113,8 +113,8 @@
                             </p>
 
                             <p class="small">
-                                Ends:
-                                @product.CurrentEndAt.AddHours(7).ToString("dd/MM/yyyy HH:mm")
+                                @Labels[product.AuctionStatus == "Upcoming" ? "Starts at:" : "End time:"]
+                                @((product.AuctionStatus == "Upcoming" ? product.StartAt : product.CurrentEndAt).AddHours(7).ToString("dd/MM/yyyy HH:mm"))
                                 UTC+7
                             </p>
 

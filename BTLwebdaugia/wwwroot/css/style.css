@@ -2115,3 +2115,89 @@ tbody tr:hover {
 .bid-ranks li > span { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; overflow-wrap: anywhere; }
 .bid-rank-avatar { width: 32px; height: 32px; flex: 0 0 32px; border-radius: 50%; object-fit: cover; }
 .bid-rank-placeholder { display: grid; place-items: center; background: #eaddff; color: #543879; }
+
+.admin-filter-form {
+    display: flex;
+    align-items: end;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 16px 0;
+}
+.admin-filter-form label { flex: 1 1 180px; }
+.admin-pager { display: flex; align-items: center; gap: 12px; margin: 18px 0; }
+#admin-feedback { max-width: 1200px; margin: 12px auto; padding: 10px; }
+#admin-content[aria-busy="true"] { opacity: .65; }
+.field-validation-error { display: block; color: #b91c1c; }
+
+.notification-dropdown { position: relative; }
+.notification-toggle {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 9px;
+    border: 1px solid #a8cbca;
+    border-radius: 50%;
+    color: inherit;
+    background: #e7f6f2;
+    cursor: pointer;
+}
+#notification-count {
+    position: absolute;
+    top: -6px;
+    right: -7px;
+    min-width: 18px;
+    padding: 1px 4px;
+    border-radius: 12px;
+    background: #b91c1c;
+    color: white;
+    font-size: 11px;
+}
+#notification-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: min(360px, calc(100vw - 32px));
+    max-height: 65vh;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px #0002;
+    z-index: 100;
+    padding: 12px;
+}
+#notification-menu[hidden], #notification-count[hidden] { display: none; }
+.notification-list h3 { margin: 0 0 10px; font-size: 1rem; }
+.notification-item { margin: 0; border-bottom: 1px solid #e2e8f0; }
+.notification-item button {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+    padding: 10px;
+    border: 0;
+    background: transparent;
+    text-align: left;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    overflow-wrap: anywhere;
+}
+.notification-item.unread { background: #e7f6f2; }
+.notification-item small { color: #64748b; }
+.notification-pages { display: flex; justify-content: space-between; gap: 8px; padding-top: 10px; }
+
+.seller-listing-details { padding-bottom: 24px; }
+.seller-listing-details .panel { margin-bottom: 18px; }
+.seller-listing-details article { scroll-margin-top: 100px; }
+.seller-listing-images { display: flex; flex-wrap: wrap; gap: 12px; }
+.seller-listing-images img { width: 160px; height: 160px; object-fit: contain; border: 1px solid #cbd5e1; border-radius: 8px; }
+.seller-description, .seller-rejection p { white-space: pre-wrap; overflow-wrap: anywhere; }
+.seller-rejection { border-left: 4px solid #b91c1c; padding: 12px; background: #fff1f2; margin-block: 12px; }
+.seller-auction-fields { display: grid; grid-template-columns: minmax(120px, 1fr) minmax(0, 2fr); gap: 8px 16px; }
+.seller-auction-fields dt { font-weight: 600; }
+.seller-auction-fields dd { margin: 0; overflow-wrap: anywhere; }
+@media (max-width: 600px) {
+    .seller-auction-fields { grid-template-columns: minmax(0, 1fr); }
+}

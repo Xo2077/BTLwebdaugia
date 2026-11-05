@@ -2,12 +2,13 @@
 @model List<BTLwebdaugia.Models.User>
 
 @{
-    ViewData["Title"] = "Admin Users";
+    ViewData["Title"] = Labels["Admin Users"].Value;
     Layout = "_AdminLayout";
 }
 
 <h1>@Labels["Users management"]</h1>
-<p class="muted">Registered accounts from SQL Server</p>
+<partial name="_AdminListControls" />
+<p class="muted">@Labels["Registered accounts from SQL Server"]</p>
 
 <div class="table-shell">
     <div class="table-toolbar">
@@ -19,7 +20,7 @@
             <tr>
                 <th>ID</th>
                 <th>@Labels["USERNAME"]</th>
-                <th>EMAIL</th>
+                <th>@Labels["EMAIL"]</th>
                 <th>@Labels["ROLE"]</th>
                 <th>@Labels["CREATED"]</th>
             </tr>
@@ -31,7 +32,7 @@
                     <td>@user.UserId</td>
                     <td>@user.Username</td>
                     <td>@user.Email</td>
-                    <td><span class="tag">@user.Role</span></td>
+                    <td><span class="tag">@Labels[user.Role]</span></td>
                     <td>@user.CreatedAt.ToString("dd/MM/yyyy HH:mm") UTC</td>
                 </tr>
             }
@@ -45,3 +46,5 @@
         </tbody>
     </table>
 </div>
+
+<partial name="_AdminPager" />

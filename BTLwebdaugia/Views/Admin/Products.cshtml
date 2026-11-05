@@ -2,7 +2,7 @@
 @model List<BTLwebdaugia.Models.Product>
 
 @{
-    ViewData["Title"] = "Admin Products";
+    ViewData["Title"] = Labels["Admin Products"].Value;
     Layout = "_AdminLayout";
 
     int pending = Model.Count(p =>
@@ -27,22 +27,23 @@
 
 
 <h1>@Labels["Products management"]</h1>
+<partial name="_AdminListControls" />
 
-<p class="muted">
-    Product listings from SQL Server
-</p>
+@* <p class="muted">
+    @Labels["Product listings from SQL Server"]
+</p> *@
 
 <div class="table-shell">
 
     <div class="table-toolbar">
-        <h3>Products: @Model.Count</h3>
-        <span>Pending review: @pending</span>
+        <h3>@Labels["Products"]: @Model.Count</h3>
+        <span>@Labels["Pending review"]: @pending</span>
     </div>
 
     <table>
         <thead>
             <tr>
-                <th>ID / ITEM</th>
+                <th>@Labels["ID / ITEM"]</th>
                 <th>@Labels["OWNER"]</th>
                 <th>@Labels["Category"]</th>
                 <th>@Labels["STATUS"]</th>
@@ -65,8 +66,8 @@
                     <td>
                         <span class="tag">
                             @(product.IsDeleted
-                                ? "Deleted"
-                                : product.ApprovalStatus)
+                                ? Labels["Deleted"].Value
+                                : Labels[product.ApprovalStatus].Value)
                         </span>
                     </td>
 
@@ -95,7 +96,7 @@
 
                                     <button class="btn btn-small"
                                             type="submit">
-                                        Approve
+                                        @Labels["Approve"]
                                     </button>
                                 </form>
 
@@ -109,31 +110,26 @@
                                            name="productId"
                                            value="@product.ProductId" />
 
-                                    <textarea name="reason"
+                                    <textarea name="reason" data-val="true" data-val-required="@Labels["Rejection reason is required (maximum 1000 characters)."]"
                                               class="field"
                                               maxlength="1000"
                                               rows="2"
-                                              placeholder="Rejection reason"
+                                              placeholder="@Labels["Rejection reason"]"
                                               required></textarea>
+<span class="text-danger field-validation-valid" data-valmsg-for="reason" data-valmsg-replace="true"></span>
 
                                     <button class="btn btn-small"
                                             type="submit">
-                                        Reject
+                                        @Labels["Reject"]
                                     </button>
                                 </form>
 
                             </div>
                         }
-
-                        {   
-                            <span class="small">
-                                Awaiting review
-                            </span>
-                        }
                         else
                         {
                             <span class="small">
-                                @product.ApprovalStatus
+                                @Labels[product.ApprovalStatus]
                             </span>
                         }
                     </td>
@@ -155,3 +151,5 @@
 </div>
 
 
+
+<partial name="_AdminPager" />

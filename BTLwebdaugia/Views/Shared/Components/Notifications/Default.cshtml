@@ -1,0 +1,39 @@
+@model BTLwebdaugia.ViewModels.NotificationListViewModel
+<div class="notification-list" data-unread="@Model.UnreadCount" data-page="@Model.Page">
+    <h3>@Labels["Notifications"]</h3>
+    @if (!Model.Available)
+    {
+        <p>@Labels["Notifications are temporarily unavailable."]</p>
+    }
+    else if (Model.Items.Count == 0)
+    {
+        <p>@Labels["No notifications yet."]</p>
+    }
+    @foreach (var item in Model.Items)
+    {
+        <form asp-controller="Notifications" asp-action="Open" method="post"
+              class="notification-item @(item.ReadAt == null ? "unread" : "")">
+            <input type="hidden" name="id" value="@item.NotificationId" />
+            <button type="submit">
+                <strong>@Labels[item.EventType]</strong>
+                <span>@item.ProductName</span>
+                @if (!string.IsNullOrWhiteSpace(item.Reason))
+                {
+                    <span>@Labels["Reason"]: @item.Reason</span>
+                }
+                <small>@item.CreatedAt.AddHours(7).ToString("dd/MM/yyyy HH:mm") UTC+7</small>
+            </button>
+        </form>
+    }
+    <div class="notification-pages">
+        @if (Model.Page > 1)
+        {
+            <button type="button" data-notification-page="@(Model.Page - 1)">@Labels["Previous"]</button>
+        }
+        <span>@Labels["Page"] @Model.Page</span>
+        @if (Model.HasNext)
+        {
+            <button type="button" data-notification-page="@(Model.Page + 1)">@Labels["Next"]</button>
+        }
+    </div>
+</div>

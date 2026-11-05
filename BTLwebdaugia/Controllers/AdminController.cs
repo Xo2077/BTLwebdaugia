@@ -1,8 +1,11 @@
 ﻿using BTLwebdaugia.Data;
+using BTLwebdaugia.Models;
+using BTLwebdaugia.Services;
 using BTLwebdaugia.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using System.Security.Claims;
 
 namespace BTLwebdaugia.Controllers
@@ -11,15 +14,15 @@ namespace BTLwebdaugia.Controllers
     public class AdminController : Controller
     {
         private readonly BidHubDbContext _context;
+        private readonly ILogger<AdminController> _logger;
+        private readonly IStringLocalizer<SharedLabels> _labels;
 
-        public AdminController(BidHubDbContext context)
+        public AdminController(BidHubDbContext context, IStringLocalizer<SharedLabels> labels, ILogger<AdminController> logger)
         {
             _context = context;
+            _logger = logger;
+            _labels = labels;
         }
-
-        // =====================================
-        // DASHBOARD
-        // =====================================
 
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -60,132 +63,220 @@ namespace BTLwebdaugia.Controllers
             return View(model);
         }
 
-        // =====================================
-        // USERS
-        // =====================================
-
         [HttpGet]
-        public async Task<IActionResult> Users()
+        public async Task<IActionResult> Users([FromQuery] AdminListFilterViewModel filter)
         {
-            var users = await _context.Users
-                .AsNoTracking()
-                .OrderByDescending(u => u.UserId)
-                .Take(200)
+            filter.Normalize();
+            var query = _context.Users
+                .AsNoTracking().AsQueryable();
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+            {
+                string term = filter.Search.Trim();
+                query = query.Where(u => u.Username.Contains(term) || u.Email.Contains(term));
+            }
+            string[] statuses = ["User", "Admin"];
+            if (!statuses.Contains(filter.Status))
+                filter.Status = "";
+            if (filter.Status != "")
+                query = query.Where(u => u.Role == filter.Status);
+            filter.TotalItems = await query.CountAsync();
+            filter.Page = Math.Min(filter.Page, filter.TotalPages);
+            ViewBag.AdminFilter = filter;
+            ViewBag.AdminStatuses = statuses;
+            ViewBag.AdminSearchPlaceholder = "Search by username or email";
+            var items = await query.OrderByDescending(u => u.UserId)
+                .Skip((filter.Page - 1) * filter.PageSize)
+                .Take(filter.PageSize)
                 .ToListAsync();
-
-            return View(users);
+            return View(items);
         }
 
-        // =====================================
-        // CATEGORIES
-        // =====================================
-
         [HttpGet]
-        public async Task<IActionResult> Categories()
+        public async Task<IActionResult> Categories([FromQuery] AdminListFilterViewModel filter)
         {
-            var categories = await _context.Categories
-                .AsNoTracking()
-                .OrderBy(c => c.CategoryId)
+            filter.Normalize();
+            var query = _context.Categories
+                .AsNoTracking().AsQueryable();
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+            {
+                string term = filter.Search.Trim();
+                query = query.Where(c => c.Name.Contains(term) || (c.Description != null && c.Description.Contains(term)));
+            }
+            string[] statuses = [];
+            if (!statuses.Contains(filter.Status))
+                filter.Status = "";
+            filter.TotalItems = await query.CountAsync();
+            filter.Page = Math.Min(filter.Page, filter.TotalPages);
+            ViewBag.AdminFilter = filter;
+            ViewBag.AdminStatuses = statuses;
+            ViewBag.AdminSearchPlaceholder = "Search by category name or description";
+            var items = await query.OrderByDescending(c => c.CategoryId)
+                .Skip((filter.Page - 1) * filter.PageSize)
+                .Take(filter.PageSize)
                 .ToListAsync();
-
-            return View(categories);
+            return View(items);
         }
 
-        // =====================================
-        // PRODUCTS
-        // =====================================
-
         [HttpGet]
-        public async Task<IActionResult> Products()
+        public async Task<IActionResult> Products([FromQuery] AdminListFilterViewModel filter)
         {
-            var products = await _context.Products
+            filter.Normalize();
+            var query = _context.Products
                 .AsNoTracking()
                 .Include(p => p.Seller)
-                .Include(p => p.Category)
-                .OrderByDescending(p => p.ProductId)
-                .Take(200)
+                .Include(p => p.Category).AsQueryable();
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+            {
+                string term = filter.Search.Trim();
+                query = query.Where(p => p.Name.Contains(term) || p.Seller.Username.Contains(term) || p.Category.Name.Contains(term));
+            }
+            string[] statuses = ["Pending", "Approved", "Rejected", "Deleted"];
+            if (!statuses.Contains(filter.Status))
+                filter.Status = "";
+            if (filter.Status == "Deleted")
+                query = query.Where(p => p.IsDeleted);
+            else if (filter.Status != "")
+                query = query.Where(p => !p.IsDeleted && p.ApprovalStatus == filter.Status);
+            filter.TotalItems = await query.CountAsync();
+            filter.Page = Math.Min(filter.Page, filter.TotalPages);
+            ViewBag.AdminFilter = filter;
+            ViewBag.AdminStatuses = statuses;
+            ViewBag.AdminSearchPlaceholder = "Search by product, seller or category";
+            var items = await query.OrderByDescending(p => p.ProductId)
+                .Skip((filter.Page - 1) * filter.PageSize)
+                .Take(filter.PageSize)
                 .ToListAsync();
-
-            return View(products);
+            return View(items);
         }
 
-        // =====================================
-        // AUCTIONS
-        // =====================================
-
         [HttpGet]
-        public async Task<IActionResult> Auctions()
+        public async Task<IActionResult> Auctions([FromQuery] AdminListFilterViewModel filter)
         {
-            var auctions = await _context.Auctions
+            filter.Normalize();
+            var query = _context.Auctions
                 .AsNoTracking()
                 .Include(a => a.Product)
-                    .ThenInclude(p => p.Seller)
-                .OrderByDescending(a => a.AuctionId)
-                .Take(200)
+                    .ThenInclude(p => p.Seller).AsQueryable();
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+            {
+                string term = filter.Search.Trim();
+                query = query.Where(a => a.Product.Name.Contains(term) || a.Product.Seller.Username.Contains(term));
+            }
+            string[] statuses = ["Pending", "Approved", "Rejected", "Upcoming", "Live", "Ended", "Sold", "Unsold"];
+            if (!statuses.Contains(filter.Status))
+                filter.Status = "";
+            var now = DateTime.UtcNow;
+            query = filter.Status switch
+            {
+                "Pending" or "Approved" or "Rejected" => query.Where(a => a.ApprovalStatus == filter.Status),
+                "Upcoming" => query.Where(a => a.ApprovalStatus == "Approved" && a.Product.ApprovalStatus == "Approved" && !a.Product.IsDeleted && a.StartAt > now),
+                "Live" => query.Where(a => a.ApprovalStatus == "Approved" && a.Product.ApprovalStatus == "Approved" && !a.Product.IsDeleted && a.StartAt <= now && a.CurrentEndAt > now && a.Result == null),
+                "Ended" => query.Where(a => a.CurrentEndAt <= now),
+                "Sold" or "Unsold" => query.Where(a => a.Result == filter.Status),
+                _ => query
+            };
+            filter.TotalItems = await query.CountAsync();
+            filter.Page = Math.Min(filter.Page, filter.TotalPages);
+            ViewBag.AdminFilter = filter;
+            ViewBag.AdminStatuses = statuses;
+            ViewBag.AdminSearchPlaceholder = "Search by product or seller";
+            var items = await query.OrderByDescending(a => a.AuctionId)
+                .Skip((filter.Page - 1) * filter.PageSize)
+                .Take(filter.PageSize)
                 .ToListAsync();
-
-            return View(auctions);
+            return View(items);
         }
 
-        // =====================================
-        // BIDS
-        // =====================================
-
         [HttpGet]
-        public async Task<IActionResult> Bids()
+        public async Task<IActionResult> Bids([FromQuery] AdminListFilterViewModel filter)
         {
-            var bids = await _context.Bids
+            filter.Normalize();
+            var query = _context.Bids
                 .AsNoTracking()
                 .Include(b => b.Bidder)
                 .Include(b => b.AuctionNavigation)
-                    .ThenInclude(a => a.Product)
-                .OrderByDescending(b => b.PlacedAt)
-                .ThenByDescending(b => b.BidId)
-                .Take(200)
+                    .ThenInclude(a => a.Product).AsQueryable();
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+            {
+                string term = filter.Search.Trim();
+                query = query.Where(b => b.Bidder.Username.Contains(term) || b.AuctionNavigation.Product.Name.Contains(term));
+            }
+            string[] statuses = [];
+            if (!statuses.Contains(filter.Status))
+                filter.Status = "";
+            filter.TotalItems = await query.CountAsync();
+            filter.Page = Math.Min(filter.Page, filter.TotalPages);
+            ViewBag.AdminFilter = filter;
+            ViewBag.AdminStatuses = statuses;
+            ViewBag.AdminSearchPlaceholder = "Search by product or bidder";
+            var items = await query.OrderByDescending(b => b.BidId)
+                .Skip((filter.Page - 1) * filter.PageSize)
+                .Take(filter.PageSize)
                 .ToListAsync();
-
-            return View(bids);
+            return View(items);
         }
 
-        // =====================================
-        // ORDERS
-        // =====================================
-
         [HttpGet]
-        public async Task<IActionResult> Orders()
+        public async Task<IActionResult> Orders([FromQuery] AdminListFilterViewModel filter)
         {
-            var orders = await _context.Orders
+            filter.Normalize();
+            var query = _context.Orders
                 .AsNoTracking()
                 .Include(o => o.Winner)
                 .Include(o => o.Auction)
-                    .ThenInclude(a => a.Product)
-                .OrderByDescending(o => o.OrderId)
-                .Take(200)
+                    .ThenInclude(a => a.Product).AsQueryable();
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+            {
+                string term = filter.Search.Trim();
+                query = query.Where(o => o.Winner.Username.Contains(term) || o.Auction.Product.Name.Contains(term));
+            }
+            string[] statuses = ["PendingPayment", "Paid", "Shipping", "Completed"];
+            if (!statuses.Contains(filter.Status))
+                filter.Status = "";
+            if (filter.Status != "")
+                query = query.Where(o => o.Status == filter.Status);
+            filter.TotalItems = await query.CountAsync();
+            filter.Page = Math.Min(filter.Page, filter.TotalPages);
+            ViewBag.AdminFilter = filter;
+            ViewBag.AdminStatuses = statuses;
+            ViewBag.AdminSearchPlaceholder = "Search by product or winner";
+            var items = await query.OrderByDescending(o => o.OrderId)
+                .Skip((filter.Page - 1) * filter.PageSize)
+                .Take(filter.PageSize)
                 .ToListAsync();
-
-            return View(orders);
+            return View(items);
         }
-
-        // =====================================
-        // WALLETS
-        // =====================================
 
         [HttpGet]
-        public async Task<IActionResult> Wallets()
+        public async Task<IActionResult> Wallets([FromQuery] AdminListFilterViewModel filter)
         {
-            var wallets = await _context.Wallets
+            filter.Normalize();
+            var query = _context.Wallets
                 .AsNoTracking()
-                .Include(w => w.User)
-                .OrderBy(w => w.WalletId)
-                .Take(200)
+                .Include(w => w.User).AsQueryable();
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+            {
+                string term = filter.Search.Trim();
+                query = query.Where(w => w.User.Username.Contains(term));
+            }
+            string[] statuses = ["WithBalance", "Empty"];
+            if (!statuses.Contains(filter.Status))
+                filter.Status = "";
+            if (filter.Status == "WithBalance")
+                query = query.Where(w => w.Balance > 0);
+            else if (filter.Status == "Empty")
+                query = query.Where(w => w.Balance == 0);
+            filter.TotalItems = await query.CountAsync();
+            filter.Page = Math.Min(filter.Page, filter.TotalPages);
+            ViewBag.AdminFilter = filter;
+            ViewBag.AdminStatuses = statuses;
+            ViewBag.AdminSearchPlaceholder = "Search by wallet owner username";
+            var items = await query.OrderByDescending(w => w.WalletId)
+                .Skip((filter.Page - 1) * filter.PageSize)
+                .Take(filter.PageSize)
                 .ToListAsync();
-
-            return View(wallets);
+            return View(items);
         }
-
-        // =====================================
-        // APPROVE PRODUCT
-        // =====================================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -194,7 +285,13 @@ namespace BTLwebdaugia.Controllers
             if (!TryGetAdminId(out long adminId))
                 return Challenge();
 
+            await using var transaction = await _context.Database
+                .BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+
             var product = await _context.Products
+                .FromSqlInterpolated(
+                    $@"SELECT * FROM dbo.Products WITH (UPDLOCK, HOLDLOCK)
+                       WHERE ProductId = {productId}")
                 .FirstOrDefaultAsync(p => p.ProductId == productId);
 
             if (product == null || product.IsDeleted)
@@ -203,9 +300,9 @@ namespace BTLwebdaugia.Controllers
             if (product.ApprovalStatus != "Pending")
             {
                 TempData["AdminError"] =
-                    "Product is not pending.";
+                    _labels["Product is not pending."].Value;
 
-                return RedirectToAction(nameof(Products));
+                return FinishAdminAction(nameof(Products));
             }
 
             product.ApprovalStatus = "Approved";
@@ -214,17 +311,25 @@ namespace BTLwebdaugia.Controllers
             product.ReviewedBy = adminId;
             product.ReviewedAt = DateTime.UtcNow;
 
+            _context.Notifications.Add(new Notification
+            {
+                UserId = product.SellerId,
+                ProductId = product.ProductId,
+                AuctionId = null,
+                EventType = "ProductApproved",
+                ProductName = product.Name,
+                Reason = null,
+                CreatedAt = DateTime.UtcNow
+            });
+
             await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
 
             TempData["AdminSuccess"] =
-                "Product approved successfully.";
+                _labels["Product approved successfully."].Value;
 
-            return RedirectToAction(nameof(Products));
+            return FinishAdminAction(nameof(Products));
         }
-
-        // =====================================
-        // REJECT PRODUCT
-        // =====================================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -240,13 +345,20 @@ namespace BTLwebdaugia.Controllers
             if (string.IsNullOrWhiteSpace(reason) ||
                 reason.Length > 1000)
             {
+                ModelState.AddModelError("reason", "Rejection reason is required (maximum 1000 characters).");
                 TempData["AdminError"] =
-                    "Rejection reason is required (maximum 1000 characters).";
+                    _labels["Rejection reason is required (maximum 1000 characters)."].Value;
 
-                return RedirectToAction(nameof(Products));
+                return FinishAdminAction(nameof(Products));
             }
 
+            await using var transaction = await _context.Database
+                .BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+
             var product = await _context.Products
+                .FromSqlInterpolated(
+                    $@"SELECT * FROM dbo.Products WITH (UPDLOCK, HOLDLOCK)
+                       WHERE ProductId = {productId}")
                 .FirstOrDefaultAsync(p => p.ProductId == productId);
 
             if (product == null || product.IsDeleted)
@@ -255,9 +367,9 @@ namespace BTLwebdaugia.Controllers
             if (product.ApprovalStatus != "Pending")
             {
                 TempData["AdminError"] =
-                    "Product is not pending.";
+                    _labels["Product is not pending."].Value;
 
-                return RedirectToAction(nameof(Products));
+                return FinishAdminAction(nameof(Products));
             }
 
             product.ApprovalStatus = "Rejected";
@@ -265,17 +377,25 @@ namespace BTLwebdaugia.Controllers
             product.ReviewedBy = adminId;
             product.ReviewedAt = DateTime.UtcNow;
 
+            _context.Notifications.Add(new Notification
+            {
+                UserId = product.SellerId,
+                ProductId = product.ProductId,
+                AuctionId = null,
+                EventType = "ProductRejected",
+                ProductName = product.Name,
+                Reason = reason,
+                CreatedAt = DateTime.UtcNow
+            });
+
             await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
 
             TempData["AdminSuccess"] =
-                "Product rejected successfully.";
+                _labels["Product rejected successfully."].Value;
 
-            return RedirectToAction(nameof(Products));
+            return FinishAdminAction(nameof(Products));
         }
-
-        // =====================================
-        // APPROVE AUCTION
-        // =====================================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -284,7 +404,13 @@ namespace BTLwebdaugia.Controllers
             if (!TryGetAdminId(out long adminId))
                 return Challenge();
 
+            await using var transaction = await _context.Database
+                .BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+
             var auction = await _context.Auctions
+                .FromSqlInterpolated(
+                    $@"SELECT * FROM dbo.Auctions WITH (UPDLOCK, HOLDLOCK)
+                       WHERE AuctionId = {auctionId}")
                 .Include(a => a.Product)
                 .FirstOrDefaultAsync(a => a.AuctionId == auctionId);
 
@@ -299,27 +425,23 @@ namespace BTLwebdaugia.Controllers
                 auction.Result != null)
             {
                 TempData["AdminError"] =
-                    "Auction or product is not eligible for approval.";
+                    _labels["Auction or product is not eligible for approval."].Value;
 
-                return RedirectToAction(nameof(Auctions));
+                return FinishAdminAction(nameof(Auctions));
             }
 
             DateTime now = DateTime.UtcNow;
 
-            // =====================================
-            // MODE: DURATION
-            // =====================================
-
-            if (auction.EndTimeMode == "Duration")
+            if (auction.EndTimeMode == AuctionScheduleRules.DurationMode)
             {
                 if (!auction.DurationMinutes.HasValue ||
-                    auction.DurationMinutes.Value < 1 ||
-                    auction.DurationMinutes.Value > 43200)
+                    auction.DurationMinutes.Value < AuctionScheduleRules.MinDurationMinutes ||
+                    auction.DurationMinutes.Value > AuctionScheduleRules.MaxDurationMinutes)
                 {
                     TempData["AdminError"] =
-                        "Auction duration must be between 1 minute and 30 days.";
+                        _labels["Auction duration must be between 60 minutes and 30 days."].Value;
 
-                    return RedirectToAction(nameof(Auctions));
+                    return FinishAdminAction(nameof(Auctions));
                 }
 
                 // Nếu giờ bắt đầu đã qua:
@@ -337,11 +459,7 @@ namespace BTLwebdaugia.Controllers
                 }
             }
 
-            // =====================================
-            // MODE: SPECIFIC
-            // =====================================
-
-            else if (auction.EndTimeMode == "Specific")
+            else if (auction.EndTimeMode is AuctionScheduleRules.SpecificInputMode or AuctionScheduleRules.FixedEndTimeMode)
             {
                 // Phiên có giờ kết thúc cố định.
                 // Không tự kéo dài giờ kết thúc.
@@ -350,12 +468,12 @@ namespace BTLwebdaugia.Controllers
                 {
                     // Duyệt muộn:
                     // Chỉ chấp nhận nếu còn >= 1 giờ.
-                    if (auction.CurrentEndAt < now.AddMinutes(1))
+                    if (auction.CurrentEndAt < now.Add(AuctionScheduleRules.MinDuration))
                     {
                         TempData["AdminError"] =
-                            "Auction must have at least 1 minute remaining.";
+                            _labels["Auction must have at least 60 minutes remaining."].Value;
 
-                        return RedirectToAction(nameof(Auctions));
+                        return FinishAdminAction(nameof(Auctions));
                     }
 
                     auction.StartAt = now;
@@ -364,56 +482,56 @@ namespace BTLwebdaugia.Controllers
                 TimeSpan duration =
                     auction.CurrentEndAt - auction.StartAt;
 
-                if (duration < TimeSpan.FromMinutes(1) ||
-                    duration > TimeSpan.FromDays(30))
+                if (duration < AuctionScheduleRules.MinDuration ||
+                    duration > AuctionScheduleRules.MaxDuration)
                 {
                     TempData["AdminError"] =
-                        "Auction duration must be between 1 minute and 30 days.";
+                        _labels["Auction duration must be between 60 minutes and 30 days."].Value;
 
-                    return RedirectToAction(nameof(Auctions));
+                    return FinishAdminAction(nameof(Auctions));
                 }
             }
             else
             {
                 TempData["AdminError"] =
-                    "Invalid auction end time mode.";
+                    _labels["Invalid auction end time mode."].Value;
 
-                return RedirectToAction(nameof(Auctions));
+                return FinishAdminAction(nameof(Auctions));
             }
-
-            // =====================================
-            // FINAL SCHEDULE VALIDATION
-            // =====================================
 
             if (auction.CurrentEndAt <= auction.StartAt ||
                 auction.CurrentEndAt <= now)
             {
                 TempData["AdminError"] =
-                    "Auction schedule is invalid.";
+                    _labels["Auction schedule is invalid."].Value;
 
-                return RedirectToAction(nameof(Auctions));
+                return FinishAdminAction(nameof(Auctions));
             }
-
-            // =====================================
-            // UPDATE SQL SERVER
-            // =====================================
 
             auction.ApprovalStatus = "Approved";
             auction.RejectionReason = null;
             auction.ReviewedBy = adminId;
             auction.ReviewedAt = now;
 
+            _context.Notifications.Add(new Notification
+            {
+                UserId = auction.Product.SellerId,
+                ProductId = auction.Product.ProductId,
+                AuctionId = auction.AuctionId,
+                EventType = "AuctionApproved",
+                ProductName = auction.Product.Name,
+                Reason = null,
+                CreatedAt = DateTime.UtcNow
+            });
+
             await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
 
             TempData["AdminSuccess"] =
-                "Auction approved successfully.";
+                _labels["Auction approved successfully."].Value;
 
-            return RedirectToAction(nameof(Auctions));
+            return FinishAdminAction(nameof(Auctions));
         }
-
-        // =====================================
-        // REJECT AUCTION
-        // =====================================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -429,13 +547,21 @@ namespace BTLwebdaugia.Controllers
             if (string.IsNullOrWhiteSpace(reason) ||
                 reason.Length > 1000)
             {
+                ModelState.AddModelError("reason", "Rejection reason is required (maximum 1000 characters).");
                 TempData["AdminError"] =
-                    "Rejection reason is required (maximum 1000 characters).";
+                    _labels["Rejection reason is required (maximum 1000 characters)."].Value;
 
-                return RedirectToAction(nameof(Auctions));
+                return FinishAdminAction(nameof(Auctions));
             }
 
+            await using var transaction = await _context.Database
+                .BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+
             var auction = await _context.Auctions
+                .FromSqlInterpolated(
+                    $@"SELECT * FROM dbo.Auctions WITH (UPDLOCK, HOLDLOCK)
+                       WHERE AuctionId = {auctionId}")
+                .Include(a => a.Product)
                 .FirstOrDefaultAsync(a => a.AuctionId == auctionId);
 
             if (auction == null)
@@ -444,9 +570,9 @@ namespace BTLwebdaugia.Controllers
             if (auction.ApprovalStatus != "Pending")
             {
                 TempData["AdminError"] =
-                    "Auction is not pending.";
+                    _labels["Auction is not pending."].Value;
 
-                return RedirectToAction(nameof(Auctions));
+                return FinishAdminAction(nameof(Auctions));
             }
 
             auction.ApprovalStatus = "Rejected";
@@ -454,17 +580,48 @@ namespace BTLwebdaugia.Controllers
             auction.ReviewedBy = adminId;
             auction.ReviewedAt = DateTime.UtcNow;
 
+            _context.Notifications.Add(new Notification
+            {
+                UserId = auction.Product.SellerId,
+                ProductId = auction.Product.ProductId,
+                AuctionId = auction.AuctionId,
+                EventType = "AuctionRejected",
+                ProductName = auction.Product.Name,
+                Reason = reason,
+                CreatedAt = DateTime.UtcNow
+            });
+
             await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
 
             TempData["AdminSuccess"] =
-                "Auction rejected successfully.";
+                _labels["Auction rejected successfully."].Value;
 
-            return RedirectToAction(nameof(Auctions));
+            return FinishAdminAction(nameof(Auctions));
         }
 
-        // =====================================
-        // HELPER
-        // =====================================
+        private IActionResult FinishAdminAction(string action)
+        {
+            string? error = (TempData["AdminError"] ?? TempData["CategoryError"]) as string;
+            string? success = (TempData["AdminSuccess"] ?? TempData["CategorySuccess"]) as string;
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                var errors = ModelState.Where(x => x.Value?.Errors.Count > 0)
+                    .ToDictionary(x => x.Key, x => x.Value!.Errors
+                        .Select(e => _labels[string.IsNullOrEmpty(e.ErrorMessage)
+                            ? "Invalid value." : e.ErrorMessage].Value).ToArray());
+                if (error != null || errors.Count > 0)
+                    return BadRequest(new { message = error ?? _labels["Please check the form."].Value, errors });
+                return Json(new { message = success });
+            }
+
+            string? returnUrl = Request.Form["returnUrl"].FirstOrDefault();
+            if (Url.IsLocalUrl(returnUrl) &&
+                string.Equals(returnUrl!.Split('?')[0], Url.Action(action), StringComparison.OrdinalIgnoreCase))
+                return LocalRedirect(returnUrl);
+
+            return RedirectToAction(action);
+        }
 
         private bool TryGetAdminId(out long adminId)
         {
@@ -472,7 +629,6 @@ namespace BTLwebdaugia.Controllers
                 User.FindFirstValue(ClaimTypes.NameIdentifier),
                 out adminId);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -482,8 +638,8 @@ namespace BTLwebdaugia.Controllers
             if (!ModelState.IsValid)
             {
                 TempData["CategoryError"] =
-                    "Please enter a valid category name.";
-                return RedirectToAction(nameof(Categories));
+                    _labels["Please enter a valid category name."].Value;
+                return FinishAdminAction(nameof(Categories));
             }
 
             string name = model.Name.Trim();
@@ -493,9 +649,10 @@ namespace BTLwebdaugia.Controllers
 
             if (exists)
             {
+                ModelState.AddModelError(nameof(model.Name), "Category name already exists.");
                 TempData["CategoryError"] =
-                    "Category name already exists.";
-                return RedirectToAction(nameof(Categories));
+                    _labels["Category name already exists."].Value;
+                return FinishAdminAction(nameof(Categories));
             }
 
             _context.Categories.Add(new BTLwebdaugia.Models.Category
@@ -508,15 +665,16 @@ namespace BTLwebdaugia.Controllers
             {
                 await _context.SaveChangesAsync();
                 TempData["CategorySuccess"] =
-                    "Category created successfully.";
+                    _labels["Category created successfully."].Value;
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException exception)
             {
+                _logger.LogError(exception, "Category write failed in {Action}", ControllerContext.ActionDescriptor.ActionName);
                 TempData["CategoryError"] =
-                    "Unable to create category. Check for duplicates.";
+                    _labels["Unable to create category. Check for duplicates."].Value;
             }
 
-            return RedirectToAction(nameof(Categories));
+            return FinishAdminAction(nameof(Categories));
         }
 
         [HttpPost]
@@ -527,8 +685,8 @@ namespace BTLwebdaugia.Controllers
             if (!ModelState.IsValid || model.CategoryId <= 0)
             {
                 TempData["CategoryError"] =
-                    "Invalid category information.";
-                return RedirectToAction(nameof(Categories));
+                    _labels["Invalid category information."].Value;
+                return FinishAdminAction(nameof(Categories));
             }
 
             var category = await _context.Categories
@@ -546,9 +704,10 @@ namespace BTLwebdaugia.Controllers
 
             if (exists)
             {
+                ModelState.AddModelError(nameof(model.Name), "Category name already exists.");
                 TempData["CategoryError"] =
-                    "Category name already exists.";
-                return RedirectToAction(nameof(Categories));
+                    _labels["Category name already exists."].Value;
+                return FinishAdminAction(nameof(Categories));
             }
 
             category.Name = name;
@@ -558,15 +717,16 @@ namespace BTLwebdaugia.Controllers
             {
                 await _context.SaveChangesAsync();
                 TempData["CategorySuccess"] =
-                    "Category updated successfully.";
+                    _labels["Category updated successfully."].Value;
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException exception)
             {
+                _logger.LogError(exception, "Category write failed in {Action}", ControllerContext.ActionDescriptor.ActionName);
                 TempData["CategoryError"] =
-                    "Unable to update category.";
+                    _labels["Unable to update category."].Value;
             }
 
-            return RedirectToAction(nameof(Categories));
+            return FinishAdminAction(nameof(Categories));
         }
 
         [HttpPost]
@@ -586,8 +746,8 @@ namespace BTLwebdaugia.Controllers
             if (hasProducts)
             {
                 TempData["CategoryError"] =
-                    "Cannot delete a category containing products.";
-                return RedirectToAction(nameof(Categories));
+                    _labels["Cannot delete a category containing products."].Value;
+                return FinishAdminAction(nameof(Categories));
             }
 
             _context.Categories.Remove(category);
@@ -597,20 +757,17 @@ namespace BTLwebdaugia.Controllers
                 await _context.SaveChangesAsync();
 
                 TempData["CategorySuccess"] =
-                    "Category deleted successfully.";
+                    _labels["Category deleted successfully."].Value;
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException exception)
             {
+                _logger.LogError(exception, "Category write failed in {Action}", ControllerContext.ActionDescriptor.ActionName);
                 TempData["CategoryError"] =
-                    "Unable to delete this category.";
+                    _labels["Unable to delete this category."].Value;
             }
 
-            return RedirectToAction(nameof(Categories));
+            return FinishAdminAction(nameof(Categories));
         }
-
-
-
-
 
     }
 }

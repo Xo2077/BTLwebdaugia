@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+  <data name="ProductApproved" xml:space="preserve">
+    <value>Product approved</value>
+  </data>
+  <data name="ProductRejected" xml:space="preserve">
+    <value>Product rejected</value>
+  </data>
+  <data name="AuctionApproved" xml:space="preserve">
+    <value>Auction approved</value>
+  </data>
+  <data name="AuctionRejected" xml:space="preserve">
+    <value>Auction rejected</value>
+  </data>
+  <data name="AuctionWon" xml:space="preserve">
+    <value>You won the auction. Please pay for your order.</value>
+  </data>
+  <data name="AuctionSold" xml:space="preserve">
+    <value>Your auction has a winner. The order is awaiting payment.</value>
+  </data>
+  <data name="PaymentSent" xml:space="preserve">
+    <value>Your order payment was successful.</value>
+  </data>
+  <data name="PaymentReceived" xml:space="preserve">
+    <value>The buyer has paid. Please ship the order.</value>
+  </data>
+  <data name="OrderShipped" xml:space="preserve">
+    <value>The seller has shipped your order. Confirm when you receive it.</value>
+  </data>
+  <data name="OrderCompleted" xml:space="preserve">
+    <value>The buyer confirmed receipt. The order is complete.</value>
+  </data>
+  <data name="Seller wallet balance limit exceeded." xml:space="preserve">
+    <value>Seller wallet balance limit exceeded.</value>
+  </data>
+  <data name="Unable to refresh auction data. Please try again." xml:space="preserve">
+    <value>Unable to refresh auction data. Please try again.</value>
+  </data>
+  <data name="Unable to submit your bid." xml:space="preserve">
+    <value>Unable to submit your bid.</value>
+  </data>
+  <data name="An error occurred while processing your request." xml:space="preserve">
+    <value>An error occurred while processing your request.</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Request ID:" xml:space="preserve">
+    <value>Request ID:</value>
+  </data>
+  <data name="Breadcrumb" xml:space="preserve">
+    <value>Breadcrumb</value>
+  </data>
+  <data name="My account" xml:space="preserve">
+    <value>My account</value>
+  </data>
+</root>

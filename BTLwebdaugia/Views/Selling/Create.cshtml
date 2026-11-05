@@ -1,4 +1,4 @@
-@model BTLwebdaugia.ViewModels.CreateProductViewModel
+﻿@model BTLwebdaugia.ViewModels.CreateProductViewModel
 
 @using BTLwebdaugia.ViewModels
 
@@ -14,9 +14,12 @@
 <div class="container">
     <main class="container">
 
-        <div class="crumb">
-            My account / My Selling / Create listing
-        </div>
+        <nav class="crumb" aria-label="@Labels["Breadcrumb"]">
+            <a asp-controller="Home" asp-action="Index">@Labels["Home"]</a>
+            / <a asp-controller="Account" asp-action="Profile">@Labels["My account"]</a>
+            / <a asp-controller="Selling" asp-action="Index">@Labels["My Selling"]</a>
+            / <span aria-current="page">@Labels["Create a product listing"]</span>
+        </nav>
 
         <div class="page-title">
             <h1>@Labels["Create a product listing"]</h1>
@@ -157,7 +160,7 @@
                                 id="end-time-mode">
 
                             <option value="Duration">
-                                Duration (1 minute–30 days)
+                                @Labels["Duration (60 minutes–30 days)"]
                             </option>
 
                             <option value="Specific">
@@ -180,7 +183,7 @@
                         <input asp-for="DurationMinutes"
                                class="field"
                                type="number"
-                               min="1"
+                               min="60"
                                max="43200"
                                step="1" />
     
@@ -273,88 +276,11 @@
     </main>
 </div>
 
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.21.0/dist/easymde.min.css" />
+}
+
 @section Scripts {
-    
     <script src="https://cdn.jsdelivr.net/npm/easymde@2.21.0/dist/easymde.min.js"></script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const textarea =
-                document.getElementById("product-description");
-
-            const form =
-                document.getElementById("create-product-form");
-
-            if (!textarea || !form || typeof EasyMDE === "undefined")
-                return;
-
-            const editor = new EasyMDE({
-                element: textarea,
-                spellChecker: false,
-                status: false,
-                autoDownloadFontAwesome: false,
-                toolbar: [
-                    "bold",
-                    "italic",
-                    "heading",
-                    "|",
-                    "quote",
-                    "unordered-list",
-                    "ordered-list",
-                    "|",
-                    "link",
-                    "preview",
-                    "guide"
-                ]
-            });
-
-            // Đồng bộ nội dung editor với textarea trước POST.
-            form.addEventListener("submit", function () {
-                editor.codemirror.save();
-            });
-        });
-    </script>
-
-
-
-
-
-
-
-    <script>
-        (function () {
-            const form = document.getElementById(
-                "create-product-form"
-            );
-
-            if (!form) return;
-
-            const endMode = document.getElementById(
-                "end-time-mode"
-            );
-
-            const durationGroup = document.getElementById(
-                "duration-group"
-            );
-
-            const specificEndGroup = document.getElementById(
-                "specific-end-group"
-            );
-
-            function updateEndMode() {
-                const isDuration =
-                    endMode.value === "Duration";
-
-                durationGroup.hidden = !isDuration;
-                specificEndGroup.hidden = isDuration;
-            }
-
-            endMode.addEventListener(
-                "change",
-                updateEndMode
-            );
-
-            updateEndMode();
-        })();
-    </script>
+    <script src="~/js/listing-form.js" asp-append-version="true"></script>
 }

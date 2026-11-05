@@ -1,4 +1,4 @@
-
+﻿
 @model List<BTLwebdaugia.Models.Product>
 
 @using System.Linq
@@ -13,13 +13,11 @@
 <div class="container">
     <main class="container">
 
-        <div class="crumb">
-            Home / My account / My Selling
-        </div>
+        @await Html.PartialAsync("_AccountBreadcrumb", "My Selling")
 
         <div class="account" data-account-page="selling">
 
-            @await Html.PartialAsync("_AccountSidebar")
+            @await Component.InvokeAsync("AccountSidebar")
 
             <div id="account-content">
                 @await Html.PartialAsync("_SellingContent", Model)

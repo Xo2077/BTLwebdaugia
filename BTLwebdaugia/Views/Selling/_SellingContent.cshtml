@@ -190,17 +190,22 @@
                                         </td>
 
                                         <td>
-                                            @if (auction != null)
+                                            <a asp-controller="Selling" asp-action="Details" asp-route-id="@product.ProductId">@Labels["View listing"]</a>
+                                            @if (product.ApprovalStatus == "Rejected")
+                                            {
+                                                <small class="text-danger">@Labels["Product rejected — view reason in listing details."]</small>
+                                            }
+                                            @if (auction?.ApprovalStatus == "Rejected")
+                                            {
+                                                <small class="text-danger">@Labels["Auction rejected — view reason in listing details."]</small>
+                                            }
+                                            @if (auction != null && product.ApprovalStatus == "Approved" && auction.ApprovalStatus == "Approved")
                                             {
                                                 <a asp-controller="Auction"
                                                    asp-action="Details"
                                                    asp-route-id="@auction.AuctionId">
-                                                    View auction
+                                                    @Labels["View auction"]
                                                 </a>
-                                            }
-                                            else
-                                            {
-                                                <span>—</span>
                                             }
                                         </td>
                                     </tr>
@@ -213,11 +218,7 @@
                 </div>
 
                 <div class="callout">
-                    After approval, a seller cannot edit
-                    or delete the approved product.
-                    Rejected listings can be corrected
-                    and resubmitted when that functionality
-                    is implemented.
+                    @Labels["Open listing details to correct an eligible rejected listing and send it for review again."]
                 </div>
 
             </section>

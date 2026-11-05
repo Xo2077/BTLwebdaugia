@@ -1,4 +1,4 @@
-
+﻿
 using BTLwebdaugia.Data;
 using BTLwebdaugia.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -37,6 +37,7 @@ namespace BTLwebdaugia.Controllers
                     ProductName = a.Product.Name,
                     a.Product.Description,
                     SellerName = a.Product.Seller.Username,
+                    a.Product.CategoryId,
                     CategoryName = a.Product.Category.Name,
                     a.StartingPrice,
                     a.BidStep,
@@ -108,6 +109,7 @@ namespace BTLwebdaugia.Controllers
                 ProductName = auction.ProductName,
                 Description = auction.Description,
                 SellerName = auction.SellerName,
+                CategoryId = auction.CategoryId,
                 CategoryName = auction.CategoryName,
                 ImagePaths = auction.ImagePaths,
                 StartingPrice = auction.StartingPrice,

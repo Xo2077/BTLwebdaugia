@@ -1,5 +1,6 @@
 ﻿using BTLwebdaugia.Data;
 using BTLwebdaugia.Models;
+using BTLwebdaugia.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -120,6 +121,12 @@ namespace BTLwebdaugia.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            if (!MoneyRules.CanCredit(sellerWallet.Balance, order.FinalAmount))
+            {
+                TempData["OrderError"] = "Seller wallet balance limit exceeded.";
+                return RedirectToAction(nameof(Index));
+            }
+
             buyerWallet.Balance -= order.FinalAmount;
             sellerWallet.Balance += order.FinalAmount;
 
@@ -149,6 +156,7 @@ namespace BTLwebdaugia.Controllers
 
             order.Status = "Paid";
             order.PaidAt = now;
+            _db.Notifications.AddRange(OrderNotifications.Paid(auction, order.WinnerId, now));
 
             await _db.SaveChangesAsync();
             await tx.CommitAsync();
@@ -187,6 +195,7 @@ namespace BTLwebdaugia.Controllers
 
             order.Status = "Shipping";
             order.ShippedAt = DateTime.UtcNow;
+            _db.Notifications.Add(OrderNotifications.Shipped(order.Auction, order.WinnerId, order.ShippedAt.Value));
 
             await _db.SaveChangesAsync();
             await tx.CommitAsync();
@@ -221,8 +230,13 @@ namespace BTLwebdaugia.Controllers
             if (order.Status != "Shipping")
                 return BadRequest("Order is not shipping.");
 
+            var auction = await _db.Auctions.AsNoTracking()
+                .Include(a => a.Product)
+                .SingleAsync(a => a.AuctionId == order.AuctionId);
+
             order.Status = "Completed";
             order.CompletedAt = DateTime.UtcNow;
+            _db.Notifications.AddRange(OrderNotifications.Completed(auction, order.WinnerId, order.CompletedAt.Value));
 
             await _db.SaveChangesAsync();
             await tx.CommitAsync();

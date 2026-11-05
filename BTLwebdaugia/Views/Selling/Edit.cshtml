@@ -1,0 +1,306 @@
+﻿@model BTLwebdaugia.ViewModels.ResubmitListingViewModel
+
+@using BTLwebdaugia.ViewModels
+
+@{
+    ViewData["Title"] = Labels["Edit and resubmit"].Value;
+    Layout = "_Layout";
+
+    var categories =
+        ViewBag.Categories as IEnumerable<CategoryViewModel>
+        ?? Enumerable.Empty<CategoryViewModel>();
+}
+
+<div class="container">
+    <main class="container">
+
+        <nav class="crumb" aria-label="@Labels["Breadcrumb"]">
+            <a asp-controller="Home" asp-action="Index">@Labels["Home"]</a>
+            / <a asp-controller="Account" asp-action="Profile">@Labels["My account"]</a>
+            / <a asp-controller="Selling" asp-action="Index">@Labels["My Selling"]</a>
+            / <a asp-controller="Selling" asp-action="Details" asp-route-id="@Model.ProductId">@Labels["Listing details"]</a>
+            / <span aria-current="page">@Labels["Edit and resubmit"]</span>
+        </nav>
+
+        <div class="page-title">
+            <h1>@Labels["Edit and resubmit"]</h1>
+            <p>
+                @Labels["Product must be approved by Admin before appearing publicly."]
+            </p>
+        </div>
+
+        <form asp-controller="Product"
+              asp-action="Edit"
+              asp-route-id="@Model.ProductId"
+              method="post"
+              enctype="multipart/form-data"
+              id="create-product-form">
+
+            @Html.AntiForgeryToken()
+            <input asp-for="ProductId" type="hidden" />
+            <input asp-for="AuctionId" type="hidden" />
+            <input asp-for="Revision" type="hidden" />
+            <input type="hidden" id="CanEditProduct" value="@(Model.CanEditProduct ? "true" : "false")" />
+            @if (!string.IsNullOrWhiteSpace(Model.ProductReason))
+            {
+                <p class="seller-rejection">@Labels["Product rejection reason"]: @Model.ProductReason</p>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.AuctionReason))
+            {
+                <p class="seller-rejection">@Labels["Auction rejection reason"]: @Model.AuctionReason</p>
+            }
+            @if (!Model.CanEditProduct)
+            {
+                <p class="notice">@Labels["The product is approved. Only auction pricing and schedule can be changed."]</p>
+            }
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger"></div>
+
+            <div class="auction-detail">
+
+                <section class="panel">
+
+                    <h3>@Labels["Product information"]</h3>
+
+                    <fieldset disabled="@(!Model.CanEditProduct)">
+                        <div class="form-group">
+                            <label asp-for="Name">
+                                @Labels["Product name"]
+                            </label>
+
+                            <input asp-for="Name"
+                                   class="field"
+                                   maxlength="200"
+                                   placeholder="@Labels["Enter product name"]" />
+
+                            <span asp-validation-for="Name"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="CategoryId">
+                                @Labels["Category"]
+                            </label>
+
+                            <select asp-for="CategoryId"
+                                    class="field"
+                                    id="category-select">
+
+                                <option value="0">
+                                    @Labels["Select category"]
+                                </option>
+
+                                @foreach (var category in categories)
+                                {
+                                    <option value="@category.CategoryId">
+                                        @category.Name
+                                    </option>
+                                }
+
+                            </select>
+
+                            <span asp-validation-for="CategoryId"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Description">
+                                @Labels["Description"]
+                            </label>
+
+                            <textarea asp-for="Description"
+                                      id="product-description"
+                                      class="field"
+                                      placeholder="@Labels["Describe the product"]"
+                                      rows="5"></textarea>
+
+                            <span asp-validation-for="Description"
+                                  class="text-danger"></span>
+                        </div>
+
+                    </fieldset>
+                    <div class="form-group">
+                        <label asp-for="StartingPrice">
+                            @Labels["Starting price (minimum $50)"]
+                        </label>
+
+                        <input asp-for="StartingPrice"
+                               class="field"
+                               type="number"
+                               min="50"
+                               max="999999999999999999"
+                               step="1" />
+
+                        <span asp-validation-for="StartingPrice"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="BidStep">
+                            @Labels["Minimum bid increment"]
+                        </label>
+
+                        <input asp-for="BidStep"
+                               class="field"
+                               type="number"
+                               min="1"
+                               step="1" />
+
+                        <span asp-validation-for="BidStep"
+                              class="text-danger"></span>
+                    </div>
+
+                    <h3>@Labels["Auction schedule"]</h3>
+
+                    <p class="muted">@Labels["All auctions require Admin approval."]</p>
+
+                    <div class="form-group">
+
+                        <label asp-for="ScheduledStartAt">
+                            @Labels["Scheduled start time (Vietnam time, UTC+7)"]
+                        </label>
+
+                        <input asp-for="ScheduledStartAt"
+                               class="field"
+                               type="datetime-local" />
+
+                        <span asp-validation-for="ScheduledStartAt"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="EndTimeMode">
+                            @Labels["End mode"]
+                        </label>
+
+                        <select asp-for="EndTimeMode"
+                                class="field"
+                                id="end-time-mode">
+
+                            <option value="Duration">
+                                @Labels["Duration (60 minutes–30 days)"]
+                            </option>
+
+                            <option value="Specific">
+                                @Labels["Specific end date/time"]
+                            </option>
+
+                        </select>
+
+                        <span asp-validation-for="EndTimeMode"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group"
+                         id="duration-group">
+
+                        <label asp-for="DurationMinutes">
+                            @Labels["Duration (minutes)"]
+                        </label>
+
+                        <input asp-for="DurationMinutes"
+                               class="field"
+                               type="number"
+                               min="60"
+                               max="43200"
+                               step="1" />
+    
+                        <span asp-validation-for="DurationMinutes"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group"
+                         id="specific-end-group">
+
+                        <label asp-for="SpecificEndAt">
+                            @Labels["End date and time (Vietnam time, UTC+7)"]
+                        </label>
+
+                        <input asp-for="SpecificEndAt"
+                               class="field"
+                               type="datetime-local" />
+
+                        <span asp-validation-for="SpecificEndAt"
+                              class="text-danger"></span>
+                    </div>
+
+                    <p class="notice">
+                        @Labels["Approved product details cannot be edited. Rejected drafts may be corrected and resubmitted."]
+                    </p>
+
+                </section>
+
+                <aside>
+
+                    <h3>@Labels["Product images"]</h3>
+                    <div class="seller-listing-images">
+                        @foreach (var image in Model.ExistingImages)
+                        {
+                            <img src="@image" alt="@Model.Name" />
+                        }
+                    </div>
+                    <p>@Labels["Leave the file selection empty to keep existing images. New images replace the full set."]</p>
+
+                    <div class="form-group">
+                        <label asp-for="Images">
+                            @Labels["Select product photos"]
+                        </label>
+
+                        <input disabled="@(!Model.CanEditProduct)" asp-for="Images"
+                               type="file"
+                               accept=".jpg,.jpeg,.png,.webp,.gif,.bmp,.avif"
+                               multiple
+                               class="field" />
+
+                        <span asp-validation-for="Images"
+                              class="text-danger"></span>
+
+                        <p class="muted small">
+                            @Labels["JPG, PNG, WebP, GIF, BMP or AVIF. Maximum 5 images, 5 MB each."]
+                        </p>
+
+                    </div>
+
+                    <div class="panel" style="margin-top:22px">
+
+                        <h3>@Labels["Listing summary"]</h3>
+
+                        <p>
+                            @Labels["Check all details before submitting."]
+                        </p>
+
+                        <button class="btn btn-solid"
+                                type="submit">
+                            @Labels["Send for review again"]
+                        </button>
+
+                        <a class="btn"
+                           asp-controller="Selling"
+                           asp-action="Index">
+                            @Labels["Cancel"]
+                        </a>
+
+                        <p class="notice">
+                            @Labels["After resubmission, the listing must be reviewed again."]
+                        </p>
+
+                    </div>
+
+                </aside>
+
+            </div>
+
+        </form>
+
+    </main>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.21.0/dist/easymde.min.css" />
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/easymde@2.21.0/dist/easymde.min.js"></script>
+    <script src="~/js/listing-form.js" asp-append-version="true"></script>
+}

@@ -2,7 +2,7 @@
 @model BTLwebdaugia.ViewModels.AdminDashboardViewModel
 
 @{
-    ViewData["Title"] = "Admin Dashboard";
+    ViewData["Title"] = Labels["Admin Dashboard"].Value;
     Layout = "_AdminLayout";
 }
 
@@ -23,13 +23,13 @@
     <div class="metric">
         <div class="muted small">@Labels["Products"]</div>
         <strong>@Model.TotalProducts</strong>
-        <small>Non-deleted products</small>
+        <small>@Labels["Non-deleted products"]</small>
     </div>
 
     <div class="metric">
         <div class="muted small">@Labels["Live auctions"]</div>
         <strong>@Model.LiveAuctions</strong>
-        <small>Approved active sessions</small>
+        <small>@Labels["Approved active sessions"]</small>
     </div>
 
     <div class="metric">
@@ -65,7 +65,7 @@
 
                 <strong>@Model.LiveAuctions</strong>
 
-                <small>Currently active</small>
+                <small>@Labels["Currently active"]</small>
             </div>
 
         </div>

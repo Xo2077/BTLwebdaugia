@@ -12,7 +12,7 @@ namespace BTLwebdaugia.ViewModels
 
         [Required(ErrorMessage = "Email is required.")]
         [EmailAddress(ErrorMessage = "Invalid email address.")]
-        [StringLength(255)]
+        [StringLength(254)]
         public string Email { get; set; } = string.Empty;
 
         public DateTime CreatedAt { get; set; }

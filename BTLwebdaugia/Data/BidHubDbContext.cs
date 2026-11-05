@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using BTLwebdaugia.Models;
 using Microsoft.EntityFrameworkCore;
@@ -32,8 +32,23 @@ public partial class BidHubDbContext : DbContext
 
     public virtual DbSet<WalletTransaction> WalletTransactions { get; set; }
 
+    public DbSet<Notification> Notifications { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Notification>(entity =>
+        {
+            entity.HasKey(n => n.NotificationId);
+            entity.Property(n => n.EventType).HasMaxLength(20).IsUnicode(false);
+            entity.Property(n => n.ProductName).HasMaxLength(200);
+            entity.Property(n => n.Reason).HasMaxLength(1000);
+            entity.Property(n => n.CreatedAt).HasColumnType("datetime2(3)");
+            entity.Property(n => n.ReadAt).HasColumnType("datetime2(3)");
+            entity.HasOne<User>().WithMany().HasForeignKey(n => n.UserId).OnDelete(DeleteBehavior.NoAction);
+            entity.HasOne<Product>().WithMany().HasForeignKey(n => n.ProductId).OnDelete(DeleteBehavior.NoAction);
+            entity.HasOne<Auction>().WithMany().HasForeignKey(n => n.AuctionId).OnDelete(DeleteBehavior.NoAction);
+        });
+
         modelBuilder.Entity<Auction>(entity =>
         {
             entity.HasIndex(e => e.ProductId, "IX_Auctions_Product");

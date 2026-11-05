@@ -1,5 +1,4 @@
-
-@model BTLwebdaugia.ViewModels.AuctionDetailViewModel
+﻿@model BTLwebdaugia.ViewModels.AuctionDetailViewModel
 
 @{
     ViewData["Title"] = Model.ProductName;
@@ -14,10 +13,15 @@
     );
 }
 
-<div class="container auction-page">
-        <div class="crumb">
-            Home / Auction / @Model.CategoryName
-        </div>
+<div class="container auction-page" data-auction-status="@Model.AuctionStatus"
+     data-load-error="@Labels["Unable to refresh auction data. Please try again."]"
+     data-bid-error="@Labels["Unable to submit your bid."]">
+        <nav class="crumb" aria-label="@Labels["Breadcrumb"]">
+            <a asp-controller="Home" asp-action="Index">@Labels["Home"]</a>
+            / <a asp-controller="Home" asp-action="Category">@Labels["Auction"]</a>
+            / <a asp-controller="Home" asp-action="Category" asp-route-CategoryId="@Model.CategoryId">@Model.CategoryName</a>
+            / <span aria-current="page">@Model.ProductName</span>
+        </nav>
 
         <div class="auction-status-row">
             <span class="tag">@Labels[Model.AuctionStatus]</span>
@@ -129,13 +133,13 @@
             </div>
             <div class="panel bid-panel" id="auction-bid-panel">
 
-                <p class="muted">
+                <p class="muted" id="auction-price-label">
                     @(Model.RecentBids.Any()
                         ? "Current highest bid"
                         : "Starting price")
                 </p>
 
-                <div class="price">
+                <div class="price" id="auction-price">
                     $@Model.CurrentPrice.ToString("N0")
                 </div>
 
@@ -150,7 +154,7 @@
 
                 <p>
                     @Labels["Minimum next bid:"]
-                    <strong>
+                    <strong id="auction-minimum-bid">
                         $@Model.NextMinimumBid.ToString("N0")
                     </strong>
                 </p>

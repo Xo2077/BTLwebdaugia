@@ -207,6 +207,7 @@ namespace BTLwebdaugia.Services
             };
 
             db.Orders.Add(order);
+            db.Notifications.AddRange(OrderNotifications.AuctionSold(auction, winningBid.BidderId, now));
 
             // Hai thay đổi nằm trong cùng transaction:
             // Auction: Sold + WinnerBidId

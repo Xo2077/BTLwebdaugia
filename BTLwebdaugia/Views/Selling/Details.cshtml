@@ -1,0 +1,118 @@
+﻿@model BTLwebdaugia.Models.Product
+@{
+    ViewData["Title"] = Labels["Listing details"].Value;
+    Layout = "_Layout";
+    bool canResubmit = BTLwebdaugia.Services.ListingReviewPolicy.CanResubmit(Model);
+    var latestAuctionId = Model.Auctions.OrderByDescending(a => a.AuctionId).FirstOrDefault()?.AuctionId;
+}
+<div class="container seller-listing-details">
+    @if (TempData["ErrorMessage"] is string errorMessage)
+    {
+        <p class="text-danger" role="alert">@Labels[errorMessage]</p>
+    }
+    @if (TempData["SuccessMessage"] is string successMessage)
+    {
+        <p class="notice">@Labels[successMessage]</p>
+    }
+    <nav class="crumb" aria-label="@Labels["Breadcrumb"]">
+            <a asp-controller="Home" asp-action="Index">@Labels["Home"]</a>
+            / <a asp-controller="Account" asp-action="Profile">@Labels["My account"]</a>
+            / <a asp-controller="Selling" asp-action="Index">@Labels["My Selling"]</a>
+            / <span aria-current="page">@Labels["Listing details"]</span>
+        </nav>
+    <div class="page-title">
+        <h1>@Model.Name</h1>
+        <p>@Labels["Category"]: @Model.Category.Name</p>
+    </div>
+    <section class="panel">
+        <h2>@Labels["Product review"]</h2>
+        <p>@Labels["STATUS"]: <strong>@Labels[Model.ApprovalStatus]</strong></p>
+        @if (Model.ReviewedAt.HasValue)
+        {
+            <p>@Labels["Reviewed at"]: @Model.ReviewedAt.Value.AddHours(7).ToString("dd/MM/yyyy HH:mm") UTC+7</p>
+            <p>@Labels["Reviewed by"]: @(Model.ReviewedByNavigation?.Username ?? "—")</p>
+        }
+        @if (Model.ApprovalStatus == "Rejected")
+        {
+            <div class="seller-rejection">
+                <strong>@Labels["Product rejection reason"]</strong>
+                <p>@(string.IsNullOrWhiteSpace(Model.RejectionReason) ? Labels["No reason recorded."].Value : Model.RejectionReason)</p>
+            </div>
+            @if (canResubmit)
+            {
+                <a class="btn btn-solid" asp-controller="Product" asp-action="Edit" asp-route-id="@Model.ProductId">@Labels["Edit and resubmit"]</a>
+            }
+        }
+        else if (Model.ApprovalStatus == "Pending")
+        {
+            <p>@Labels["This product is waiting for Admin review."]</p>
+        }
+    </section>
+
+    <section class="panel">
+        <h2>@Labels["Product information"]</h2>
+        <div class="seller-listing-images">
+            @foreach (var image in Model.ProductImages.OrderBy(i => i.SortOrder))
+            {
+                <img src="@image.ImagePath" alt="@Model.Name" loading="lazy" />
+            }
+        </div>
+        <h3>@Labels["Description"]</h3>
+        <p class="seller-description">@Model.Description</p>
+    </section>
+
+    <section>
+        <h2>@Labels["Auction review history"]</h2>
+        @if (!Model.Auctions.Any())
+        {
+            <p>@Labels["No auctions found."]</p>
+        }
+        @foreach (var auction in Model.Auctions.OrderByDescending(a => a.AuctionId))
+        {
+            <article class="panel" id="auction-@auction.AuctionId">
+                <h3>@Labels["Auction"] #@auction.AuctionId</h3>
+                <p>@Labels["Review status"]: <strong>@Labels[auction.ApprovalStatus]</strong></p>
+                @if (auction.ReviewedAt.HasValue)
+                {
+                    <p>@Labels["Reviewed at"]: @auction.ReviewedAt.Value.AddHours(7).ToString("dd/MM/yyyy HH:mm") UTC+7</p>
+                    <p>@Labels["Reviewed by"]: @(auction.ReviewedByNavigation?.Username ?? "—")</p>
+                }
+                @if (auction.ApprovalStatus == "Rejected")
+                {
+                    <div class="seller-rejection">
+                        <strong>@Labels["Auction rejection reason"]</strong>
+                        <p>@(string.IsNullOrWhiteSpace(auction.RejectionReason) ? Labels["No reason recorded."].Value : auction.RejectionReason)</p>
+                    </div>
+                    @if (canResubmit && Model.ApprovalStatus == "Approved" && auction.AuctionId == latestAuctionId)
+                    {
+                        <a class="btn btn-solid" asp-controller="Product" asp-action="Edit" asp-route-id="@Model.ProductId">@Labels["Edit and resubmit"]</a>
+                    }
+                }
+                else if (auction.ApprovalStatus == "Pending")
+                {
+                    <p>@Labels["This auction is waiting for Admin review."]</p>
+                }
+                <dl class="seller-auction-fields">
+                    <dt>@Labels["STARTING PRICE"]</dt><dd>$@auction.StartingPrice.ToString("N0")</dd>
+                    <dt>@Labels["Bid increment"]</dt><dd>$@auction.BidStep.ToString("N0")</dd>
+                    <dt>@Labels["Start time"]</dt><dd>@auction.StartAt.AddHours(7).ToString("dd/MM/yyyy HH:mm") UTC+7</dd>
+                    <dt>@Labels["END TIME"]</dt><dd>@auction.CurrentEndAt.AddHours(7).ToString("dd/MM/yyyy HH:mm") UTC+7</dd>
+                    <dt>@Labels["End mode"]</dt><dd>@Labels[auction.EndTimeMode]</dd>
+                    @if (auction.DurationMinutes.HasValue)
+                    {
+                        <dt>@Labels["Duration (minutes)"]</dt><dd>@auction.DurationMinutes</dd>
+                    }
+                </dl>
+                @if (auction.Result != null)
+                {
+                    <p>@Labels["Result"]: @Labels[auction.Result]</p>
+                }
+                @if (Model.ApprovalStatus == "Approved" && auction.ApprovalStatus == "Approved")
+                {
+                    <a class="btn" asp-controller="Auction" asp-action="Details" asp-route-id="@auction.AuctionId">@Labels["View auction"]</a>
+                }
+            </article>
+        }
+    </section>
+    <a class="btn" asp-controller="Selling" asp-action="Index">@Labels["Back to listings"]</a>
+</div>

@@ -1,5 +1,6 @@
 ﻿using BTLwebdaugia.Data;
 using BTLwebdaugia.Models;
+using BTLwebdaugia.Services;
 using BTLwebdaugia.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,9 +14,6 @@ namespace BTLwebdaugia.Controllers
     public class WalletController : Controller
     {
         private readonly BidHubDbContext _context;
-
-        private const decimal MaxBalance =
-            999999999999999999m;
 
         public WalletController(BidHubDbContext context)
         {
@@ -115,7 +113,7 @@ namespace BTLwebdaugia.Controllers
             // Giới hạn nạp mỗi lần ở mức hợp lý cho demo.
             if (!ModelState.IsValid ||
                 model.Amount < 1m ||
-                model.Amount > 1000000m ||
+                model.Amount > MoneyRules.MaxTopUpAmount ||
                 model.Amount != decimal.Truncate(model.Amount) ||
                 requestId == Guid.Empty)
             {
@@ -178,7 +176,7 @@ namespace BTLwebdaugia.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            if (wallet.Balance > MaxBalance - model.Amount)
+            if (!MoneyRules.CanCredit(wallet.Balance, model.Amount))
             {
                 TempData["WalletError"] =
                     "Wallet balance limit exceeded.";

@@ -1,8 +1,9 @@
-using BTLwebdaugia.Data;
+﻿using BTLwebdaugia.Data;
+using BTLwebdaugia.Models;
 using BTLwebdaugia.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using System.Diagnostics;
 
 namespace BTLwebdaugia.Controllers
 {
@@ -14,8 +15,6 @@ namespace BTLwebdaugia.Controllers
         {
             _context = context;
         }
-
-
 
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -41,14 +40,12 @@ namespace BTLwebdaugia.Controllers
             return View(auctions);
         }
 
-
-
         [HttpGet]
         public async Task<IActionResult> FilterAuctions(
             [FromQuery] long? categoryId)
         {
             // Không ghi Session nếu categoryId không hợp lệ.
-            if (categoryId.HasValue && categoryId.Value < 1)
+            if (!ModelState.IsValid || categoryId is < 1 or > int.MaxValue)
             {
                 return BadRequest("Invalid category.");
             }
@@ -75,8 +72,6 @@ namespace BTLwebdaugia.Controllers
 
             return PartialView("AuctionSections", auctions);
         }
-
-
 
         private async Task<List<ProductListItemViewModel>>
             GetHomepageAuctionsAsync(long? categoryId)
@@ -116,6 +111,7 @@ namespace BTLwebdaugia.Controllers
                         .Select(b => (decimal?)b.Amount)
                         .FirstOrDefault() ?? a.StartingPrice,
 
+                    StartAt = a.StartAt,
                     CurrentEndAt = a.CurrentEndAt,
 
                     AuctionStatus =
@@ -240,6 +236,7 @@ namespace BTLwebdaugia.Controllers
                         .Select(b => (decimal?)b.Amount)
                         .FirstOrDefault() ?? a.StartingPrice,
 
+                    StartAt = a.StartAt,
                     CurrentEndAt = a.CurrentEndAt,
 
                     AuctionStatus =
@@ -269,7 +266,6 @@ namespace BTLwebdaugia.Controllers
                 TotalPages = totalPages
             };
 
-
             int? lastCategoryId = HttpContext.Session.GetInt32(
                 "LastHomepageCategoryId"
             );
@@ -278,13 +274,22 @@ namespace BTLwebdaugia.Controllers
                 .FirstOrDefault(c => c.CategoryId == lastCategoryId)
                 ?.Name;
 
-
             return View(viewModel);
         }
 
         public IActionResult Privacy()
         {
             return View();
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            Response.StatusCode = StatusCodes.Status500InternalServerError;
+            return View(new ErrorViewModel
+            {
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            });
         }
     }
 }

@@ -1,8 +1,9 @@
 ﻿using BTLwebdaugia.Data;
 using BTLwebdaugia.Models;
+using BTLwebdaugia.Services;
 using BTLwebdaugia.ViewModels;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,20 +18,19 @@ namespace BTLwebdaugia.Controllers
     public class AccountController : Controller
     {
         private readonly BidHubDbContext _context;
+        private readonly ILogger<AccountController> _logger;
         private readonly IWebHostEnvironment _environment;
         private readonly PasswordHasher<User> _passwordHasher = new();
 
         public AccountController(
             BidHubDbContext context,
-            IWebHostEnvironment environment)
+            IWebHostEnvironment environment,
+            ILogger<AccountController> logger)
         {
             _context = context;
+            _logger = logger;
             _environment = environment;
         }
-
-        // ============================================
-        // SIGN IN
-        // ============================================
 
         [HttpGet]
         [AllowAnonymous]
@@ -77,17 +77,7 @@ namespace BTLwebdaugia.Controllers
                 return View(model);
             }
 
-            var claims = new List<Claim>
-            {
-                new(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-                new(ClaimTypes.Name, user.Username),
-                new(ClaimTypes.Email, user.Email),
-                new(ClaimTypes.Role, user.Role)
-            };
-
-            var identity = new ClaimsIdentity(
-                claims,
-                CookieAuthenticationDefaults.AuthenticationScheme);
+            var identity = CreateIdentity(user);
 
             var properties = new AuthenticationProperties
             {
@@ -102,10 +92,6 @@ namespace BTLwebdaugia.Controllers
 
             return RedirectToLocal(returnUrl);
         }
-
-        // ============================================
-        // SIGN UP
-        // ============================================
 
         [HttpGet]
         [AllowAnonymous]
@@ -200,10 +186,6 @@ namespace BTLwebdaugia.Controllers
             return View(model);
         }
 
-        // ============================================
-        // PROFILE - GET
-        // ============================================
-
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> Profile()
@@ -234,10 +216,6 @@ namespace BTLwebdaugia.Controllers
 
             return View(model);
         }
-
-        // ============================================
-        // PROFILE - POST
-        // ============================================
 
         [HttpPost]
         [Authorize]
@@ -313,17 +291,7 @@ namespace BTLwebdaugia.Controllers
             }
 
             // Làm mới Cookie Claims sau khi đổi thông tin.
-            var claims = new List<Claim>
-            {
-                new(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-                new(ClaimTypes.Name, user.Username),
-                new(ClaimTypes.Email, user.Email),
-                new(ClaimTypes.Role, user.Role)
-            };
-
-            var identity = new ClaimsIdentity(
-                claims,
-                CookieAuthenticationDefaults.AuthenticationScheme);
+            var identity = CreateIdentity(user);
 
             // Giữ trạng thái Remember Me hiện tại khi làm mới cookie.
             var authentication = await HttpContext.AuthenticateAsync(
@@ -342,10 +310,6 @@ namespace BTLwebdaugia.Controllers
 
             return RedirectToAction(nameof(Profile));
         }
-
-        // ============================================
-        // UPLOAD AVATAR - POST
-        // ============================================
 
         [HttpPost]
         [Authorize]
@@ -513,19 +477,7 @@ namespace BTLwebdaugia.Controllers
                         string oldPhysicalPath =
                             Path.Combine(folder, oldFileName);
 
-                        try
-                        {
-                            if (System.IO.File.Exists(oldPhysicalPath))
-                                System.IO.File.Delete(oldPhysicalPath);
-                        }
-                        catch (IOException)
-                        {
-                            // Không ảnh hưởng bản ghi SQL đã lưu.
-                        }
-                        catch (UnauthorizedAccessException)
-                        {
-                            // Có thể dọn file cũ sau.
-                        }
+                        UploadedFileCleanup.Delete(oldPhysicalPath, _logger);
                     }
                 }
 
@@ -539,21 +491,10 @@ namespace BTLwebdaugia.Controllers
                 ex is UnauthorizedAccessException ||
                 ex is DbUpdateException)
             {
+                _logger.LogError(ex, "Avatar update failed for user {UserId}", userId);
                 if (newFileCreated && !databaseSaved)
                 {
-                    try
-                    {
-                        if (System.IO.File.Exists(physicalPath))
-                            System.IO.File.Delete(physicalPath);
-                    }
-                    catch (IOException)
-                    {
-                        // Có thể dọn file lỗi sau.
-                    }
-                    catch (UnauthorizedAccessException)
-                    {
-                        // Có thể dọn file lỗi sau.
-                    }
+                    UploadedFileCleanup.Delete(physicalPath, _logger);
                 }
 
                 TempData["AvatarError"] =
@@ -562,10 +503,6 @@ namespace BTLwebdaugia.Controllers
                 return RedirectToAction(nameof(Profile));
             }
         }
-
-        // ============================================
-        // LOG OUT
-        // ============================================
 
         [HttpGet]
         public IActionResult LogOut()
@@ -585,10 +522,6 @@ namespace BTLwebdaugia.Controllers
             return RedirectToAction(nameof(SignIn));
         }
 
-        // ============================================
-        // ACCESS DENIED
-        // ============================================
-
         [HttpGet]
         public IActionResult AccessDenied()
         {
@@ -598,9 +531,17 @@ namespace BTLwebdaugia.Controllers
                 "Access denied. Your account does not have permission to access this page.");
         }
 
-        // ============================================
-        // PRIVATE HELPERS
-        // ============================================
+        private static ClaimsIdentity CreateIdentity(User user)
+        {
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role)
+            };
+            return new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        }
 
         private bool TryGetCurrentUserId(out long userId)
         {

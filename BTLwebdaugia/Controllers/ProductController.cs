@@ -1,35 +1,42 @@
-
-using BTLwebdaugia.Data;
+﻿using BTLwebdaugia.Data;
 using BTLwebdaugia.Models;
+using BTLwebdaugia.Services;
 using BTLwebdaugia.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
+using Microsoft.Extensions.Localization;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
+using System;
 
 namespace BTLwebdaugia.Controllers
 {
     [Authorize]
-    public class ProductController : Controller
+    public partial class ProductController : Controller
     {
         private readonly BidHubDbContext _context;
+        private readonly ILogger<ProductController> _logger;
         private readonly IWebHostEnvironment _environment;
+        private readonly IStringLocalizer<SharedLabels> _labels;
 
         private const int MaxImageCount = 5;
         private const long MaxImageBytes = 5 * 1024 * 1024;
 
         public ProductController(
             BidHubDbContext context,
-            IWebHostEnvironment environment)
+            IWebHostEnvironment environment,
+            IStringLocalizer<SharedLabels> labels,
+            ILogger<ProductController> logger)
         {
             _context = context;
+            _logger = logger;
             _environment = environment;
+            _labels = labels;
         }
 
         [HttpGet]
@@ -57,154 +64,14 @@ namespace BTLwebdaugia.Controllers
                 return Challenge();
             }
 
+            var (startAt, endAt, images) = await ValidateListingAsync(model);
             string name = model.Name?.Trim() ?? "";
             string description = model.Description?.Trim() ?? "";
-
-            // Validate product information.
-            if (string.IsNullOrWhiteSpace(name) ||
-                name.Length > 200)
-            {
-                ModelState.AddModelError(
-                    nameof(model.Name),
-                    "Product name must contain 1–200 characters.");
-            }
-
-            if (string.IsNullOrWhiteSpace(description))
-            {
-                ModelState.AddModelError(
-                    nameof(model.Description),
-                    "Description is required.");
-            }
-
-            bool categoryExists = await _context.Categories
-                .AnyAsync(c => c.CategoryId == model.CategoryId);
-
-            if (!categoryExists)
-            {
-                ModelState.AddModelError(
-                    nameof(model.CategoryId),
-                    "Please select a valid category.");
-            }
-
-            // USD whole-number rules.
-            if (model.StartingPrice < 50 ||
-                model.StartingPrice !=
-                    decimal.Truncate(model.StartingPrice))
-            {
-                ModelState.AddModelError(
-                    nameof(model.StartingPrice),
-                    "Starting price must be a whole number of at least $50.");
-            }
-
-            if (model.BidStep < 1 ||
-                model.BidStep !=
-                    decimal.Truncate(model.BidStep))
-            {
-                ModelState.AddModelError(
-                    nameof(model.BidStep),
-                    "Bid step must be a positive whole number.");
-            }
-
-            // Validate auction schedule.
             DateTime now = DateTime.UtcNow;
-            DateTime startAt = now;
-
-            if (!model.ScheduledStartAt.HasValue)
-            {
-                ModelState.AddModelError(
-                    nameof(model.ScheduledStartAt),
-                    "Scheduled start time is required.");
-            }
-            else
-            {
-                startAt = new DateTimeOffset(model.ScheduledStartAt.Value, TimeSpan.FromHours(7)).UtcDateTime;
-
-                if (startAt <= now)
-                {
-                    ModelState.AddModelError(
-                        nameof(model.ScheduledStartAt),
-                        "Start time must be in the future.");
-                }
-            }
-
-            DateTime endAt = startAt;
-
-            if (model.EndTimeMode == "Duration")
-            {
-                if (!model.DurationMinutes.HasValue ||
-                    model.DurationMinutes.Value < 1 ||
-                    model.DurationMinutes.Value > 43200)
-                {
-                    ModelState.AddModelError(
-                        nameof(model.DurationMinutes),
-                        "Duration must be between 1 and 43200 minutes.");
-                }
-                else
-                {
-                    endAt = startAt.AddMinutes(
-                        model.DurationMinutes.Value);
-                }
-            }
-            else if (model.EndTimeMode == "Specific")
-            {
-                if (!model.SpecificEndAt.HasValue)
-                {
-                    ModelState.AddModelError(
-                        nameof(model.SpecificEndAt),
-                        "End time is required.");
-                }
-                else
-                {
-                    endAt = new DateTimeOffset(model.SpecificEndAt.Value, TimeSpan.FromHours(7)).UtcDateTime;
-
-                    if (endAt <= startAt)
-                    {
-                        ModelState.AddModelError(
-                            nameof(model.SpecificEndAt),
-                            "End time must be after start time.");
-                    }
-                }
-            }
-            else
-            {
-                ModelState.AddModelError(
-                    nameof(model.EndTimeMode),
-                    "Invalid end time mode.");
-            }
-
-            // Validate uploaded images.
-            var images = model.Images?
-                .Where(f => f != null && f.Length > 0)
-                .ToList() ?? new List<IFormFile>();
-
-            if (images.Count > MaxImageCount)
-            {
-                ModelState.AddModelError(
-                    nameof(model.Images),
-                    "Maximum 5 images are allowed.");
-            }
-
-            foreach (var image in images)
-            {
-                if (image.Length > MaxImageBytes)
-                {
-                    ModelState.AddModelError(
-                        nameof(model.Images),
-                        "Each image must be 5 MB or smaller.");
-                    break;
-                }
-
-                if (!await IsValidImageAsync(image))
-                {
-                    ModelState.AddModelError(
-                        nameof(model.Images),
-                        "Only valid JPG, PNG and WebP images are allowed.");
-                    break;
-                }
-            }
 
             if (!ModelState.IsValid)
             {
+                LocalizeListingErrors();
                 return View(
                     "~/Views/Selling/Create.cshtml",
                     model);
@@ -228,9 +95,9 @@ namespace BTLwebdaugia.Controllers
                 Product = product,
                 StartingPrice = model.StartingPrice,
                 BidStep = model.BidStep,
-                EndTimeMode = model.EndTimeMode,
+                EndTimeMode = model.EndTimeMode == AuctionScheduleRules.DurationMode ? AuctionScheduleRules.DurationMode : AuctionScheduleRules.FixedEndTimeMode,
                 DurationMinutes =
-                    model.EndTimeMode == "Duration"
+                    model.EndTimeMode == AuctionScheduleRules.DurationMode
                         ? model.DurationMinutes
                         : null,
                 StartAt = startAt,
@@ -254,53 +121,7 @@ namespace BTLwebdaugia.Controllers
                 // Save first to obtain ProductId.
                 await _context.SaveChangesAsync();
 
-                string webRoot = _environment.WebRootPath
-                    ?? Path.Combine(
-                        _environment.ContentRootPath,
-                        "wwwroot");
-
-                string uploadRoot = Path.Combine(
-                    webRoot,
-                    "uploads",
-                    "products",
-                    product.ProductId.ToString());
-
-                Directory.CreateDirectory(uploadRoot);
-
-                for (int i = 0; i < images.Count; i++)
-                {
-                    var image = images[i];
-
-                    string extension = Path.GetExtension(
-                        image.FileName).ToLowerInvariant();
-
-                    string fileName =
-                        $"{Guid.NewGuid():N}{extension}";
-
-                    string physicalPath = Path.Combine(
-                        uploadRoot,
-                        fileName);
-
-                    await using (var stream = new FileStream(
-                        physicalPath,
-                        FileMode.CreateNew,
-                        FileAccess.Write))
-                    {
-                        // Track file before copying so that a
-                        // partially written file can be cleaned up.
-                        uploadedFiles.Add(physicalPath);
-
-                        await image.CopyToAsync(stream);
-                    }
-
-                    _context.ProductImages.Add(new ProductImage
-                    {
-                        ProductId = product.ProductId,
-                        ImagePath =
-                            $"/uploads/products/{product.ProductId}/{fileName}",
-                        SortOrder = i
-                    });
-                }
+                await SaveProductImagesAsync(product.ProductId, images, uploadedFiles);
 
                 // Save ProductImages into SQL Server.
                 await _context.SaveChangesAsync();
@@ -311,25 +132,7 @@ namespace BTLwebdaugia.Controllers
             {
                 await transaction.RollbackAsync();
 
-                // SQL rollback cannot automatically remove files.
-                foreach (string filePath in uploadedFiles)
-                {
-                    try
-                    {
-                        if (System.IO.File.Exists(filePath))
-                        {
-                            System.IO.File.Delete(filePath);
-                        }
-                    }
-                    catch (IOException)
-                    {
-                        // Cleanup failure can be logged separately.
-                    }
-                    catch (UnauthorizedAccessException)
-                    {
-                        // Cleanup failure can be logged separately.
-                    }
-                }
+                DeleteListingFiles(product.ProductId, uploadedFiles, physicalPaths: true);
 
                 throw;
             }
@@ -341,7 +144,6 @@ namespace BTLwebdaugia.Controllers
                 "Index",
                 "Selling");
         }
-
 
         private static async Task<bool> IsValidImageAsync(
             IFormFile file)
@@ -459,7 +261,6 @@ namespace BTLwebdaugia.Controllers
                 _ => false
             };
         }
-
 
         private async Task LoadCategoriesAsync()
         {

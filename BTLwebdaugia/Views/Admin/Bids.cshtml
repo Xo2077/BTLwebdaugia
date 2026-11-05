@@ -2,12 +2,13 @@
 @model List<BTLwebdaugia.Models.Bid>
 
 @{
-    ViewData["Title"] = "Admin Bids";
+    ViewData["Title"] = Labels["Admin Bids"].Value;
     Layout = "_AdminLayout";
 }
 
 <h1>@Labels["Bids management"]</h1>
-<p class="muted">Accepted bidding history from SQL Server</p>
+<partial name="_AdminListControls" />
+<p class="muted">@Labels["Accepted bidding history from SQL Server"]</p>
 
 <div class="table-shell">
     <div class="table-toolbar">
@@ -18,7 +19,7 @@
         <thead>
             <tr>
                 <th>@Labels["BID ID"]</th>
-                <th>AUCTION / PRODUCT</th>
+                <th>@Labels["AUCTION / PRODUCT"]</th>
                 <th>@Labels["BIDDER"]</th>
                 <th>@Labels["AMOUNT"]</th>
                 <th>@Labels["PLACED AT"]</th>
@@ -51,3 +52,5 @@
         </tbody>
     </table>
 </div>
+
+<partial name="_AdminPager" />

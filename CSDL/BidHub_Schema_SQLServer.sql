@@ -1,4 +1,4 @@
-CREATE DATABASE CSDLWEBDAUGIA;
+﻿CREATE DATABASE CSDLWEBDAUGIA;
 GO
 USE CSDLWEBDAUGIA;
 GO
@@ -227,3 +227,22 @@ CREATE INDEX IX_Bids_Bidder ON dbo.Bids (BidderId);
 CREATE INDEX IX_WalletTransactions_WalletTime ON dbo.WalletTransactions (WalletId, CreatedAt DESC);
 GO
 
+
+CREATE TABLE dbo.Notifications (
+    NotificationId BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Notifications PRIMARY KEY,
+    UserId BIGINT NOT NULL,
+    ProductId BIGINT NOT NULL,
+    AuctionId BIGINT NULL,
+    EventType VARCHAR(20) NOT NULL,
+    ProductName NVARCHAR(200) NOT NULL,
+    Reason NVARCHAR(1000) NULL,
+    CreatedAt DATETIME2(3) NOT NULL CONSTRAINT DF_Notifications_CreatedAt DEFAULT SYSUTCDATETIME(),
+    ReadAt DATETIME2(3) NULL,
+    CONSTRAINT FK_Notifications_User FOREIGN KEY (UserId) REFERENCES dbo.Users(UserId),
+    CONSTRAINT FK_Notifications_Product FOREIGN KEY (ProductId) REFERENCES dbo.Products(ProductId),
+    CONSTRAINT FK_Notifications_Auction FOREIGN KEY (AuctionId) REFERENCES dbo.Auctions(AuctionId),
+    CONSTRAINT CK_Notifications_EventType CHECK (EventType IN ('ProductApproved','ProductRejected','AuctionApproved','AuctionRejected','AuctionWon','AuctionSold','PaymentSent','PaymentReceived','OrderShipped','OrderCompleted'))
+);
+CREATE INDEX IX_Notifications_UserTime ON dbo.Notifications (UserId, CreatedAt DESC, NotificationId DESC);
+CREATE INDEX IX_Notifications_Unread ON dbo.Notifications (UserId) WHERE ReadAt IS NULL;
+GO

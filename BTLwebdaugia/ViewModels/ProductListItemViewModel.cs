@@ -15,6 +15,8 @@ public class ProductListItemViewModel
 
     public decimal CurrentPrice { get; set; }
 
+    public DateTime StartAt { get; set; }
+
     public DateTime CurrentEndAt { get; set; }
 
     public string AuctionStatus { get; set; } = string.Empty;

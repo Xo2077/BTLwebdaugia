@@ -2,12 +2,13 @@
 @model List<BTLwebdaugia.Models.Order>
 
 @{
-    ViewData["Title"] = "Admin Orders";
+    ViewData["Title"] = Labels["Admin Orders"].Value;
     Layout = "_AdminLayout";
 }
 
 <h1>@Labels["Orders management"]</h1>
-<p class="muted">Order records from SQL Server</p>
+<partial name="_AdminListControls" />
+<p class="muted">@Labels["Order records from SQL Server"]</p>
 
 <div class="table-shell">
     <div class="table-toolbar">
@@ -33,7 +34,7 @@
                     <td>@order.Winner.Username</td>
                     <td>$@order.FinalAmount.ToString("N0")</td>
                     <td>
-                        <span class="tag">@order.Status</span>
+                        <span class="tag">@Labels[order.Status]</span>
                     </td>
                 </tr>
             }
@@ -47,3 +48,5 @@
         </tbody>
     </table>
 </div>
+
+<partial name="_AdminPager" />

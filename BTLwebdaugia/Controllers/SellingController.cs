@@ -1,4 +1,4 @@
-﻿using BTLwebdaugia.Data;
+using BTLwebdaugia.Data;
 using BTLwebdaugia.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -43,6 +43,32 @@ namespace BTLwebdaugia.Controllers
             }
 
             return View(listings);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(long id)
+        {
+            if (!long.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out long sellerId))
+                return Challenge();
+
+            var product = await _context.Products
+                .AsNoTracking()
+                .Where(p => p.ProductId == id && p.SellerId == sellerId && !p.IsDeleted)
+                .Include(p => p.Category)
+                .Include(p => p.ProductImages)
+                .Include(p => p.ReviewedByNavigation)
+                .Include(p => p.Auctions)
+                    .ThenInclude(a => a.ReviewedByNavigation)
+                .Include(p => p.Auctions).ThenInclude(a => a.Bids)
+                .Include(p => p.Auctions).ThenInclude(a => a.Order)
+                .AsSplitQuery()
+                .FirstOrDefaultAsync();
+
+            if (product == null)
+                return NotFound();
+
+            Response.Headers.CacheControl = "no-store";
+            return View(product);
         }
 
         [HttpGet]

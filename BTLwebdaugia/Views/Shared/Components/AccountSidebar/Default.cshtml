@@ -1,7 +1,6 @@
-@inject BTLwebdaugia.Services.AccountDisplayService AccountDisplay
+@model BTLwebdaugia.Services.AccountDisplay?
 @{
-    var accountInfo = await AccountDisplay.GetAsync(User);
-    var avatarPath = accountInfo?.AvatarPath;
+    var avatarPath = Model?.AvatarPath;
 
     string currentController =
         ViewContext.RouteData.Values["controller"]?
@@ -30,14 +29,14 @@
         }
 
         <strong>
-            @(accountInfo?.Username ?? User.Identity?.Name)
+            @(Model?.Username ?? User.Identity?.Name)
         </strong>
 
-        @if (accountInfo != null)
+        @if (Model != null)
         {
             <p class="muted small">
                 Member since
-                @accountInfo.CreatedAt.ToString("MMMM yyyy")
+                @Model.CreatedAt.ToString("MMMM yyyy")
             </p>
         }
 

@@ -1,0 +1,15 @@
+@using BTLwebdaugia.ViewModels
+@{
+    var filter = (AdminListFilterViewModel)ViewBag.AdminFilter;
+}
+<nav class="admin-pager" aria-label="@Labels["Pagination"]">
+    @if (filter.Page > 1)
+    {
+        <a class="btn" asp-route-Search="@filter.Search" asp-route-Status="@filter.Status" asp-route-PageSize="@filter.PageSize" asp-route-Page="@(filter.Page - 1)">@Labels["Previous"]</a>
+    }
+    <span>@Labels["Page"] @filter.Page / @filter.TotalPages</span>
+    @if (filter.Page < filter.TotalPages)
+    {
+        <a class="btn" asp-route-Search="@filter.Search" asp-route-Status="@filter.Status" asp-route-PageSize="@filter.PageSize" asp-route-Page="@(filter.Page + 1)">@Labels["Next"]</a>
+    }
+</nav>

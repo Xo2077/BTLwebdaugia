@@ -414,4 +414,547 @@
   <data name="Explore BidHub auctions and find products from independent sellers." xml:space="preserve">
     <value>Khám phá các phiên đấu giá trên BidHub và tìm sản phẩm từ những người bán độc lập.</value>
   </data>
-<data name="About Us"><value>Giới thiệu</value></data><data name="Contact"><value>Liên hệ</value></data></root>
+  <data name="About Us">
+    <value>Giới thiệu</value>
+  </data>
+  <data name="Contact">
+    <value>Liên hệ</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Tìm kiếm</value>
+  </data>
+  <data name="Search by name or email" xml:space="preserve">
+    <value>Tìm theo tên hoặc email</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Tất cả</value>
+  </data>
+  <data name="Rows per page" xml:space="preserve">
+    <value>Số dòng mỗi trang</value>
+  </data>
+  <data name="Apply filters" xml:space="preserve">
+    <value>Áp dụng bộ lọc</value>
+  </data>
+  <data name="Total results" xml:space="preserve">
+    <value>Tổng kết quả</value>
+  </data>
+  <data name="Pagination" xml:space="preserve">
+    <value>Phân trang</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Trước</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Sau</value>
+  </data>
+  <data name="Page" xml:space="preserve">
+    <value>Trang</value>
+  </data>
+  <data name="Categories" xml:space="preserve">
+    <value>Danh mục</value>
+  </data>
+  <data name="Auctions" xml:space="preserve">
+    <value>Phiên đấu giá</value>
+  </data>
+  <data name="Wallets" xml:space="preserve">
+    <value>Ví</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>Thành viên</value>
+  </data>
+  <data name="Admin" xml:space="preserve">
+    <value>Quản trị viên</value>
+  </data>
+  <data name="Deleted" xml:space="preserve">
+    <value>Đã xóa</value>
+  </data>
+  <data name="WithBalance" xml:space="preserve">
+    <value>Có số dư</value>
+  </data>
+  <data name="Empty" xml:space="preserve">
+    <value>Số dư bằng không</value>
+  </data>
+  <data name="Create category" xml:space="preserve">
+    <value>Tạo danh mục</value>
+  </data>
+  <data name="Approve" xml:space="preserve">
+    <value>Duyệt</value>
+  </data>
+  <data name="Reject" xml:space="preserve">
+    <value>Từ chối</value>
+  </data>
+  <data name="Reviewed" xml:space="preserve">
+    <value>Đã kiểm duyệt</value>
+  </data>
+  <data name="Rejection reason" xml:space="preserve">
+    <value>Lý do từ chối</value>
+  </data>
+  <data name="Reason for rejection" xml:space="preserve">
+    <value>Lý do từ chối</value>
+  </data>
+  <data name="Product approval required" xml:space="preserve">
+    <value>Cần duyệt sản phẩm trước</value>
+  </data>
+  <data name="No categories available." xml:space="preserve">
+    <value>Chưa có danh mục.</value>
+  </data>
+  <data name="No auctions found." xml:space="preserve">
+    <value>Không tìm thấy phiên đấu giá.</value>
+  </data>
+  <data name="No products found." xml:space="preserve">
+    <value>Không tìm thấy sản phẩm.</value>
+  </data>
+  <data name="Product listings from SQL Server" xml:space="preserve">
+    <value>Danh sách sản phẩm đã đăng</value>
+  </data>
+  <data name="Category name is required." xml:space="preserve">
+    <value>Vui lòng nhập tên danh mục.</value>
+  </data>
+  <data name="Maximum 120 characters." xml:space="preserve">
+    <value>Tối đa 120 ký tự.</value>
+  </data>
+  <data name="Maximum 1000 characters." xml:space="preserve">
+    <value>Tối đa 1000 ký tự.</value>
+  </data>
+  <data name="Please check the form." xml:space="preserve">
+    <value>Vui lòng kiểm tra lại biểu mẫu.</value>
+  </data>
+  <data name="Invalid value." xml:space="preserve">
+    <value>Giá trị không hợp lệ.</value>
+  </data>
+  <data name="Delete this category?" xml:space="preserve">
+    <value>Bạn muốn xóa danh mục này?</value>
+  </data>
+  <data name="Product is not pending." xml:space="preserve">
+    <value>Sản phẩm không còn ở trạng thái chờ duyệt.</value>
+  </data>
+  <data name="Product approved successfully." xml:space="preserve">
+    <value>Đã duyệt sản phẩm.</value>
+  </data>
+  <data name="Product rejected successfully." xml:space="preserve">
+    <value>Đã từ chối sản phẩm.</value>
+  </data>
+  <data name="Rejection reason is required (maximum 1000 characters)." xml:space="preserve">
+    <value>Vui lòng nhập lý do từ chối, tối đa 1000 ký tự.</value>
+  </data>
+  <data name="Auction or product is not eligible for approval." xml:space="preserve">
+    <value>Phiên hoặc sản phẩm chưa đủ điều kiện duyệt.</value>
+  </data>
+  <data name="Auction duration must be between 1 minute and 30 days." xml:space="preserve">
+    <value>Thời lượng phiên phải từ 1 phút đến 30 ngày.</value>
+  </data>
+  <data name="Auction must have at least 1 minute remaining." xml:space="preserve">
+    <value>Phiên phải còn ít nhất 1 phút.</value>
+  </data>
+  <data name="Invalid auction end time mode." xml:space="preserve">
+    <value>Cách kết thúc phiên không hợp lệ.</value>
+  </data>
+  <data name="Auction schedule is invalid." xml:space="preserve">
+    <value>Lịch đấu giá không hợp lệ.</value>
+  </data>
+  <data name="Auction approved successfully." xml:space="preserve">
+    <value>Đã duyệt phiên đấu giá.</value>
+  </data>
+  <data name="Auction is not pending." xml:space="preserve">
+    <value>Phiên không còn ở trạng thái chờ duyệt.</value>
+  </data>
+  <data name="Auction rejected successfully." xml:space="preserve">
+    <value>Đã từ chối phiên đấu giá.</value>
+  </data>
+  <data name="Please enter a valid category name." xml:space="preserve">
+    <value>Vui lòng nhập tên danh mục hợp lệ.</value>
+  </data>
+  <data name="Category name already exists." xml:space="preserve">
+    <value>Tên danh mục đã tồn tại.</value>
+  </data>
+  <data name="Category created successfully." xml:space="preserve">
+    <value>Đã tạo danh mục.</value>
+  </data>
+  <data name="Unable to create category. Check for duplicates." xml:space="preserve">
+    <value>Không thể tạo danh mục. Hãy kiểm tra tên bị trùng.</value>
+  </data>
+  <data name="Invalid category information." xml:space="preserve">
+    <value>Thông tin danh mục không hợp lệ.</value>
+  </data>
+  <data name="Category updated successfully." xml:space="preserve">
+    <value>Đã cập nhật danh mục.</value>
+  </data>
+  <data name="Unable to update category. Check for duplicates." xml:space="preserve">
+    <value>Không thể cập nhật danh mục. Hãy kiểm tra tên bị trùng.</value>
+  </data>
+  <data name="Cannot delete a category that has products." xml:space="preserve">
+    <value>Không thể xóa danh mục đang có sản phẩm.</value>
+  </data>
+  <data name="Category deleted successfully." xml:space="preserve">
+    <value>Đã xóa danh mục.</value>
+  </data>
+  <data name="Unable to delete this category." xml:space="preserve">
+    <value>Không thể xóa danh mục này.</value>
+  </data>
+  <data name="Loading admin data..." xml:space="preserve">
+    <value>Đang tải dữ liệu quản trị...</value>
+  </data>
+  <data name="Unable to complete this action. Please try again." xml:space="preserve">
+    <value>Không thể hoàn tất thao tác. Vui lòng thử lại.</value>
+  </data>
+  <data name="Your session has expired or access was denied." xml:space="preserve">
+    <value>Phiên đăng nhập đã hết hạn hoặc bạn không có quyền truy cập.</value>
+  </data>
+  <data name="Search by product or user" xml:space="preserve">
+    <value>Tìm theo sản phẩm hoặc người dùng</value>
+  </data>
+  <data name="Current page" xml:space="preserve">
+    <value>Trang hiện tại</value>
+  </data>
+  <data name="Pending review" xml:space="preserve">
+    <value>Chờ duyệt</value>
+  </data>
+  <data name="Reason" xml:space="preserve">
+    <value>Lý do</value>
+  </data>
+  <data name="Admin Categories" xml:space="preserve">
+    <value>Quản trị danh mục</value>
+  </data>
+  <data name="Admin Products" xml:space="preserve">
+    <value>Quản trị sản phẩm</value>
+  </data>
+  <data name="Admin Auctions" xml:space="preserve">
+    <value>Quản trị phiên đấu giá</value>
+  </data>
+  <data name="Admin Users" xml:space="preserve">
+    <value>Quản trị người dùng</value>
+  </data>
+  <data name="Admin Bids" xml:space="preserve">
+    <value>Quản trị lượt đặt giá</value>
+  </data>
+  <data name="Admin Orders" xml:space="preserve">
+    <value>Quản trị đơn hàng</value>
+  </data>
+  <data name="Admin Wallets" xml:space="preserve">
+    <value>Quản trị ví</value>
+  </data>
+  <data name="Accepted bidding history from SQL Server" xml:space="preserve">
+    <value>Lịch sử lượt đặt giá đã được chấp nhận</value>
+  </data>
+  <data name="Approved active sessions" xml:space="preserve">
+    <value>Phiên đã duyệt đang diễn ra</value>
+  </data>
+  <data name="AUCTION / ITEM" xml:space="preserve">
+    <value>PHIÊN / SẢN PHẨM</value>
+  </data>
+  <data name="AUCTION / PRODUCT" xml:space="preserve">
+    <value>PHIÊN / SẢN PHẨM</value>
+  </data>
+  <data name="Currently active" xml:space="preserve">
+    <value>Đang hoạt động</value>
+  </data>
+  <data name="EMAIL" xml:space="preserve">
+    <value>EMAIL</value>
+  </data>
+  <data name="ID / ITEM" xml:space="preserve">
+    <value>MÃ / SẢN PHẨM</value>
+  </data>
+  <data name="Non-deleted products" xml:space="preserve">
+    <value>Sản phẩm chưa xóa</value>
+  </data>
+  <data name="Order records from SQL Server" xml:space="preserve">
+    <value>Danh sách đơn hàng</value>
+  </data>
+  <data name="Registered accounts from SQL Server" xml:space="preserve">
+    <value>Danh sách tài khoản</value>
+  </data>
+  <data name="Products must be approved before their auctions can be approved." xml:space="preserve">
+    <value>Sản phẩm phải được duyệt trước khi duyệt phiên đấu giá.</value>
+  </data>
+  <data name="Pending auctions can be approved or rejected by an Admin. A rejection reason is required." xml:space="preserve">
+    <value>Quản trị viên có thể duyệt hoặc từ chối phiên đang chờ. Khi từ chối cần nhập lý do.</value>
+  </data>
+  <data name="Approved auctions become publicly visible when their scheduled start time is reached." xml:space="preserve">
+    <value>Phiên đã duyệt xuất hiện công khai và nhận giá khi đến giờ bắt đầu.</value>
+  </data>
+  <data name="Manage auction sessions and review pending auctions from SQL Server." xml:space="preserve">
+    <value>Quản lý phiên đấu giá và xử lý các phiên chờ duyệt.</value>
+  </data>
+  <data name="Unable to update category." xml:space="preserve">
+    <value>Không thể cập nhật danh mục.</value>
+  </data>
+  <data name="Cannot delete a category containing products." xml:space="preserve">
+    <value>Không thể xóa danh mục đang có sản phẩm.</value>
+  </data>
+  <data name="Search by username or email" xml:space="preserve">
+    <value>Tìm theo tên tài khoản hoặc email</value>
+  </data>
+  <data name="Search by category name or description" xml:space="preserve">
+    <value>Tìm theo tên hoặc mô tả danh mục</value>
+  </data>
+  <data name="Search by product, seller or category" xml:space="preserve">
+    <value>Tìm theo sản phẩm, người bán hoặc danh mục</value>
+  </data>
+  <data name="Search by product or seller" xml:space="preserve">
+    <value>Tìm theo sản phẩm hoặc người bán</value>
+  </data>
+  <data name="Search by product or bidder" xml:space="preserve">
+    <value>Tìm theo sản phẩm hoặc người đặt giá</value>
+  </data>
+  <data name="Search by product or winner" xml:space="preserve">
+    <value>Tìm theo sản phẩm hoặc người thắng</value>
+  </data>
+  <data name="Search by wallet owner username" xml:space="preserve">
+    <value>Tìm theo tên tài khoản chủ ví</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Thông báo</value>
+  </data>
+  <data name="No notifications yet." xml:space="preserve">
+    <value>Bạn chưa có thông báo.</value>
+  </data>
+  <data name="ProductApproved" xml:space="preserve">
+    <value>Sản phẩm đã được duyệt</value>
+  </data>
+  <data name="ProductRejected" xml:space="preserve">
+    <value>Sản phẩm bị từ chối</value>
+  </data>
+  <data name="AuctionApproved" xml:space="preserve">
+    <value>Phiên đấu giá đã được duyệt</value>
+  </data>
+  <data name="AuctionRejected" xml:space="preserve">
+    <value>Phiên đấu giá bị từ chối</value>
+  </data>
+  <data name="Unable to open notification. Please try again." xml:space="preserve">
+    <value>Không thể mở thông báo. Vui lòng thử lại.</value>
+  </data>
+  <data name="Notifications are temporarily unavailable." xml:space="preserve">
+    <value>Thông báo tạm thời chưa khả dụng.</value>
+  </data>
+  <data name="Listing details" xml:space="preserve">
+    <value>Chi tiết hồ sơ đăng bán</value>
+  </data>
+  <data name="Product review" xml:space="preserve">
+    <value>Kiểm duyệt sản phẩm</value>
+  </data>
+  <data name="Reviewed at" xml:space="preserve">
+    <value>Thời điểm xử lý</value>
+  </data>
+  <data name="Reviewed by" xml:space="preserve">
+    <value>Người xử lý</value>
+  </data>
+  <data name="Product rejection reason" xml:space="preserve">
+    <value>Lý do từ chối sản phẩm</value>
+  </data>
+  <data name="Auction rejection reason" xml:space="preserve">
+    <value>Lý do từ chối phiên đấu giá</value>
+  </data>
+  <data name="No reason recorded." xml:space="preserve">
+    <value>Chưa ghi nhận lý do.</value>
+  </data>
+  <data name="This product is waiting for Admin review." xml:space="preserve">
+    <value>Sản phẩm đang chờ quản trị viên xét duyệt.</value>
+  </data>
+  <data name="Auction review history" xml:space="preserve">
+    <value>Các phiên đấu giá và kết quả kiểm duyệt</value>
+  </data>
+  <data name="Review status" xml:space="preserve">
+    <value>Trạng thái kiểm duyệt</value>
+  </data>
+  <data name="This auction is waiting for Admin review." xml:space="preserve">
+    <value>Phiên đang chờ quản trị viên xét duyệt.</value>
+  </data>
+  <data name="Bid increment" xml:space="preserve">
+    <value>Bước giá</value>
+  </data>
+  <data name="Start time" xml:space="preserve">
+    <value>Giờ bắt đầu</value>
+  </data>
+  <data name="Back to listings" xml:space="preserve">
+    <value>Quay lại sản phẩm đang bán</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>Kết quả</value>
+  </data>
+  <data name="View listing" xml:space="preserve">
+    <value>Xem hồ sơ</value>
+  </data>
+  <data name="View auction" xml:space="preserve">
+    <value>Xem phiên công khai</value>
+  </data>
+  <data name="Product rejected — view reason in listing details." xml:space="preserve">
+    <value>Sản phẩm bị từ chối — xem lý do trong hồ sơ.</value>
+  </data>
+  <data name="Auction rejected — view reason in listing details." xml:space="preserve">
+    <value>Phiên bị từ chối — xem lý do trong hồ sơ.</value>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Theo thời lượng</value>
+  </data>
+  <data name="Specific" xml:space="preserve">
+    <value>Theo thời điểm kết thúc</value>
+  </data>
+  <data name="FixedEndTime" xml:space="preserve">
+    <value>Theo thời điểm kết thúc</value>
+  </data>
+  <data name="Edit and resubmit" xml:space="preserve">
+    <value>Chỉnh sửa và gửi duyệt lại</value>
+  </data>
+  <data name="Send for review again" xml:space="preserve">
+    <value>Gửi duyệt lại</value>
+  </data>
+  <data name="The product is approved. Only auction pricing and schedule can be changed." xml:space="preserve">
+    <value>Sản phẩm đã được duyệt. Bạn chỉ được sửa giá và lịch của phiên.</value>
+  </data>
+  <data name="Leave the file selection empty to keep existing images. New images replace the full set." xml:space="preserve">
+    <value>Để trống ô chọn tệp để giữ ảnh hiện có. Ảnh mới sẽ thay thế toàn bộ bộ ảnh.</value>
+  </data>
+  <data name="After resubmission, the listing must be reviewed again." xml:space="preserve">
+    <value>Sau khi gửi lại, hồ sơ cần được quản trị viên xét duyệt.</value>
+  </data>
+  <data name="Duration (60 minutes–30 days)" xml:space="preserve">
+    <value>Thời lượng (60 phút–30 ngày)</value>
+  </data>
+  <data name="Open listing details to correct an eligible rejected listing and send it for review again." xml:space="preserve">
+    <value>Mở chi tiết hồ sơ để chỉnh sửa và gửi duyệt lại khi hồ sơ bị từ chối còn đủ điều kiện.</value>
+  </data>
+  <data name="Your listing has been resubmitted for review." xml:space="preserve">
+    <value>Hồ sơ đã được gửi duyệt lại.</value>
+  </data>
+  <data name="Auction duration must be between 60 minutes and 30 days." xml:space="preserve">
+    <value>Thời lượng phiên phải từ 60 phút đến 30 ngày.</value>
+  </data>
+  <data name="Auction must have at least 60 minutes remaining." xml:space="preserve">
+    <value>Phiên phải còn ít nhất 60 phút.</value>
+  </data>
+  <data name="Approved product images cannot be replaced." xml:space="preserve">
+    <value>Ảnh của sản phẩm đã duyệt không được thay thế.</value>
+  </data>
+  <data name="Duration must be between 60 and 43200 minutes." xml:space="preserve">
+    <value>Thời lượng phải từ 60 đến 43.200 phút.</value>
+  </data>
+  <data name="Product name" xml:space="preserve">
+    <value>Tên sản phẩm</value>
+  </data>
+  <data name="Enter product name" xml:space="preserve">
+    <value>Nhập tên sản phẩm</value>
+  </data>
+  <data name="Select category" xml:space="preserve">
+    <value>Chọn danh mục</value>
+  </data>
+  <data name="Describe the product" xml:space="preserve">
+    <value>Mô tả sản phẩm</value>
+  </data>
+  <data name="Starting price (minimum $50)" xml:space="preserve">
+    <value>Giá khởi điểm (tối thiểu 50 USD)</value>
+  </data>
+  <data name="Minimum bid increment" xml:space="preserve">
+    <value>Bước giá tối thiểu</value>
+  </data>
+  <data name="Specific end date/time" xml:space="preserve">
+    <value>Ngày giờ kết thúc cụ thể</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Hủy</value>
+  </data>
+  <data name="Product must be approved by Admin before appearing publicly." xml:space="preserve">
+    <value>Sản phẩm cần được quản trị viên duyệt trước khi công khai.</value>
+  </data>
+  <data name="Approved product details cannot be edited. Rejected drafts may be corrected and resubmitted." xml:space="preserve">
+    <value>Thông tin sản phẩm đã duyệt được khóa. Hồ sơ bị từ chối có thể chỉnh sửa và gửi lại khi đủ điều kiện.</value>
+  </data>
+  <data name="Check all details before submitting." xml:space="preserve">
+    <value>Kiểm tra thông tin trước khi gửi.</value>
+  </data>
+  <data name="This listing is no longer eligible for resubmission." xml:space="preserve">
+    <value>Hồ sơ này không còn đủ điều kiện để gửi duyệt lại.</value>
+  </data>
+  <data name="The listing changed. Reload its details before editing." xml:space="preserve">
+    <value>Hồ sơ đã thay đổi. Vui lòng tải lại trang chi tiết trước khi chỉnh sửa.</value>
+  </data>
+  <data name="The listing is being reviewed. Please reload and try again." xml:space="preserve">
+    <value>Hồ sơ đang được xử lý. Vui lòng tải lại trang và thử lại.</value>
+  </data>
+  <data name="Select product photos" xml:space="preserve">
+    <value>Chọn ảnh sản phẩm</value>
+  </data>
+  <data name="JPG, PNG, WebP, GIF, BMP or AVIF. Maximum 5 images, 5 MB each." xml:space="preserve">
+    <value>Định dạng JPG, PNG, WebP, GIF, BMP hoặc AVIF. Tối đa 5 ảnh, mỗi ảnh không quá 5 MB.</value>
+  </data>
+  <data name="Product name must contain 1–200 characters." xml:space="preserve">
+    <value>Tên sản phẩm phải có từ 1 đến 200 ký tự.</value>
+  </data>
+  <data name="Description is required." xml:space="preserve">
+    <value>Vui lòng nhập mô tả sản phẩm.</value>
+  </data>
+  <data name="Please select a valid category." xml:space="preserve">
+    <value>Vui lòng chọn danh mục hợp lệ.</value>
+  </data>
+  <data name="Starting price must be a whole number of at least $50." xml:space="preserve">
+    <value>Giá khởi điểm phải là số nguyên và tối thiểu 50 USD.</value>
+  </data>
+  <data name="Bid step must be a positive whole number." xml:space="preserve">
+    <value>Bước giá phải là số nguyên dương.</value>
+  </data>
+  <data name="Scheduled start time is required." xml:space="preserve">
+    <value>Vui lòng chọn ngày giờ bắt đầu.</value>
+  </data>
+  <data name="Start time must be in the future." xml:space="preserve">
+    <value>Thời điểm bắt đầu phải nằm trong tương lai.</value>
+  </data>
+  <data name="End time is required." xml:space="preserve">
+    <value>Vui lòng chọn ngày giờ kết thúc.</value>
+  </data>
+  <data name="End time must be after start time." xml:space="preserve">
+    <value>Thời điểm kết thúc phải sau thời điểm bắt đầu.</value>
+  </data>
+  <data name="Invalid end time mode." xml:space="preserve">
+    <value>Cách xác định thời gian kết thúc không hợp lệ.</value>
+  </data>
+  <data name="Maximum 5 images are allowed." xml:space="preserve">
+    <value>Chỉ được tải lên tối đa 5 ảnh.</value>
+  </data>
+  <data name="Each image must be 5 MB or smaller." xml:space="preserve">
+    <value>Mỗi ảnh không được vượt quá 5 MB.</value>
+  </data>
+  <data name="Only valid JPG, PNG and WebP images are allowed." xml:space="preserve">
+    <value>Vui lòng chọn tệp ảnh có định dạng hợp lệ.</value>
+  </data>
+  <data name="AuctionWon" xml:space="preserve">
+    <value>Bạn đã thắng phiên đấu giá. Vui lòng thanh toán đơn hàng.</value>
+  </data>
+  <data name="AuctionSold" xml:space="preserve">
+    <value>Phiên đấu giá đã có người thắng. Đơn hàng đang chờ thanh toán.</value>
+  </data>
+  <data name="PaymentSent" xml:space="preserve">
+    <value>Bạn đã thanh toán đơn hàng thành công.</value>
+  </data>
+  <data name="PaymentReceived" xml:space="preserve">
+    <value>Người mua đã thanh toán. Vui lòng gửi hàng.</value>
+  </data>
+  <data name="OrderShipped" xml:space="preserve">
+    <value>Người bán đã gửi hàng. Vui lòng xác nhận khi nhận được hàng.</value>
+  </data>
+  <data name="OrderCompleted" xml:space="preserve">
+    <value>Người mua đã xác nhận nhận hàng. Đơn hàng đã hoàn tất.</value>
+  </data>
+  <data name="Seller wallet balance limit exceeded." xml:space="preserve">
+    <value>Số dư ví người bán sẽ vượt giới hạn cho phép.</value>
+  </data>
+  <data name="Unable to refresh auction data. Please try again." xml:space="preserve">
+    <value>Không thể cập nhật dữ liệu phiên đấu giá. Vui lòng thử lại.</value>
+  </data>
+  <data name="Unable to submit your bid." xml:space="preserve">
+    <value>Không thể gửi lượt đặt giá. Vui lòng thử lại.</value>
+  </data>
+  <data name="An error occurred while processing your request." xml:space="preserve">
+    <value>Đã xảy ra lỗi khi xử lý yêu cầu của bạn.</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Lỗi</value>
+  </data>
+  <data name="Request ID:" xml:space="preserve">
+    <value>Mã yêu cầu:</value>
+  </data>
+  <data name="Breadcrumb" xml:space="preserve">
+    <value>Đường dẫn điều hướng</value>
+  </data>
+  <data name="My account" xml:space="preserve">
+    <value>Tài khoản của tôi</value>
+  </data>
+</root>

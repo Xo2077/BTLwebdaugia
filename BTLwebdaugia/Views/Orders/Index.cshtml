@@ -1,4 +1,4 @@
-@model List<BTLwebdaugia.Models.Order>
+﻿@model List<BTLwebdaugia.Models.Order>
 
 
 
@@ -10,13 +10,11 @@
 
 <div class="container">
 
-    <div class="crumb">
-        Home / My account / My Orders
-    </div>
+    @await Html.PartialAsync("_AccountBreadcrumb", "My Orders")
 
     <div class="account" data-account-page="orders">
 
-        @await Html.PartialAsync("_AccountSidebar")
+        @await Component.InvokeAsync("AccountSidebar")
 
         <div id="account-content">
             @await Html.PartialAsync("_OrdersContent", Model)

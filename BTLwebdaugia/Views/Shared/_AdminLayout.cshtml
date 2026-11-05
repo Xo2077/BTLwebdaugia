@@ -1,4 +1,4 @@
-
+﻿
 @{
     var currentAction =
         ViewContext.RouteData.Values["action"]?.ToString();
@@ -46,23 +46,17 @@
 
             <div class="nav-actions">
                 <partial name="_LanguageSwitch" />
-
-                <a asp-controller="Account"
-                   asp-action="Profile">
-                    @(User.Identity?.Name ?? "My account")
-                </a>
-
-
-                <a asp-controller="Account"
-                   asp-action="SignIn">
-                    @Labels["Sign in"]
-                </a>
+                @await Component.InvokeAsync("NavAccount")
 
             </div>
 
         </div>
     </header>
 
+    <p id="admin-feedback" role="status" hidden
+       data-loading="@Labels["Loading admin data..."]"
+       data-error="@Labels["Unable to complete this action. Please try again."]"
+       data-access="@Labels["Your session has expired or access was denied."]"></p>
     <main class="admin-layout">
 
         <aside class="admin-sidebar">
@@ -83,7 +77,7 @@
             <a class="@(currentAction == "Categories" ? "active" : "")"
                asp-controller="Admin"
                asp-action="Categories">
-                Categories
+                @Labels["Categories"]
             </a>
 
 
@@ -96,7 +90,7 @@
             <a class="@(currentAction == "Auctions" ? "active" : "")"
                asp-controller="Admin"
                asp-action="Auctions">
-                Auctions
+                @Labels["Auctions"]
             </a>
 
             <a class="@(currentAction == "Bids" ? "active" : "")"
@@ -114,11 +108,11 @@
             <a class="@(currentAction == "Wallets" ? "active" : "")"
                asp-controller="Admin"
                asp-action="Wallets">
-                Wallets
+                @Labels["Wallets"]
             </a>
         </aside>
 
-        <div class="admin-content">
+        <div class="admin-content" id="admin-content">
             @RenderBody()
         </div>
 
@@ -145,6 +139,9 @@
         </div>
     </footer>
 
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/admin.js" asp-append-version="true"></script>
     <script src="~/js/app.js"
             asp-append-version="true"></script>
 
@@ -153,5 +150,7 @@
 
     @await RenderSectionAsync("Scripts", required: false)
 
+    <script src="~/js/nav-account.js" asp-append-version="true"></script>
+    <script src="~/js/notifications.js" asp-append-version="true"></script>
 </body>
 </html>
